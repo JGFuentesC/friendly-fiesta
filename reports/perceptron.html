@@ -13,7 +13,7 @@
       --bg-0: #0b0d12; --bg-1: #11141b; --bg-2: #161a23; --bg-3: #1d222d; --line: #252b38;
       --text-0: #f5f7fa; --text-1: #aab1c0; --text-2: #6b7385;
       --accent-neg: #4f9eff; --accent-pos: #ff6b6b; --accent-miss: #ef476f;
-      --perc: #f5b942; --pa: #22d3ee;
+      --perc: #f5b942; --pa: #22d3ee; --peg: #a78bfa;
     }
     * { box-sizing: border-box; }
     html, body { margin: 0; padding: 0; min-height: 100vh; background: var(--bg-0); color: var(--text-0);
@@ -50,19 +50,19 @@
     input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
     input[type="range"]::-moz-range-thumb { width: 18px; height: 18px; border-radius: 50%; background: var(--text-0); cursor: pointer; border: none; }
     .step-display { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-0); min-width: 96px; text-align: right; }
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-    @media (max-width: 1040px) { .charts-grid { grid-template-columns: 1fr; } }
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 20px; }
     .algo-card { padding: 20px; position: relative; overflow: hidden; }
     .algo-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent); }
     .algo-card.perceptron { --accent: var(--perc); }
     .algo-card.pa { --accent: var(--pa); }
+    .algo-card.peg { --accent: var(--peg); }
     .algo-head { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 4px; }
     .algo-head h3 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; }
     .algo-head .badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
       text-transform: uppercase; padding: 3px 9px; border-radius: 20px;
       background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent);
       border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); }
-    .algo-sub { font-size: 12.5px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; margin: 0 0 14px; line-height: 1.4; }
+    .algo-sub { font-size: 12.5px; color: var(--text-2); font-family: 'JetBrains Mono', monospace; margin: 0 0 14px; line-height: 1.4; min-height: 2.8em; }
     .chart-wrap { position: relative; width: 100%; aspect-ratio: 6 / 5; }
     svg { width: 100%; height: 100%; display: block; }
     .grid line { stroke: rgba(255,255,255,0.045); }
@@ -98,8 +98,8 @@
   <div class="container">
     <header>
       <div class="eyebrow">Algoritmo 2 · Comparación de clasificadores lineales</div>
-      <h1>Perceptrón vs. Pasivo-Agresivo</h1>
-      <p class="subtitle">Misma tanda de 20 puntos linealmente separables. El perceptrón solo corrige cuando el signo falla (y(θ·x + θ₀) ≤ 0). El pasivo-agresivo corrige además cuando el margen es menor que 1, escalando la corrección por el error. Mueve el deslizador de época para ver cómo evoluciona cada frontera.</p>
+      <h1>Perceptrón vs. Pasivo-Agresivo vs. SVM (Pegasos)</h1>
+      <p class="subtitle">Misma tanda de 20 puntos linealmente separables. El perceptrón solo corrige cuando el signo falla (y(θ·x + θ₀) ≤ 0). El pasivo-agresivo corrige además cuando el margen es menor que 1, escalando la corrección por el error. El SVM con Pegasos (λ = 0.2) busca el separador de margen máximo minimizando (λ/2)‖θ‖² + pérdida de bisagra: encoge θ en cada paso y lo empuja solo cuando el margen es insuficiente. Mueve el deslizador de época para ver cómo evoluciona cada frontera.</p>
     </header>
 
     <div class="card controls">
@@ -135,6 +135,7 @@
       algos: {
         perceptron: { snaps: [{"t":0,"theta":[0.0,0.0],"theta0":0.0,"updates":0},{"t":1,"theta":[4.775148,2.9299899999999997],"theta0":0.0,"updates":2},{"t":2,"theta":[7.032145,2.641555999999999],"theta0":-1.0,"updates":5},{"t":3,"theta":[7.095572000000001,1.8837459999999986],"theta0":-3.0,"updates":9},{"t":4,"theta":[9.352569,1.595311999999998],"theta0":-4.0,"updates":12},{"t":5,"theta":[9.415996000000002,0.8375019999999975],"theta0":-6.0,"updates":16},{"t":6,"theta":[10.064968000000002,0.8184269999999971],"theta0":-7.0,"updates":19},{"t":7,"theta":[10.128395000000003,0.060616999999997034],"theta0":-9.0,"updates":23},{"t":8,"theta":[10.777367000000003,0.04154199999999708],"theta0":-10.0,"updates":26},{"t":9,"theta":[11.426339000000004,0.022466999999997128],"theta0":-11.0,"updates":29},{"t":10,"theta":[12.075311000000005,0.003391999999997175],"theta0":-12.0,"updates":32},{"t":11,"theta":[12.724283000000005,-0.015683000000002778],"theta0":-13.0,"updates":35},{"t":12,"theta":[12.887966000000006,0.17706199999999672],"theta0":-14.0,"updates":38},{"t":13,"theta":[13.051649000000006,0.3698069999999962],"theta0":-15.0,"updates":41},{"t":14,"theta":[13.215332000000007,0.5625519999999957],"theta0":-16.0,"updates":44},{"t":15,"theta":[13.818445000000008,1.936561999999996],"theta0":-17.0,"updates":47},{"t":16,"theta":[12.812072000000008,-0.9658200000000043],"theta0":-19.0,"updates":51},{"t":17,"theta":[12.715825000000008,-0.3804190000000043],"theta0":-20.0,"updates":54},{"t":18,"theta":[12.619578000000008,0.20498199999999578],"theta0":-21.0,"updates":57},{"t":19,"theta":[12.523331000000008,0.7903829999999958],"theta0":-22.0,"updates":60},{"t":20,"theta":[12.427084000000008,1.375783999999996],"theta0":-23.0,"updates":63},{"t":21,"theta":[12.330837000000008,1.961184999999996],"theta0":-24.0,"updates":66},{"t":22,"theta":[12.979809000000008,1.942109999999996],"theta0":-25.0,"updates":69},{"t":23,"theta":[13.143492000000009,2.1348549999999955],"theta0":-26.0,"updates":72},{"t":24,"theta":[13.30717500000001,2.327599999999995],"theta0":-27.0,"updates":75},{"t":25,"theta":[13.47085800000001,2.5203449999999945],"theta0":-28.0,"updates":78},{"t":26,"theta":[13.634541000000011,2.713089999999994],"theta0":-29.0,"updates":81},{"t":27,"theta":[13.656470000000013,2.762765999999994],"theta0":-30.0,"updates":84},{"t":28,"theta":[13.820153000000014,2.9555109999999933],"theta0":-31.0,"updates":87},{"t":29,"theta":[13.842082000000016,3.005186999999993],"theta0":-32.0,"updates":90},{"t":30,"theta":[13.260546000000016,3.8024079999999927],"theta0":-33.0,"updates":93},{"t":31,"theta":[12.679010000000016,4.599628999999992],"theta0":-34.0,"updates":96},{"t":32,"theta":[11.955720000000017,5.253780999999992],"theta0":-35.0,"updates":99},{"t":33,"theta":[11.374184000000017,6.0510019999999916],"theta0":-36.0,"updates":102},{"t":34,"theta":[10.792648000000018,6.848222999999992],"theta0":-37.0,"updates":105},{"t":35,"theta":[10.211112000000018,7.645443999999992],"theta0":-38.0,"updates":108},{"t":36,"theta":[10.604394000000017,7.002307999999992],"theta0":-39.0,"updates":111},{"t":37,"theta":[8.086243000000017,3.783883999999992],"theta0":-40.0,"updates":112},{"t":38,"theta":[8.086243000000017,3.783883999999992],"theta0":-40.0,"updates":112}], converged_epoch: 37 },
         pa: { snaps: [{"t":0,"theta":[0.0,0.0],"theta0":0.0,"updates":0},{"t":1,"theta":[0.19535713387602788,0.033268873848338786],"theta0":-0.13615012692852285,"updates":10},{"t":2,"theta":[0.23560373148581815,0.02496131303062805],"theta0":-0.29201957700940534,"updates":21},{"t":3,"theta":[0.2527907968854896,0.03477478985685668],"theta0":-0.42749276903710764,"updates":32},{"t":4,"theta":[0.2655842122858865,0.045454849818133386],"theta0":-0.5457419224688379,"updates":42},{"t":5,"theta":[0.27551303183532805,0.05596020733309783],"theta0":-0.6489462483065439,"updates":52},{"t":6,"theta":[0.28364826474034394,0.06629904846330054],"theta0":-0.7424360215504153,"updates":61},{"t":7,"theta":[0.2904968091498721,0.07638079762801811],"theta0":-0.8282468844115747,"updates":69},{"t":8,"theta":[0.2981302346116153,0.08432973602989079],"theta0":-0.9069331109604201,"updates":76},{"t":9,"theta":[0.30696494019744885,0.08992008359796651],"theta0":-0.979386192978427,"updates":83},{"t":10,"theta":[0.3179305581030251,0.09227010140554193],"theta0":-1.045648585064307,"updates":91},{"t":11,"theta":[0.3306416592994393,0.09194060724444854],"theta0":-1.1067096618662393,"updates":99},{"t":12,"theta":[0.34459979740395213,0.0895906925572195],"theta0":-1.1635076256581822,"updates":107},{"t":13,"theta":[0.35942189638491273,0.08572894969876325],"theta0":-1.2167741167805086,"updates":115},{"t":14,"theta":[0.3748140691630124,0.08074757614748365],"theta0":-1.2670808363602941,"updates":123},{"t":15,"theta":[0.3895862250821591,0.07616006039811328],"theta0":-1.3163575703607369,"updates":130},{"t":16,"theta":[0.4037377091033925,0.07197566093387361],"theta0":-1.3646488350844377,"updates":137},{"t":17,"theta":[0.41728959690035766,0.06817604954756556],"theta0":-1.4119641631102926,"updates":144},{"t":18,"theta":[0.4302623588374643,0.06474355106328314],"theta0":-1.4583134663342179,"updates":151},{"t":19,"theta":[0.442675874343415,0.06166112374369659],"theta0":-1.5037070058885227,"updates":158},{"t":20,"theta":[0.4545494460405927,0.058912340189592474],"theta0":-1.548155363394652,"updates":165},{"t":21,"theta":[0.4659018136306603,0.05648136872225465],"theta0":-1.59166941350249,"updates":172},{"t":22,"theta":[0.47675116753693436,0.054352955239342145],"theta0":-1.6342602976708034,"updates":179},{"t":23,"theta":[0.487115162304288,0.052512405534995976],"theta0":-1.67593939914475,"updates":186},{"t":24,"theta":[0.49701092975752287,0.05094556807498641],"theta0":-1.716718319087705,"updates":193},{"t":25,"theta":[0.506455091919319,0.049638817217797004],"theta0":-1.7566088538259328,"updates":200},{"t":26,"theta":[0.5154637736890365,0.04857903687263075],"theta0":-1.7956229731658948,"updates":207},{"t":27,"theta":[0.5240526152837919,0.047753604585414264],"theta0":-1.8337727997451974,"updates":214},{"t":28,"theta":[0.532236784443376,0.0471503760439712],"theta0":-1.8710705893793766,"updates":221},{"t":29,"theta":[0.5400309884007113,0.04675766999363423],"theta0":-1.907528712367879,"updates":228},{"t":30,"theta":[0.5474494856196697,0.046564253554665466],"theta0":-1.9431596357237217,"updates":235}], converged_epoch: 28 },
+        peg: { snaps: [{"t":0,"theta":[0.0,0.0],"theta0":0.0,"updates":0},{"t":1,"theta":[1.1937869999999997,0.7324974999999998],"theta0":-4.545454545454546,"updates":2},{"t":2,"theta":[1.193787,0.7324974999999999],"theta0":-4.622259460969139,"updates":4},{"t":3,"theta":[0.983941083333333,0.46429549999999964],"theta0":-4.765219083842679,"updates":7},{"t":4,"theta":[1.0288538125000002,0.4482813124999997],"theta0":-4.775441709921734,"updates":9},{"t":5,"theta":[0.9998766500000004,0.3907138999999998],"theta0":-4.782069493590875,"updates":11},{"t":6,"theta":[0.9495077500000005,0.37752212499999993],"theta0":-4.785503559524941,"updates":13},{"t":7,"theta":[0.9135299642857146,0.3680994285714286],"theta0":-4.787947352291314,"updates":15},{"t":8,"theta":[0.8865466250000005,0.36103240625000005],"theta0":-4.789774837671431,"updates":17},{"t":9,"theta":[0.9251928611111111,0.4641812777777778],"theta0":-4.761997059893654,"updates":18},{"t":10,"theta":[0.8931560749999998,0.4662397749999999],"theta0":-4.764469587366181,"updates":20},{"t":11,"theta":[0.8500073636363635,0.4816620909090909],"theta0":-4.766252118560477,"updates":22},{"t":12,"theta":[0.8396676041666667,0.45857183333333357],"theta0":-4.7676530450398555,"updates":24},{"t":13,"theta":[0.8099976923076925,0.47496265384615405],"theta0":-4.7684598089484656,"updates":26},{"t":14,"theta":[0.7845663392857145,0.48901192857142883],"theta0":-4.7691510277053775,"updates":28},{"t":15,"theta":[0.7625258333333335,0.5011879666666669],"theta0":-4.769749858787106,"updates":30},{"t":16,"theta":[0.7148679687500004,0.46986371875000027],"theta0":-4.769749858787106,"updates":30},{"t":17,"theta":[0.7635094264705884,0.4926991470588237],"theta0":-4.755000596250233,"updates":31},{"t":18,"theta":[0.7210922361111111,0.4653269722222225],"theta0":-4.755000596250233,"updates":31},{"t":19,"theta":[0.7481064736842103,0.5086977763157896],"theta0":-4.741842701513391,"updates":32},{"t":20,"theta":[0.7107011500000003,0.4832628875000003],"theta0":-4.741842701513391,"updates":32},{"t":21,"theta":[0.7356374166666672,0.5216490476190478],"theta0":-4.729937939608629,"updates":33},{"t":22,"theta":[0.735196181818182,0.5072367727272729],"theta0":-4.730340870798726,"updates":35},{"t":23,"theta":[0.703231130434783,0.48518300000000025],"theta0":-4.730340870798726,"updates":35},{"t":24,"theta":[0.6739298333333339,0.4649670416666668],"theta0":-4.730340870798726,"updates":35},{"t":25,"theta":[0.7086435500000005,0.4806910000000001],"theta0":-4.720320830718565,"updates":36},{"t":26,"theta":[0.681388028846154,0.4622028846153847],"theta0":-4.720320830718565,"updates":36},{"t":27,"theta":[0.7132541296296296,0.4768644814814815],"theta0":-4.711044392870699,"updates":37},{"t":28,"theta":[0.6877807678571428,0.45983360714285726],"theta0":-4.711044392870699,"updates":37},{"t":29,"theta":[0.7172287672413795,0.47356575862068967],"theta0":-4.702408814286934,"updates":38},{"t":30,"theta":[0.6933211416666673,0.4577802333333334],"theta0":-4.702408814286934,"updates":38},{"t":31,"theta":[0.7206905483870973,0.47069267741935494],"theta0":-4.69433126986044,"updates":39},{"t":32,"theta":[0.6981689687500005,0.4559835312499999],"theta0":-4.69433126986044,"updates":39},{"t":33,"theta":[0.7144172651515158,0.4812377348484848],"theta0":-4.686755512284682,"updates":40},{"t":34,"theta":[0.6934049926470592,0.46708368382352944],"theta0":-4.686755512284682,"updates":40},{"t":35,"theta":[0.7088609285714285,0.49057764285714295],"theta0":-4.679612655141825,"updates":41},{"t":36,"theta":[0.6891703472222221,0.47695048611111124],"theta0":-4.679612655141825,"updates":41},{"t":37,"theta":[0.6705441216216214,0.4640599324324327],"theta0":-4.679612655141825,"updates":41},{"t":38,"theta":[0.6934711907894733,0.47442851315789514],"theta0":-4.673025039858557,"updates":42}], converged_epoch: 3 },
       }
     };
 
@@ -155,7 +156,9 @@
       { key: 'perceptron', name: 'Perceptrón', badge: 'clásico',
         sub: 'if y(θ·x + θ₀) ≤ 0 → θ += y·x,  θ₀ += y', accentHex: '#f5b942' },
       { key: 'pa', name: 'Pasivo-Agresivo', badge: 'margen 1',
-        sub: 'τ = loss / ‖x̃‖² ,  θ += τ·y·x,  θ₀ += τ·y', accentHex: '#22d3ee' }
+        sub: 'τ = loss / ‖x̃‖² ,  θ += τ·y·x,  θ₀ += τ·y', accentHex: '#22d3ee' },
+      { key: 'peg', name: 'SVM · Pegasos', badge: 'margen máx.',
+        sub: 'ηₜ = 1/(λt);  y(θ·x + θ₀) < 1 → θ ← (1 - ηₜλ)θ + ηₜ·y·x,  θ₀ += ηₜ·y', accentHex: '#a78bfa' }
     ];
 
     const MAX_EPOCH = Math.max(...ALGOS.map(a => DATA.algos[a.key].snaps.length - 1));
@@ -204,6 +207,17 @@
       g.append('text').attr('class', 'axis-label').attr('transform', 'rotate(-90)').attr('x', -H / 2).attr('y', -38).attr('text-anchor', 'middle').text('x₂');
 
       const bGroup = g.append('g').attr('clip-path', `url(#clip-${algo.key})`);
+      let bandEls = null;
+      if (algo.key === 'peg') {
+        const xa = X_DOM[0], xb = X_DOM[1];
+        const bandData = snaps.map(s => {
+          if (!s.theta[1]) return null;
+          const f = (lv, x) => -(s.theta[0] * x + s.theta0 - lv) / s.theta[1];
+          return `${xS(xa)},${yS(f(1, xa))} ${xS(xa)},${yS(f(-1, xa))} ${xS(xb)},${yS(f(-1, xb))} ${xS(xb)},${yS(f(1, xb))}`;
+        });
+        bandEls = bGroup.selectAll('polygon').data(bandData).join('polygon')
+          .attr('points', d => d).attr('fill', algo.accentHex).attr('opacity', 0);
+      }
       const boundaries = snaps.map(s => {
         const th = s.theta, th0 = s.theta0;
         const a = X_DOM[0], b = X_DOM[1];
@@ -223,7 +237,7 @@
         .attr('stroke', 'var(--accent-miss)').attr('stroke-width', 2.2).attr('opacity', 0);
 
       charts.push({
-        algo, snaps, conv, bLines, rings, maxEpoch: snaps.length - 1,
+        algo, snaps, conv, bLines, rings, bandEls, maxEpoch: snaps.length - 1,
         epEl: document.getElementById(`ep-${algo.key}`),
         updEl: document.getElementById(`upd-${algo.key}`),
         accEl: document.getElementById(`acc-${algo.key}`),
@@ -257,6 +271,7 @@
         const errs = DATA.X.length - correct;
 
         c.rings.attr('opacity', (d, i) => preds[i] !== DATA.y[i] ? 1 : 0);
+        if (c.bandEls) c.bandEls.attr('opacity', (d, i) => i === idx ? 0.11 : 0);
         c.epEl.textContent = s.t;
         c.updEl.textContent = s.updates;
         c.accEl.textContent = (acc * 100).toFixed(1) + '%';
