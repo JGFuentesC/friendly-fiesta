@@ -1,12 +1,18 @@
 [project]
 name = "friendly-fiesta"
 version = "0.1.0"
-description = "Notebook didáctico: mínimos cuadrados matriciales y descenso de gradiente estocástico"
+description = "Notebooks didácticos: mínimos cuadrados, SGD y backpropagation de un MLP"
 requires-python = ">=3.12"
 dependencies = [
     "numpy>=2.0",
     "matplotlib>=3.9",
+    "pandas>=2.2",
+    "scikit-learn>=1.5",
+    "plotly>=5.24",
+    "kaleido>=0.2.1",
     "jupyterlab>=4.2",
+    "ipykernel>=6.29",
+    "nbformat>=5.10",
 ]
 
 [dependency-groups]
