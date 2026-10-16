@@ -5,3 +5,8 @@ __pycache__/
 *.pyc
 .DS_Store
 .ipynb_checkpoints/
+data/raw/ibm
+data/processed/fraud*
+notebooks/03_fraude_ff.ipynb
+
+results/
