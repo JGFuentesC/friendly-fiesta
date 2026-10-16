@@ -1,0 +1,123 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{caption}
+\title{\textbf{Detección de fraude en tarjetas con una red feed-forward y
+búsqueda de hiperparámetros mediante algoritmo genético}}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Se entrena una red neuronal feed-forward para detectar fraude en tarjetas de
+crédito (conjunto sintético IBM SD254, 24.4 millones de transacciones) con el
+objetivo de una tasa de falsos positivos (FPR) inferior al 1\,\%. La
+arquitectura y sus hiperparámetros se seleccionan de forma autónoma con un
+algoritmo genético que optimiza el recall sujeto a un FPR de 0.5\,\% en
+validación. El modelo final alcanza un \textbf{FPR de 0.51\,\%},
+un recall de 66.58\:\% y una precisión de
+13.18\:\% en un test no visto de 2,072,831 transacciones
+(ROC-AUC 0.9845).
+\end{abstract}
+
+\section{Introducción}
+El fraude en tarjetas es un evento raro: en los datos usados la tasa real es
+0.12\,\%. El coste de marcar mal una transacción legítima (falso positivo) es
+alto, por lo que el requisito es un FPR estrictamente menor al 1\,\%.
+
+\section{Datos}
+El conjunto IBM SD254 v2 contiene 24,386,900 transacciones con 43 features
+numéricas (importe, canal, MCC, errores de tarjeta, señales de comportamiento y
+atributos del titular y de la tarjeta). Se divide en particiones disjuntas por
+identificador:\ par\ de
+entrenamiento (búsqueda GA, 268k filas, 9.7\,\% de fraude), entrenamiento final
+(2.1M filas, 1.2\,\%), validación (1.1M, tasa real 0.11\,\%) y test
+(2.1M, tasa real 0.12\,\%).
+
+\section{Método}
+\subsection{Red feed-forward}
+Red totalmente conectada con profundidad $d$ y ancho $w$: capas ocultas con
+normalización opcional, activación y dropout, y una salida lineal. Se entrena
+minimizando la entropía cruzada binaria con peso de clase, optimizador Adam y
+precisión mixta (AMP) en GPU (RTX 3070). Los hiperparámetros son: tasa de
+aprendizaje $\eta$, ancho $w$, profundidad $d$, dropout, decaimiento de pesos,
+activación y normalización.
+
+\subsection{Algoritmo genético}
+La búsqueda usa un GA en dos fases: una gruesa sobre todo el espacio (población
+24, 12 generaciones) y una fina alrededor del mejor individuo (población 12, 8
+generaciones). Selección por torneo ($k=3$), elitismo 2, cruce uniforme y
+mutación por gen. La función de aptitud es el \textbf{recall a FPR $\le$ 0.5\,\%}
+en validación (desempate por PR-AUC). El mejor genoma encontrado es:
+
+\begin{center}
+\begin{tabular}{lc}
+\toprule
+Hiperparámetro & Valor \\
+\midrule
+Tasa de aprendizaje & $4.89e-03$ \\
+Ancho $w$ & $386$ \\
+Profundidad $d$ & $5$ \\
+Dropout & $0.000$ \\
+Decaimiento de pesos & $6.08e-06$ \\
+Activación & silu \\
+Normalización & batch \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La Figura~\ref{fig:fitness} muestra la evolución de la aptitud por generación.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{fitness_curve.png}
+\caption{Recall a FPR $\le$ 0.5\,\% en validación del mejor individuo por
+generación, en las dos fases del GA.}
+\label{fig:fitness}
+\end{figure}
+
+\section{Resultados}
+El modelo final se evalúa en el test no visto con un umbral fijado en
+validación (máximo recall con FPR $\le$ 0.5\,\%).
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Métrica & Valor \\
+\midrule
+FPR (test) & 0.51\:\% \\
+Recall & 66.58\:\% \\
+Precisión & 13.18\:\% \\
+ROC-AUC & 0.9845 \\
+PR-AUC & 0.4051 \\
+Umbral & 0.9716 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+La matriz de confusión en el test (2,072,831 transacciones) es:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+ & Predice no fraude & Predice fraude \\
+\midrule
+Real: no fraude & 2,059,903 & 10,528 \\
+Real: fraude & 802 & 1,598 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Conclusiones}
+La búsqueda autónoma con GA encuentra una red feed-forward que satisface el
+requisito de negocio: FPR 0.51\:\% $<$ 1\,\%, con recall
+66.58\:\% y ROC-AUC 0.9845, sobre datos reales no
+vistos. La selección de hiperparámetros se realizó sin intervención humana.
+
+\end{document}
