@@ -239,6 +239,8 @@ Se ha construido y evaluado un clasificador de fraude basado en una red neuronal
 """
 
 
+    import re as _re
+    tex = _re.sub(r'\\u([0-9a-fA-F]{4})', lambda m: chr(int(m.group(1), 16)), tex)
     (REPORTS / "fraud_paper.tex").write_text(tex)
     print("escrito reports/fraud_paper.tex")
 
