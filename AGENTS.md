@@ -20,7 +20,8 @@ uv run jupyter lab
 
 ## Gotchas
 
-- **`notebooks/02_mlp_backprop.ipynb` está GENERADO.** Su fuente es `scripts/build_notebook.py` (celdas definidas ahí con `nbformat`). Editar el `.ipynb` a mano se sobrescribe al regenerar; cambia el script, no el notebook. El notebook `01_minimos_cuadrados_sgd.ipynb` es manual.
+- **`notebooks/02_mlp_backprop.ipynb` está GENERADO.** Su fuente es `scripts/build_notebook.py` (celdas definidas ahí con `nbformat`). Editar el `.ipynb` a mano se sobrescribe al regenerar; cambia el script, no el notebook. El notebook `01_minimos_cuadrados_sgd.ipynb` es manual. `04_lenet_mnist.ipynb` también está generado (`scripts/build_lenet_notebook.py`), y su generador falla si un título interrogativo no lleva ¿.
+- **Diagrama de LeNet-5.** `scripts/anatomy_lenet/build.mjs` (Node, kit isométrico copiado en `scripts/anatomy_lenet/kit/`) lee `figures/lenet/anatomy_data.json` y escribe `figures/lenet/lenet_anatomy.svg` y `.html`. El JSON sale de la última celda del notebook; con seed 42 es idéntico entre corridas, así que el SVG coincide con el modelo entrenado.
 - **Dependencias no declaradas.** `torch` y `tensorflow` se usan en `02_mlp_backprop.ipynb` pero NO están en `pyproject.toml`; solo existen en el contenedor GPU `lab-pytorch` (servidor `platypy`, RTX 3070). En local las celdas de PyTorch/TensorFlow fallan. `scipy` tampoco está declarado (entra como dependencia transitiva de `scikit-learn`). `plotly` + `kaleido` generan los PNG de `figures/`.
 - **`data/raw/file.csv` es de ancho fijo** (separado por espacios, `sep=r"\s+"`), no CSV por comas. Columnas: `x1 x2 x3 y`.
 - **Seed fija 42** en `make_split.py` (split 70/30) y en todo el MLP: los resultados y los archivos `train.csv`/`validation.csv` son deterministas.

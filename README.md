@@ -86,3 +86,15 @@ ssh -L 8889:localhost:8889 platypy
 ```
 
 Luego abrir `http://localhost:8889` en el navegador local.
+
+## LeNet-5 sobre MNIST
+
+`notebooks/04_lenet_mnist.ipynb` entrena LeNet-5 en la GPU de platypy y explica la arquitectura, los kernels, la operación de convolución y las activaciones capa por capa, con ejemplos inferidos al final. Está generado por `scripts/build_lenet_notebook.py`. El diagrama isométrico de la red (`figures/lenet/lenet_anatomy.svg`, incrustado en el notebook) lo construye `scripts/anatomy_lenet/build.mjs` a partir de `figures/lenet/anatomy_data.json`, que exporta el propio notebook.
+
+```bash
+uv run python scripts/build_lenet_notebook.py
+scp notebooks/04_lenet_mnist.ipynb platypy:/home/jose/platypy/services/pytorch/notebooks/friendly-fiesta/notebooks/
+scp figures/lenet/lenet_anatomy.svg platypy:/home/jose/platypy/services/pytorch/notebooks/friendly-fiesta/figures/lenet/
+ssh platypy 'docker exec lab-pytorch bash -lc "cd /workspace/friendly-fiesta && jupyter nbconvert --to notebook --execute --inplace notebooks/04_lenet_mnist.ipynb"'
+node scripts/anatomy_lenet/build.mjs   # tras traer anatomy_data.json, si cambió el modelo
+```
