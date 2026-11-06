@@ -12,3 +12,18 @@ notebooks/03_fraude_ff.ipynb
 results/
 data/mnist/
 data/lenet_run/
+
+# Secretos y credenciales
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*.json
+service-account*.json
+
+# Textos con derechos de terceros y capturas locales
+data/raw/textos_nlp/
+spa/captura_*.png
+
+# Entornos auxiliares
+.venv-*/

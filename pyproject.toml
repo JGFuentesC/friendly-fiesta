@@ -3,6 +3,8 @@ name = "friendly-fiesta"
 version = "0.1.0"
 description = "Notebooks didácticos: mínimos cuadrados, SGD y backpropagation de un MLP"
 requires-python = ">=3.12"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
 dependencies = [
     "numpy>=2.0",
     "matplotlib>=3.9",
@@ -14,6 +16,8 @@ dependencies = [
     "ipykernel>=6.29",
     "nbformat>=5.10",
     "polars>=2.0.0",
+    "nltk>=3.10.4",
+    "spacy>=3.8.18",
 ]
 
 [dependency-groups]

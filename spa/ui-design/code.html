@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-[#fbf9f4] text-stone-800 antialiased" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Verbum: Filología Computacional &amp; Hermenéutica Comparada</title>
+<!-- Tailwind CSS CDN with forms & container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts for Apple Notes & Canva aesthetic -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Fira+Code:wght@400;500;600&amp;family=Inter:wght@300;400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400;1,6..72,600&amp;family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script data-purpose="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Newsreader', 'Georgia', 'serif'],
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+            hand: ['Caveat', 'cursive'],
+          },
+          colors: {
+            paper: {
+              50: '#fdfcf9',
+              100: '#fbf9f4',
+              200: '#f4f0e6',
+              300: '#ebe5d8',
+              400: '#ded5c2',
+            },
+            notes: {
+              yellow: '#eab308',
+              amber: '#d97706',
+              gold: '#f59e0b',
+              light: '#fef9c3',
+              tag: '#fef08a',
+            },
+            biblical: {
+              50: '#f0f5ff',
+              100: '#e1edfe',
+              200: '#c8defe',
+              300: '#9ec4fb',
+              500: '#3b82f6',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#0f172a',
+            },
+            quranic: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              500: '#10b981',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+              950: '#022c22',
+            }
+          },
+          boxShadow: {
+            'note': '0 1px 3px rgba(60, 50, 30, 0.04), 0 6px 16px -4px rgba(60, 50, 30, 0.06)',
+            'note-md': '0 4px 12px -2px rgba(60, 50, 30, 0.05), 0 12px 28px -6px rgba(60, 50, 30, 0.08)',
+            'note-float': '0 12px 36px -8px rgba(60, 50, 30, 0.12), 0 2px 6px rgba(60, 50, 30, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: Custom Styles -->
+<style data-purpose="typography">
+    .font-num {
+      font-variant-numeric: tabular-nums lining-nums;
+      letter-spacing: -0.015em;
+    }
+    .paper-texture {
+      background-color: #fbf9f4;
+      background-image: radial-gradient(#e4ded0 0.75px, transparent 0.75px), radial-gradient(#e4ded0 0.75px, #fbf9f4 0.75px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+    }
+    .notes-ruled-lines {
+      background-image: repeating-linear-gradient(transparent, transparent 27px, #ede8dc 28px);
+    }
+    .highlighter-yellow {
+      background: linear-gradient(104deg, rgba(254, 240, 138, 0) 0.8%, rgba(254, 240, 138, 0.85) 3.5%, rgba(253, 224, 71, 0.75) 94%, rgba(254, 240, 138, 0) 98%);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+    .highlighter-blue {
+      background: linear-gradient(104deg, rgba(219, 234, 254, 0) 0.8%, rgba(219, 234, 254, 0.9) 3.5%, rgba(191, 219, 254, 0.75) 94%, rgba(219, 234, 254, 0) 98%);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+    .highlighter-green {
+      background: linear-gradient(104deg, rgba(220, 252, 231, 0) 0.8%, rgba(220, 252, 231, 0.9) 3.5%, rgba(187, 247, 208, 0.75) 94%, rgba(220, 252, 231, 0) 98%);
+      border-radius: 4px;
+      padding: 0 4px;
+    }
+  </style>
+<style data-purpose="wordcloud-animations">
+    .cloud-word {
+      transition: all 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      display: inline-block;
+      user-select: none;
+      position: relative;
+    }
+    .cloud-word:hover {
+      transform: scale(1.16) translateY(-3px);
+      filter: drop-shadow(0 6px 12px rgba(60, 50, 30, 0.15));
+      z-index: 20;
+    }
+    .chart-bar {
+      transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1), y 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.2s ease;
+      rx: 3px;
+    }
+    .chart-bar:hover {
+      filter: brightness(1.15);
+      cursor: pointer;
+    }
+  </style>
+<!-- END: Custom Styles -->
+</head>
+<body class="min-h-full flex flex-col paper-texture text-stone-800 antialiased selection:bg-amber-200/80 selection:text-amber-950">
+<!-- BEGIN: Apple Notes / Canva Inspired Navigation Bar -->
+<header class="bg-[#fcfaf5]/90 backdrop-blur-md border-b border-[#ece7dc] sticky top-0 z-50 shadow-xs" data-purpose="primary-header">
+<div class="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex items-center justify-between h-16 gap-4">
+<!-- Brand identity & Apple Notes Breadcrumb -->
+<div class="flex items-center gap-3 shrink-0">
+<!-- Pinned Yellow Note Indicator -->
+<div class="h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-500 flex items-center justify-center text-white font-display font-extrabold text-lg shadow-sm border border-amber-300/60 ring-2 ring-amber-100/80">
+<span class="material-symbols-outlined text-[20px]">sticky_note_2</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-display font-bold tracking-tight text-base text-stone-900">VERBUM</span>
+<span class="text-stone-400 font-normal text-xs">/</span>
+<span class="text-xs font-medium text-stone-600 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-amber-500">folder_open</span>
+        Notas de Investigación
+      </span>
+<span class="px-2 py-0.5 text-[10px] font-mono font-medium tracking-tight bg-[#f3efe4] text-stone-600 rounded-full border border-[#e5dfd2]">v3.4.2-rel</span>
+</div>
+<p class="text-[11px] text-stone-500 font-normal tracking-tight">Laboratorio de Lingüística Computacional &amp; Humanidades Digitales</p>
+</div>
+</div>
+<!-- Research Workspace Tabs styled like Apple Notes / Canva Segments -->
+<nav aria-label="Research Modules" class="hidden xl:flex items-center gap-1 bg-[#ede8dc]/80 p-1.5 rounded-xl border border-[#dfd8ca]">
+<button class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-stone-900 shadow-xs border border-stone-200/60 flex items-center gap-1.5 transition-all" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+    Bag-of-Words (BOW)
+  </button>
+<button class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-white/60 transition-colors" type="button">TF-IDF Ponderado</button>
+<button class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-white/60 transition-colors" type="button">N-Gramas &amp; Colocaciones</button>
+<button class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-white/60 transition-colors" type="button">Análisis Estilométrico (Burrows Δ)</button>
+<button class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-stone-600 hover:text-stone-900 hover:bg-white/60 transition-colors" type="button">Riqueza Léxica (TTR/Yule's K)</button>
+</nav>
+<!-- Right Quick Actions: Canva/Apple Toolbar Pills -->
+<div class="flex items-center gap-2">
+<div class="hidden md:flex items-center gap-2 bg-[#f4f0e5] px-2.5 py-1.5 rounded-lg border border-[#e2dbcd] text-[11px] font-mono text-stone-600">
+<span class="inline-block w-2 h-2 rounded-full bg-emerald-500 ring-2 ring-emerald-200"></span>
+<span>Spacy-es 3.7.1 [GPU]</span>
+</div>
+<!-- Export button styled like modern Canva 'Compartir' / Export -->
+<div class="flex items-center divide-x divide-stone-200 border border-[#ded7c8] rounded-xl bg-white overflow-hidden text-xs shadow-xs">
+<button class="px-3 py-1.5 font-medium text-stone-700 hover:bg-stone-50 flex items-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px] text-amber-600">ios_share</span>
+<span>Exportar</span>
+</button>
+<button class="px-2.5 py-1.5 text-stone-600 hover:bg-stone-50 font-mono text-[11px]" type="button">CSV</button>
+<button class="px-2.5 py-1.5 text-stone-600 hover:bg-stone-50 font-mono text-[11px]" type="button">BibTeX</button>
+</div>
+<button class="p-2 text-stone-600 hover:text-stone-900 bg-white border border-[#ded7c8] rounded-xl hover:bg-stone-50 shadow-xs" title="Configuración de análisis" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<!-- END: Academic Navigation Header -->
+<!-- BEGIN: Paper Title & Methodology Context Header -->
+<section class="bg-[#fdfcf9] border-b border-[#ede7dc] py-6" data-purpose="research-header">
+<div class="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+<!-- Left: Paper Title & Epistemic scope -->
+<div>
+<div class="flex items-center gap-2 mb-2">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wide uppercase bg-amber-100/80 text-amber-900 border border-amber-200/80">
+<span class="material-symbols-outlined text-[13px] text-amber-600">auto_stories</span>
+    Corpus Teológico Comparado
+  </span>
+<span class="text-xs text-stone-500 font-mono bg-[#f4f0e5] px-2 py-0.5 rounded-md border border-[#e5dfd2]">ID: CORPUS-REL-ES-2025</span>
+<span class="text-stone-400 text-xs hidden sm:inline">•</span>
+<span class="font-hand text-stone-500 text-sm hidden sm:inline">cuaderno de notas filológicas ✍️</span>
+</div>
+<h1 class="font-display text-2xl sm:text-3xl lg:text-4xl text-stone-900 font-bold tracking-tight">
+  Análisis Morfosintáctico y Frecuencia Grafémica: Sagrada Biblia vs. El Noble Corán
+</h1>
+<p class="text-xs sm:text-sm text-stone-600 mt-1.5 max-w-4xl font-serif italic leading-relaxed">
+  Exploración cuantitativa de distribuciones léxicas (Zipf), frecuencias de grafías vernáculas y entropía informacional en traducciones castellanas canónicas.
+</p>
+</div>
+<!-- Right: Control Sliders & Filter Toggles styled like Apple Settings -->
+<div class="flex flex-wrap items-center gap-3 bg-[#f6f2e9] p-2.5 rounded-2xl border border-[#e5ded0] self-start lg:self-center shadow-xs">
+<div class="flex items-center gap-2.5 px-2.5 border-r border-[#ded6c7]">
+<label class="text-xs font-semibold text-stone-700 cursor-pointer select-none flex items-center gap-1" for="stopword-toggle">
+<span>Stopwords</span>
+</label>
+<button aria-checked="false" class="relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-stone-300 transition-colors duration-200 ease-in-out focus:outline-hidden" id="stopword-toggle" role="switch" type="button">
+<span class="translate-x-0 pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out"></span>
+</button>
+<span class="text-[11px] font-mono text-stone-500" id="stopword-state-label">Crudo (Off)</span>
+</div>
+<div class="flex items-center gap-2 px-2 border-r border-[#ded6c7]">
+<label class="text-xs font-semibold text-stone-700" for="normalization-select">Normalización:</label>
+<select class="text-xs rounded-xl border-[#dcd4c4] py-1.5 pl-2.5 pr-7 bg-white font-mono text-stone-700 shadow-2xs focus:ring-amber-500 focus:border-amber-500" id="normalization-select">
+<option value="raw">Tokens Crudos</option>
+<option value="lemma">Lemas (Spacy-es)</option>
+<option value="stem">Raíces (Snowball)</option>
+</select>
+</div>
+<div class="flex items-center gap-2 px-1">
+<span class="text-xs font-semibold text-stone-700">Vista:</span>
+<div class="inline-flex rounded-xl p-0.5 bg-[#eae4d5] border border-[#dcd3c2]">
+<button class="px-2.5 py-1 text-xs font-semibold rounded-lg bg-white shadow-xs text-stone-900 transition-all" type="button">Dual</button>
+<button class="px-2.5 py-1 text-xs font-medium rounded-lg text-stone-600 hover:text-stone-900 transition-colors" type="button">Diff Δ</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Global Quantitative Comparative Metrics Strip Styled as Apple Notes Cards -->
+<div class="mt-5 pt-5 border-t border-[#ede7dc] grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3.5" data-purpose="metrics-strip">
+<!-- Card 1 -->
+<div class="bg-white/90 p-3.5 rounded-2xl border border-[#ebe5d7] shadow-note hover:shadow-note-md transition-shadow">
+<div class="flex items-center justify-between text-stone-400 mb-1">
+<p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider font-display">Masa de Tokens Total</p>
+<span class="material-symbols-outlined text-[14px]">pie_chart</span>
+</div>
+<p class="text-xl font-mono font-bold text-stone-900 tracking-tight">871,353</p>
+<div class="mt-1 flex items-center gap-1.5 text-[10px] text-stone-500 font-mono">
+<span class="inline-block w-2 h-2 rounded-full bg-blue-500"></span> 82.5%
+      <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 ml-1"></span> 17.5%
+    </div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white/90 p-3.5 rounded-2xl border border-[#ebe5d7] shadow-note hover:shadow-note-md transition-shadow">
+<div class="flex items-center justify-between text-stone-400 mb-1">
+<p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider font-display">Léxico Único</p>
+<span class="material-symbols-outlined text-[14px]">menu_book</span>
+</div>
+<p class="text-xl font-mono font-bold text-stone-900 tracking-tight">31,489</p>
+<span class="text-[10px] text-amber-700 font-mono bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200/60 inline-block mt-0.5">Tipos léxicos (Types)</span>
+</div>
+<!-- Card 3 -->
+<div class="bg-white/90 p-3.5 rounded-2xl border border-[#ebe5d7] shadow-note hover:shadow-note-md transition-shadow">
+<div class="flex items-center justify-between text-indigo-400 mb-1">
+<p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider font-display">Similitud Jaccard</p>
+<span class="material-symbols-outlined text-[14px]">grain</span>
+</div>
+<p class="text-xl font-mono font-bold text-indigo-700 tracking-tight">0.418</p>
+<span class="text-[10px] text-indigo-600 font-mono block mt-0.5">Solapamiento léxico</span>
+</div>
+<!-- Card 4 -->
+<div class="bg-[#f4f8ff] p-3.5 rounded-2xl border border-blue-200/80 shadow-note hover:shadow-note-md transition-shadow">
+<div class="flex items-center justify-between text-blue-400 mb-1">
+<p class="text-[10px] font-bold text-blue-800 uppercase tracking-wider font-display">TTR Biblia</p>
+<span class="material-symbols-outlined text-[14px]">auto_stories</span>
+</div>
+<p class="text-xl font-mono font-bold text-blue-900 tracking-tight">3.62%</p>
+<span class="text-[10px] text-blue-700 font-mono block mt-0.5">26,014 / 718,778</span>
+</div>
+<!-- Card 5 -->
+<div class="bg-[#f0fdf5] p-3.5 rounded-2xl border border-emerald-200/80 shadow-note hover:shadow-note-md transition-shadow">
+<div class="flex items-center justify-between text-emerald-400 mb-1">
+<p class="text-[10px] font-bold text-emerald-800 uppercase tracking-wider font-display">TTR Corán</p>
+<span class="material-symbols-outlined text-[14px]">mosque</span>
+</div>
+<p class="text-xl font-mono font-bold text-emerald-900 tracking-tight">6.94%</p>
+<span class="text-[10px] text-emerald-700 font-mono block mt-0.5">10,594 / 152,575</span>
+</div>
+<!-- Card 6 -->
+<div class="bg-white/90 p-3.5 rounded-2xl border border-[#ebe5d7] shadow-note hover:shadow-note-md transition-shadow">
+<div class="flex items-center justify-between text-amber-500 mb-1">
+<p class="text-[10px] font-bold text-stone-500 uppercase tracking-wider font-display">Divergencia KL</p>
+<span class="material-symbols-outlined text-[14px]">analytics</span>
+</div>
+<p class="text-xl font-mono font-bold text-amber-700 tracking-tight">0.142 <span class="text-xs font-normal text-stone-500">nats</span></p>
+<span class="text-[10px] text-stone-500 font-mono block mt-0.5">Distancia distribución</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Paper Title & Methodology Context Header -->
+<!-- BEGIN: Main Comparative Dual-Pane Split Section -->
+<main class="flex-1 max-w-[1720px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-7">
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-7 items-start">
+<!-- =================================================================== -->
+<!-- COLUMN 1: CORPUS BÍBLICO (Left Pane - Soft Blue Paper Note) -->
+<!-- =================================================================== -->
+<article class="bg-[#fdfdff] rounded-3xl border border-[#d6e2f8] shadow-note-md overflow-hidden flex flex-col transition-all duration-300 hover:shadow-note-float" data-purpose="corpus-biblical-card">
+<!-- Corpus Header Banner styled as an Apple Note Card Header -->
+<div class="bg-gradient-to-r from-[#203a74] via-[#1d4ed8] to-[#1e3a8a] p-5 text-white relative">
+<!-- Subtle tape / pin marker on top edge -->
+<div class="absolute -top-2 left-8 w-14 h-4 bg-amber-200/70 rounded-xs shadow-xs backdrop-blur-xs rotate-[-2deg]"></div>
+<div class="flex items-center justify-between flex-wrap gap-3">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 text-2xl shadow-inner">
+        📖
+      </div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-display text-lg font-bold tracking-tight text-white">CORPUS BÍBLICO</h2>
+<span class="px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded-full bg-white/20 text-blue-50 border border-white/25">
+            Reina-Valera 1909
+          </span>
+</div>
+<p class="text-xs text-blue-100/90 font-serif italic mt-0.5">Antiguo y Nuevo Testamento (66 libros canónicos)</p>
+</div>
+</div>
+<!-- Corpus statistics badges in Apple Card style -->
+<div class="flex items-center gap-2">
+<div class="bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/15 text-right">
+<span class="block text-[10px] uppercase font-mono tracking-wider text-blue-200">Tokens</span>
+<span class="text-sm font-mono font-bold text-white tracking-tight">718,778</span>
+</div>
+<div class="bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/15 text-right">
+<span class="block text-[10px] uppercase font-mono tracking-wider text-amber-200">Vocabulario</span>
+<span class="text-sm font-mono font-bold text-amber-300 tracking-tight">26,014</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 1.1: Wordcloud Component with Organic Pastel Aesthetic -->
+<div class="p-6 border-b border-[#e5edfa] bg-[#fafcff]">
+<div class="flex items-center justify-between mb-3.5">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-display font-bold text-sm text-stone-900 tracking-tight">Nube Semántica - Bag of Words (BOW)</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-blue-100/80 text-blue-800 border border-blue-200">
+        DISTRIBUCIÓN LÉXICA
+      </span>
+</div>
+<p class="text-xs text-stone-500 font-serif italic">Tamaño proporcional a la frecuencia absoluta observada (f_i)</p>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
+<span class="w-2 h-2 rounded-full bg-blue-600 inline-block"></span>
+<span class="font-mono text-[11px] font-medium">Escala Logarítmica</span>
+</div>
+</div>
+<!-- Interactive Word Cloud Canvas styled like an open Canva canvas with warm clean aesthetics -->
+<div class="relative w-full h-[340px] rounded-2xl border border-[#d6e3f8] bg-gradient-to-b from-[#f8fbff] to-[#edf4fe] p-4 overflow-hidden flex items-center justify-center shadow-inner" data-purpose="biblical-wordcloud-box">
+<!-- Subtle decorative watermark -->
+<div class="absolute inset-0 bg-[radial-gradient(#c7dcfa_1px,transparent_1px)] [background-size:18px_18px] opacity-40 pointer-events-none"></div>
+<!-- Word Cloud Elements -->
+<div class="relative w-full h-full flex flex-wrap items-center justify-center gap-x-3.5 gap-y-2 p-2 text-center select-none" id="biblical-words-container">
+<!-- Super Frequencies -->
+<span class="cloud-word font-bold text-blue-950 text-5xl tracking-tight -rotate-2" style="font-size: 3.4rem; line-height: 1;" title="de - Frec: 48,930 | Clase: Preposición">de</span>
+<span class="cloud-word font-bold text-blue-900 text-4xl -rotate-4" style="font-size: 2.9rem; line-height: 1;" title="que - Frec: 32,840 | Conjunción/Relativo">que</span>
+<span class="cloud-word font-bold text-blue-900 text-3xl rotate-2" style="font-size: 2.6rem;" title="y - Frec: 42,100 | Conjunción copulativa">y</span>
+<span class="cloud-word font-bold text-blue-800 text-3xl" style="font-size: 2.4rem;" title="el - Frec: 29,450 | Artículo">el</span>
+<span class="cloud-word font-bold text-blue-900 text-3xl rotate-1" style="font-size: 2.3rem;" title="la - Frec: 26,120 | Artículo">la</span>
+<span class="cloud-word font-extrabold text-blue-950 rotate-3" style="font-size: 2.2rem;" title="los - Frec: 20,400">los</span>
+<span class="cloud-word font-bold text-blue-800 -rotate-2" style="font-size: 1.95rem;" title="en - Frec: 18,900">en</span>
+<span class="cloud-word font-semibold text-blue-950 tracking-tight" style="font-size: 2.2rem;" title="a - Frec: 17,200">a</span>
+<span class="cloud-word font-bold text-blue-900 rotate-3" style="font-size: 1.85rem;" title="por - Frec: 11,840">por</span>
+<span class="cloud-word font-bold text-blue-800 -rotate-3" style="font-size: 1.8rem;" title="para - Frec: 10,950">para</span>
+<!-- Distinctive Biblical Core Words highlighted with warm highlighter note accent -->
+<span class="cloud-word font-serif font-extrabold text-stone-900 highlighter-yellow shadow-2xs rotate-[-1deg]" style="font-size: 2.25rem;" title="jehová - Frec: 6,828 | Nombre Teofórico">jehovÃ¡</span>
+<span class="cloud-word font-serif font-bold text-blue-900 rotate-1" style="font-size: 1.9rem;" title="dios - Frec: 4,812 | Noun">dios</span>
+<span class="cloud-word font-bold text-blue-800 -rotate-2" style="font-size: 1.7rem;" title="señor - Frec: 7,842 | Sustantivo">seÃ±or</span>
+<span class="cloud-word font-bold text-blue-900" style="font-size: 1.6rem;" title="dijo - Frec: 3,950 | Verbo">dijo</span>
+<span class="cloud-word font-bold text-blue-900 rotate-3" style="font-size: 1.55rem;" title="hijos - Frec: 3,120 | Sustantivo">hijos</span>
+<span class="cloud-word font-medium text-blue-800" style="font-size: 1.5rem;" title="su - Frec: 9,210 | Posesivo">su</span>
+<span class="cloud-word font-bold text-indigo-950 -rotate-2 highlighter-blue" style="font-size: 1.45rem;" title="israel - Frec: 2,570 | Topónimo/Pueblo">israel</span>
+<span class="cloud-word font-semibold text-blue-900 rotate-2" style="font-size: 1.4rem;" title="se - Frec: 8,400">se</span>
+<span class="cloud-word font-medium text-blue-700" style="font-size: 1.35rem;" title="sus - Frec: 6,500">sus</span>
+<span class="cloud-word font-bold text-blue-900 -rotate-4" style="font-size: 1.35rem;" title="porque - Frec: 4,100">porque</span>
+<!-- Medium frequency words -->
+<span class="cloud-word font-medium text-blue-900 rotate-2" style="font-size: 1.3rem;" title="no - Frec: 8,720">no</span>
+<span class="cloud-word font-medium text-blue-800" style="font-size: 1.25rem;" title="del - Frec: 8,110">del</span>
+<span class="cloud-word font-semibold text-blue-900 -rotate-2" style="font-size: 1.25rem;" title="tierra - Frec: 2,450">tierra</span>
+<span class="cloud-word font-bold text-blue-800 rotate-4" style="font-size: 1.2rem;" title="rey - Frec: 2,480">rey</span>
+<span class="cloud-word font-medium text-blue-700" style="font-size: 1.15rem;" title="como - Frec: 3,340">como</span>
+<span class="cloud-word font-semibold text-blue-800 -rotate-3" style="font-size: 1.15rem;" title="pueblo - Frec: 2,210">pueblo</span>
+<span class="cloud-word font-medium text-blue-900" style="font-size: 1.1rem;" title="al - Frec: 5,600">al</span>
+<span class="cloud-word font-medium text-blue-700 rotate-2" style="font-size: 1.1rem;" title="con - Frec: 6,100">con</span>
+<span class="cloud-word font-semibold text-blue-800" style="font-size: 1.05rem;" title="casa - Frec: 2,100">casa</span>
+<span class="cloud-word font-medium text-blue-700 -rotate-3" style="font-size: 1.05rem;" title="todos - Frec: 2,340">todos</span>
+<span class="cloud-word font-medium text-blue-800 rotate-3" style="font-size: 1.0rem;" title="es - Frec: 4,200">es</span>
+<!-- Outer / periphery lexical items styled as delicate note tags -->
+<span class="cloud-word text-stone-700 text-xs font-medium" title="hombre - Frec: 1,840">hombre</span>
+<span class="cloud-word text-stone-700 text-xs -rotate-4 font-serif italic" title="david - Frec: 1,085">david</span>
+<span class="cloud-word text-stone-600 text-xs rotate-3" title="sobre - Frec: 1,720">sobre</span>
+<span class="cloud-word text-stone-700 text-xs font-medium" title="lo - Frec: 3,890">lo</span>
+<span class="cloud-word text-stone-500 text-xs -rotate-2" title="contra - Frec: 980">contra</span>
+<span class="cloud-word text-stone-600 text-xs" title="ellos - Frec: 1,920">ellos</span>
+<span class="cloud-word text-stone-700 text-xs rotate-3" title="pero - Frec: 1,480">pero</span>
+<span class="cloud-word text-stone-500 text-xs" title="mi - Frec: 2,800">mi</span>
+<span class="cloud-word text-stone-500 text-xs -rotate-3" title="diciendo - Frec: 1,320">diciendo</span>
+<span class="cloud-word text-stone-600 text-xs" title="él - Frec: 2,150">él</span>
+<span class="cloud-word text-stone-500 text-[11px] rotate-2" title="yo - Frec: 1,780">yo</span>
+<span class="cloud-word text-stone-500 text-[11px]" title="me - Frec: 1,650">me</span>
+<span class="cloud-word text-stone-600 text-xs font-serif" title="hijo - Frec: 1,590">hijo</span>
+<span class="cloud-word text-stone-500 text-[11px]" title="mano - Frec: 1,210">mano</span>
+<span class="cloud-word text-stone-500 text-[11px] -rotate-2" title="así - Frec: 1,180">así</span>
+<span class="cloud-word text-stone-500 text-[11px]" title="fue - Frec: 1,020">fue</span>
+<span class="cloud-word text-stone-500 text-[10px] rotate-3" title="había - Frec: 940">había</span>
+<span class="cloud-word text-stone-500 text-[10px]" title="también - Frec: 910">también</span>
+<span class="cloud-word text-stone-600 text-xs" title="cuando - Frec: 1,400">cuando</span>
+<span class="cloud-word text-stone-500 text-[11px]" title="entonces - Frec: 870">entonces</span>
+<span class="cloud-word text-stone-400 text-[10px]" title="vosotros - Frec: 760">vosotros</span>
+<span class="cloud-word text-stone-500 text-[10px] -rotate-3" title="delante - Frec: 820">delante</span>
+<span class="cloud-word text-stone-400 text-[10px]" title="aquí - Frec: 640">aquí</span>
+<span class="cloud-word text-stone-400 text-[9px]" title="cual - Frec: 580">cual</span>
+</div>
+<!-- Floating Legend / Meta badge -->
+<div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl border border-blue-200 text-[10px] font-mono text-stone-600 shadow-xs flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+    Vocabulario visualizado: Top 60
+  </div>
+</div>
+</div>
+<!-- Section 1.2: Character Frequency Histogram with Apple Health Card Design -->
+<div class="p-6 bg-white flex-1 flex flex-col justify-between">
+<div class="flex items-center justify-between mb-3">
+<div>
+<h3 class="font-display font-bold text-sm text-stone-900 tracking-tight">Histograma de Grafías</h3>
+<p class="text-xs text-stone-500 font-mono">Frecuencia absoluta de caracteres castellanos [a-z, á, é, í, ó, ú, ñ, ü]</p>
+</div>
+<span class="text-xs font-mono font-semibold text-blue-800 bg-blue-50 px-2.5 py-1 rounded-xl border border-blue-200">
+    Escala máx: 400k
+  </span>
+</div>
+<!-- SVG Chart Container with Smooth Apple-Style aesthetic -->
+<div class="w-full bg-[#f8fbff] rounded-2xl border border-[#e2ecfa] p-3.5 pt-4 shadow-xs" data-purpose="biblical-histogram">
+<svg class="w-full h-44 overflow-visible" preserveaspectratio="none" viewbox="0 0 720 220">
+<defs>
+<lineargradient id="barBiblicalGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#2563eb"></stop>
+<stop offset="100%" stop-color="#1e3a8a"></stop>
+</lineargradient>
+<lineargradient id="barBiblicalAccent" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#f59e0b"></stop>
+<stop offset="100%" stop-color="#d97706"></stop>
+</lineargradient>
+<lineargradient id="barBiblicalVowel" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#60a5fa"></stop>
+<stop offset="100%" stop-color="#3b82f6"></stop>
+</lineargradient>
+</defs>
+<!-- Y-axis guide gridlines -->
+<line stroke="#e5edfa" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="20" y2="20"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="23">400k</text>
+<line stroke="#e5edfa" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="60" y2="60"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="63">300k</text>
+<line stroke="#e5edfa" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="100" y2="100"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="103">200k</text>
+<line stroke="#e5edfa" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="140" y2="140"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="143">100k</text>
+<line stroke="#cbd5e1" stroke-width="1" x1="45" x2="710" y1="180" y2="180"></line>
+<text fill="#64748b" font-family="monospace" font-size="9" text-anchor="end" x="40" y="183">0</text>
+<!-- SVG Bars (Biblical frequencies) -->
+<!-- a: 342k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="137" width="13" x="52" y="43"><title>a: 342,150</title></rect>
+<text fill="#1e3a8a" font-family="monospace" font-size="9.5" font-weight="600" text-anchor="middle" x="58.5" y="195">a</text>
+<!-- b: 48k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="19" width="13" x="73" y="161"><title>b: 48,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="79.5" y="195">b</text>
+<!-- c: 104k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="42" width="13" x="94" y="138"><title>c: 104,300</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="100.5" y="195">c</text>
+<!-- d: 162k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="65" width="13" x="115" y="115"><title>d: 162,400</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="121.5" y="195">d</text>
+<!-- e: 394k Peak 1 -->
+<rect class="chart-bar" fill="url(#barBiblicalAccent)" height="158" width="13" x="136" y="22"><title>e: 394,620 (Pico léxico principal)</title></rect>
+<text fill="#b45309" font-family="monospace" font-size="9.5" font-weight="bold" text-anchor="middle" x="142.5" y="195">e</text>
+<!-- f: 16k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="7" width="13" x="157" y="173"><title>f: 16,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="163.5" y="195">f</text>
+<!-- g: 26k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="11" width="13" x="178" y="169"><title>g: 26,400</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="184.5" y="195">g</text>
+<!-- h: 51k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="21" width="13" x="199" y="159"><title>h: 51,100</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="205.5" y="195">h</text>
+<!-- i: 161k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="65" width="13" x="220" y="115"><title>i: 161,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="226.5" y="195">i</text>
+<!-- j: 34k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="14" width="13" x="241" y="166"><title>j: 34,900</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="247.5" y="195">j</text>
+<!-- k: 1k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="1" width="13" x="262" y="179"><title>k: 1,120</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="268.5" y="195">k</text>
+<!-- l: 165k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="66" width="13" x="283" y="114"><title>l: 165,000</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="289.5" y="195">l</text>
+<!-- m: 81k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="33" width="13" x="304" y="147"><title>m: 81,400</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="310.5" y="195">m</text>
+<!-- n: 180k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="72" width="13" x="325" y="108"><title>n: 180,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="331.5" y="195">n</text>
+<!-- ñ: 8k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="4" width="13" x="346" y="176"><title>ñ: 8,400</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="352.5" y="195">ñ</text>
+<!-- o: 292k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="117" width="13" x="367" y="63"><title>o: 292,300</title></rect>
+<text fill="#1e3a8a" font-family="monospace" font-size="9.5" font-weight="600" text-anchor="middle" x="373.5" y="195">o</text>
+<!-- p: 32k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="13" width="13" x="388" y="167"><title>p: 32,500</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="394.5" y="195">p</text>
+<!-- q: 67k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="27" width="13" x="409" y="153"><title>q: 67,100</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="415.5" y="195">q</text>
+<!-- r: 198k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="80" width="13" x="430" y="100"><title>r: 198,400</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="436.5" y="195">r</text>
+<!-- s: 256k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="103" width="13" x="451" y="77"><title>s: 256,900</title></rect>
+<text fill="#1e3a8a" font-family="monospace" font-size="9.5" font-weight="600" text-anchor="middle" x="457.5" y="195">s</text>
+<!-- t: 121k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="49" width="13" x="472" y="131"><title>t: 121,000</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="478.5" y="195">t</text>
+<!-- u: 119k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="48" width="13" x="493" y="132"><title>u: 119,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="499.5" y="195">u</text>
+<!-- v: 39k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="16" width="13" x="514" y="164"><title>v: 39,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="520.5" y="195">v</text>
+<!-- w: 0.1k -->
+<rect class="chart-bar" fill="#cbd5e1" height="1" width="13" x="535" y="179"><title>w: 120</title></rect>
+<text fill="#cbd5e1" font-family="monospace" font-size="9.5" text-anchor="middle" x="541.5" y="195">w</text>
+<!-- x: 2k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="1" width="13" x="556" y="179"><title>x: 2,100</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="562.5" y="195">x</text>
+<!-- y: 56k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="23" width="13" x="577" y="157"><title>y: 56,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="583.5" y="195">y</text>
+<!-- z: 6k -->
+<rect class="chart-bar" fill="url(#barBiblicalGrad)" height="3" width="13" x="598" y="177"><title>z: 6,400</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="604.5" y="195">z</text>
+<!-- á: 28k -->
+<rect class="chart-bar" fill="url(#barBiblicalVowel)" height="12" width="11" x="619" y="168"><title>á: 28,100</title></rect>
+<text fill="#2563eb" font-family="monospace" font-size="9" text-anchor="middle" x="624.5" y="195">á</text>
+<!-- é: 20k -->
+<rect class="chart-bar" fill="url(#barBiblicalVowel)" height="8" width="11" x="635" y="172"><title>é: 20,400</title></rect>
+<text fill="#2563eb" font-family="monospace" font-size="9" text-anchor="middle" x="640.5" y="195">é</text>
+<!-- í: 22k -->
+<rect class="chart-bar" fill="url(#barBiblicalVowel)" height="9" width="11" x="651" y="171"><title>í: 22,600</title></rect>
+<text fill="#2563eb" font-family="monospace" font-size="9" text-anchor="middle" x="656.5" y="195">í</text>
+<!-- ó: 19k -->
+<rect class="chart-bar" fill="url(#barBiblicalVowel)" height="8" width="11" x="667" y="172"><title>ó: 19,800</title></rect>
+<text fill="#2563eb" font-family="monospace" font-size="9" text-anchor="middle" x="672.5" y="195">ó</text>
+<!-- ú: 5k -->
+<rect class="chart-bar" fill="url(#barBiblicalVowel)" height="2" width="11" x="683" y="178"><title>ú: 5,200</title></rect>
+<text fill="#2563eb" font-family="monospace" font-size="9" text-anchor="middle" x="688.5" y="195">ú</text>
+<!-- ü: 0.4k -->
+<rect class="chart-bar" fill="#93c5fd" height="1" width="11" x="699" y="179"><title>ü: 420</title></rect>
+<text fill="#93c5fd" font-family="monospace" font-size="9" text-anchor="middle" x="704.5" y="195">ü</text>
+</svg>
+</div>
+<!-- Section 1.3: Top Collocations Strip Styled as Apple Notes Highlighter Tags -->
+<div class="mt-4 pt-3.5 border-t border-stone-200">
+<div class="flex items-center justify-between text-xs text-stone-500 mb-2">
+<span class="font-bold font-display uppercase tracking-wider text-[11px] text-stone-700 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-amber-500">label</span>
+      Bigramas Teológicos Característicos (Top z-score)
+    </span>
+<span class="font-mono text-[10px] text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">p &lt; 0.001</span>
+</div>
+<div class="grid grid-cols-3 gap-2.5 text-xs font-mono">
+<div class="p-2.5 bg-[#f5f8ff] rounded-2xl border border-blue-200/70 text-center shadow-2xs hover:bg-[#ebf2ff] transition-colors">
+<span class="text-blue-900 font-bold block truncate">"Jehová Dios"</span>
+<span class="text-[10px] text-stone-500 mt-0.5 block">n=892 | z=48.2</span>
+</div>
+<div class="p-2.5 bg-[#f5f8ff] rounded-2xl border border-blue-200/70 text-center shadow-2xs hover:bg-[#ebf2ff] transition-colors">
+<span class="text-blue-900 font-bold block truncate">"Hijos de Israel"</span>
+<span class="text-[10px] text-stone-500 mt-0.5 block">n=644 | z=44.1</span>
+</div>
+<div class="p-2.5 bg-[#f5f8ff] rounded-2xl border border-blue-200/70 text-center shadow-2xs hover:bg-[#ebf2ff] transition-colors">
+<span class="text-blue-900 font-bold block truncate">"Palabra de Jehová"</span>
+<span class="text-[10px] text-stone-500 mt-0.5 block">n=412 | z=39.5</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- =================================================================== -->
+<!-- COLUMN 2: CORPUS CORÁNICO (Right Pane - Sage/Mint Paper Note) -->
+<!-- =================================================================== -->
+<article class="bg-[#fdfffd] rounded-3xl border border-[#cbe8d8] shadow-note-md overflow-hidden flex flex-col transition-all duration-300 hover:shadow-note-float" data-purpose="corpus-quranic-card">
+<!-- Corpus Header Banner styled as an Apple Note Card Header -->
+<div class="bg-gradient-to-r from-[#0d4534] via-[#047857] to-[#064e3b] p-5 text-white relative">
+<!-- Subtle tape / pin marker on top edge -->
+<div class="absolute -top-2 left-8 w-14 h-4 bg-amber-200/70 rounded-xs shadow-xs backdrop-blur-xs rotate-[1.5deg]"></div>
+<div class="flex items-center justify-between flex-wrap gap-3">
+<div class="flex items-center gap-3.5">
+<div class="w-11 h-11 rounded-2xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/20 text-2xl shadow-inner">
+        🕌
+      </div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-display text-lg font-bold tracking-tight text-white">CORPUS CORÁNICO</h2>
+<span class="px-2.5 py-0.5 text-[10px] font-mono uppercase tracking-wider rounded-full bg-white/20 text-emerald-50 border border-white/25">
+            Trad. Julio Cortés
+          </span>
+</div>
+<p class="text-xs text-emerald-100/90 font-serif italic mt-0.5">El Noble Corán (114 Suras, Edición de Medina)</p>
+</div>
+</div>
+<!-- Corpus statistics badges in Apple Card style -->
+<div class="flex items-center gap-2">
+<div class="bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/15 text-right">
+<span class="block text-[10px] uppercase font-mono tracking-wider text-emerald-200">Tokens</span>
+<span class="text-sm font-mono font-bold text-white tracking-tight">152,575</span>
+</div>
+<div class="bg-white/10 backdrop-blur-md px-3.5 py-1.5 rounded-xl border border-white/15 text-right">
+<span class="block text-[10px] uppercase font-mono tracking-wider text-amber-200">Vocabulario</span>
+<span class="text-sm font-mono font-bold text-amber-300 tracking-tight">10,594</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2.1: Wordcloud Component with Organic Pastel Aesthetic -->
+<div class="p-6 border-b border-[#e1f3e8] bg-[#fafffb]">
+<div class="flex items-center justify-between mb-3.5">
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-display font-bold text-sm text-stone-900 tracking-tight">Nube Semántica - Bag of Words (BOW)</h3>
+<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-medium bg-emerald-100/80 text-emerald-800 border border-emerald-200">
+        DISTRIBUCIÓN LÉXICA
+      </span>
+</div>
+<p class="text-xs text-stone-500 font-serif italic">Tamaño proporcional a la frecuencia absoluta observada (f_i)</p>
+</div>
+<div class="flex items-center gap-1.5 text-xs text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+<span class="w-2 h-2 rounded-full bg-emerald-600 inline-block"></span>
+<span class="font-mono text-[11px] font-medium">Escala Logarítmica</span>
+</div>
+</div>
+<!-- Interactive Word Cloud Canvas styled like an open Canva canvas -->
+<div class="relative w-full h-[340px] rounded-2xl border border-[#cbe8d8] bg-gradient-to-b from-[#f7fdf9] to-[#ebf9f1] p-4 overflow-hidden flex items-center justify-center shadow-inner" data-purpose="quranic-wordcloud-box">
+<!-- Subtle decorative watermark -->
+<div class="absolute inset-0 bg-[radial-gradient(#bde3cd_1px,transparent_1px)] [background-size:18px_18px] opacity-40 pointer-events-none"></div>
+<!-- Word Cloud Elements -->
+<div class="relative w-full h-full flex flex-wrap items-center justify-center gap-x-3.5 gap-y-2 p-2 text-center select-none" id="quranic-words-container">
+<!-- Super Frequencies -->
+<span class="cloud-word font-bold text-emerald-950 text-5xl tracking-tight -rotate-3" style="font-size: 3.5rem; line-height: 1;" title="de - Frec: 11,400">de</span>
+<span class="cloud-word font-bold text-emerald-900 text-4xl rotate-2" style="font-size: 3.1rem; line-height: 1;" title="que - Frec: 8,920">que</span>
+<span class="cloud-word font-bold text-emerald-900 text-3xl -rotate-2" style="font-size: 2.7rem;" title="y - Frec: 9,840">y</span>
+<span class="cloud-word font-extrabold text-emerald-800 text-3xl rotate-3" style="font-size: 2.5rem;" title="no - Frec: 4,810 | Negación Coránica">no</span>
+<span class="cloud-word font-bold text-emerald-900 rotate-1" style="font-size: 2.3rem;" title="los - Frec: 5,600">los</span>
+<!-- Core Distinctive Quranic Terms -->
+<span class="cloud-word font-serif font-extrabold text-stone-900 highlighter-yellow shadow-2xs rotate-[-1deg]" style="font-size: 2.35rem;" title="dios (Al-lāh) - Frec: 2,698 | Nombre Divino Absoluto">dios</span>
+<span class="cloud-word font-bold text-emerald-800 -rotate-3" style="font-size: 2.1rem;" title="la - Frec: 5,200">la</span>
+<span class="cloud-word font-bold text-emerald-900 rotate-2" style="font-size: 1.95rem;" title="en - Frec: 4,320">en</span>
+<span class="cloud-word font-semibold text-emerald-900 -rotate-4" style="font-size: 1.85rem;" title="se - Frec: 3,450">se</span>
+<span class="cloud-word font-bold text-emerald-800 rotate-4" style="font-size: 1.8rem;" title="por - Frec: 2,980">por</span>
+<span class="cloud-word font-serif font-bold text-emerald-950 -rotate-2 highlighter-green" style="font-size: 1.7rem;" title="creyentes - Frec: 1,120 | Mu'minun">creyentes</span>
+<span class="cloud-word font-bold text-emerald-950 rotate-3" style="font-size: 1.65rem;" title="para - Frec: 2,650">para</span>
+<span class="cloud-word font-bold text-emerald-900" style="font-size: 1.6rem;" title="su - Frec: 2,420">su</span>
+<span class="cloud-word font-bold text-emerald-800 -rotate-4" style="font-size: 1.55rem;" title="les - Frec: 2,150">les</span>
+<span class="cloud-word font-serif font-bold text-red-900 rotate-2" style="font-size: 1.5rem;" title="castigo - Frec: 890 | 'Adhab">castigo</span>
+<span class="cloud-word font-bold text-emerald-900" style="font-size: 1.5rem;" title="el - Frec: 4,890">el</span>
+<span class="cloud-word font-semibold text-emerald-800 -rotate-2" style="font-size: 1.45rem;" title="las - Frec: 2,050">las</span>
+<span class="cloud-word font-serif font-bold text-emerald-900 rotate-3" style="font-size: 1.4rem;" title="señor - Frec: 975 | Rabb">seÃ±or</span>
+<span class="cloud-word font-medium text-emerald-800" style="font-size: 1.35rem;" title="es - Frec: 2,300">es</span>
+<span class="cloud-word font-medium text-emerald-900 -rotate-3" style="font-size: 1.35rem;" title="un - Frec: 2,100">un</span>
+<!-- Medium Frequency Terms -->
+<span class="cloud-word font-semibold text-emerald-900 rotate-3" style="font-size: 1.3rem;" title="con - Frec: 1,840">con</span>
+<span class="cloud-word font-bold text-emerald-800" style="font-size: 1.25rem;" title="pero - Frec: 1,220">pero</span>
+<span class="cloud-word font-semibold text-emerald-900 -rotate-4" style="font-size: 1.25rem;" title="ustedes - Frec: 1,050">ustedes</span>
+<span class="cloud-word font-medium text-emerald-700" style="font-size: 1.2rem;" title="él - Frec: 1,760">él</span>
+<span class="cloud-word font-semibold text-emerald-900 rotate-4" style="font-size: 1.2rem;" title="quienes - Frec: 920">quienes</span>
+<span class="cloud-word font-serif font-semibold text-emerald-800 -rotate-2" style="font-size: 1.15rem;" title="verdad - Frec: 630 | Haqq">verdad</span>
+<span class="cloud-word font-medium text-emerald-800" style="font-size: 1.15rem;" title="quien - Frec: 870">quien</span>
+<span class="cloud-word font-medium text-emerald-700 rotate-2" style="font-size: 1.1rem;" title="sus - Frec: 1,410">sus</span>
+<span class="cloud-word font-serif font-semibold text-emerald-900 -rotate-3" style="font-size: 1.1rem;" title="mensajero - Frec: 512 | Rasul">mensajero</span>
+<span class="cloud-word font-medium text-emerald-800" style="font-size: 1.05rem;" title="cuando - Frec: 940">cuando</span>
+<span class="cloud-word font-medium text-emerald-700 rotate-3" style="font-size: 1.05rem;" title="ellos - Frec: 1,150">ellos</span>
+<!-- Outer / periphery lexical items -->
+<span class="cloud-word text-stone-700 text-xs font-serif italic" title="muhammad - Frec: 410">mujÃ¡mmad</span>
+<span class="cloud-word text-stone-700 text-xs -rotate-4 font-medium" title="tierra - Frec: 460">tierra</span>
+<span class="cloud-word text-stone-600 text-xs rotate-2 font-medium" title="día - Frec: 480">dÃ­a</span>
+<span class="cloud-word text-stone-700 text-xs font-medium" title="gente - Frec: 530">gente</span>
+<span class="cloud-word text-stone-600 text-xs -rotate-3" title="sobre - Frec: 610">sobre</span>
+<span class="cloud-word text-stone-600 text-xs" title="si - Frec: 810">si</span>
+<span class="cloud-word text-stone-600 text-xs rotate-3" title="dijo - Frec: 720">dijo</span>
+<span class="cloud-word text-stone-500 text-[11px]" title="porque - Frec: 650">porque</span>
+<span class="cloud-word text-stone-500 text-[11px] -rotate-2" title="más - Frec: 590">más</span>
+<span class="cloud-word text-stone-500 text-[11px]" title="pueblo - Frec: 490">pueblo</span>
+<span class="cloud-word text-stone-500 text-[10px] rotate-4" title="libro - Frec: 380">libro</span>
+<span class="cloud-word text-stone-400 text-[10px]" title="temor - Frec: 340">temor</span>
+<span class="cloud-word text-stone-500 text-[10px]" title="acaso - Frec: 320">acaso</span>
+<span class="cloud-word text-stone-400 text-[10px] -rotate-3" title="creer - Frec: 310">creer</span>
+<span class="cloud-word text-stone-400 text-[9px]" title="vida - Frec: 290">vida</span>
+<span class="cloud-word text-stone-400 text-[9px]" title="serán - Frec: 270">serán</span>
+<span class="cloud-word text-stone-400 text-[9px] rotate-2" title="solo - Frec: 260">solo</span>
+<span class="cloud-word text-stone-400 text-[9px]" title="bien - Frec: 240">bien</span>
+</div>
+<!-- Floating Legend / Meta badge -->
+<div class="absolute bottom-3 right-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-xl border border-emerald-200 text-[10px] font-mono text-stone-600 shadow-xs flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+    Vocabulario visualizado: Top 60
+  </div>
+</div>
+</div>
+<!-- Section 2.2: Character Frequency Histogram with Apple Health Card Design -->
+<div class="p-6 bg-white flex-1 flex flex-col justify-between">
+<div class="flex items-center justify-between mb-3">
+<div>
+<h3 class="font-display font-bold text-sm text-stone-900 tracking-tight">Histograma de Grafías</h3>
+<p class="text-xs text-stone-500 font-mono">Frecuencia absoluta de caracteres castellanos [a-z, á, é, í, ó, ú, ñ, ü]</p>
+</div>
+<span class="text-xs font-mono font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
+    Escala máx: 100k
+  </span>
+</div>
+<!-- SVG Chart Container with Smooth Apple-Style aesthetic -->
+<div class="w-full bg-[#f8fdf9] rounded-2xl border border-[#d3ecd9] p-3.5 pt-4 shadow-xs" data-purpose="quranic-histogram">
+<svg class="w-full h-44 overflow-visible" preserveaspectratio="none" viewbox="0 0 720 220">
+<defs>
+<lineargradient id="barQuranicGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#059669"></stop>
+<stop offset="100%" stop-color="#064e3b"></stop>
+</lineargradient>
+<lineargradient id="barQuranicAccent" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#f59e0b"></stop>
+<stop offset="100%" stop-color="#d97706"></stop>
+</lineargradient>
+<lineargradient id="barQuranicVowel" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#34d399"></stop>
+<stop offset="100%" stop-color="#10b981"></stop>
+</lineargradient>
+</defs>
+<!-- Y-axis guide gridlines -->
+<line stroke="#e2f3e8" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="20" y2="20"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="23">100k</text>
+<line stroke="#e2f3e8" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="60" y2="60"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="63">75k</text>
+<line stroke="#e2f3e8" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="100" y2="100"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="103">50k</text>
+<line stroke="#e2f3e8" stroke-dasharray="4,4" stroke-width="1" x1="45" x2="710" y1="140" y2="140"></line>
+<text fill="#94a3b8" font-family="monospace" font-size="9" text-anchor="end" x="40" y="143">25k</text>
+<line stroke="#cbd5e1" stroke-width="1" x1="45" x2="710" y1="180" y2="180"></line>
+<text fill="#64748b" font-family="monospace" font-size="9" text-anchor="end" x="40" y="183">0</text>
+<!-- SVG Bars (Quranic frequencies) -->
+<!-- a: 68.4k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="109" width="13" x="52" y="71"><title>a: 68,400</title></rect>
+<text fill="#065f46" font-family="monospace" font-size="9.5" font-weight="600" text-anchor="middle" x="58.5" y="195">a</text>
+<!-- b: 8.2k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="13" width="13" x="73" y="167"><title>b: 8,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="79.5" y="195">b</text>
+<!-- c: 24.8k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="40" width="13" x="94" y="140"><title>c: 24,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="100.5" y="195">c</text>
+<!-- d: 35.6k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="57" width="13" x="115" y="123"><title>d: 35,600</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="121.5" y="195">d</text>
+<!-- e: 95.2k Peak 1 -->
+<rect class="chart-bar" fill="url(#barQuranicAccent)" height="152" width="13" x="136" y="28"><title>e: 95,200 (Pico léxico principal)</title></rect>
+<text fill="#b45309" font-family="monospace" font-size="9.5" font-weight="bold" text-anchor="middle" x="142.5" y="195">e</text>
+<!-- f: 3.2k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="5" width="13" x="157" y="175"><title>f: 3,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="163.5" y="195">f</text>
+<!-- g: 7.9k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="13" width="13" x="178" y="167"><title>g: 7,900</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="184.5" y="195">g</text>
+<!-- h: 7.1k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="11" width="13" x="199" y="169"><title>h: 7,100</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="205.5" y="195">h</text>
+<!-- i: 38.5k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="62" width="13" x="220" y="118"><title>i: 38,500</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="226.5" y="195">i</text>
+<!-- j: 4.1k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="7" width="13" x="241" y="173"><title>j: 4,100</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="247.5" y="195">j</text>
+<!-- k: 0.1k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="1" width="13" x="262" y="179"><title>k: 110</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="268.5" y="195">k</text>
+<!-- l: 35.8k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="57" width="13" x="283" y="123"><title>l: 35,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="289.5" y="195">l</text>
+<!-- m: 16.2k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="26" width="13" x="304" y="154"><title>m: 16,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="310.5" y="195">m</text>
+<!-- n: 49.8k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="80" width="13" x="325" y="100"><title>n: 49,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="331.5" y="195">n</text>
+<!-- ñ: 0.9k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="2" width="13" x="346" y="178"><title>ñ: 980</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="352.5" y="195">ñ</text>
+<!-- o: 66.2k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="106" width="13" x="367" y="74"><title>o: 66,200</title></rect>
+<text fill="#065f46" font-family="monospace" font-size="9.5" font-weight="600" text-anchor="middle" x="373.5" y="195">o</text>
+<!-- p: 15.3k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="25" width="13" x="388" y="155"><title>p: 15,300</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="394.5" y="195">p</text>
+<!-- q: 9.8k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="16" width="13" x="409" y="164"><title>q: 9,800</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="415.5" y="195">q</text>
+<!-- r: 47.1k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="75" width="13" x="430" y="105"><title>r: 47,100</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="436.5" y="195">r</text>
+<!-- s: 61.2k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="98" width="13" x="451" y="82"><title>s: 61,200</title></rect>
+<text fill="#065f46" font-family="monospace" font-size="9.5" font-weight="600" text-anchor="middle" x="457.5" y="195">s</text>
+<!-- t: 24.3k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="39" width="13" x="472" y="141"><title>t: 24,300</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="478.5" y="195">t</text>
+<!-- u: 30.1k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="48" width="13" x="493" y="132"><title>u: 30,100</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="499.5" y="195">u</text>
+<!-- v: 6.2k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="10" width="13" x="514" y="170"><title>v: 6,200</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="520.5" y="195">v</text>
+<!-- w: 0.05k -->
+<rect class="chart-bar" fill="#cbd5e1" height="1" width="13" x="535" y="179"><title>w: 50</title></rect>
+<text fill="#cbd5e1" font-family="monospace" font-size="9.5" text-anchor="middle" x="541.5" y="195">w</text>
+<!-- x: 0.6k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="1" width="13" x="556" y="179"><title>x: 620</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="562.5" y="195">x</text>
+<!-- y: 7.9k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="13" width="13" x="577" y="167"><title>y: 7,900</title></rect>
+<text fill="#64748b" font-family="monospace" font-size="9.5" text-anchor="middle" x="583.5" y="195">y</text>
+<!-- z: 1.1k -->
+<rect class="chart-bar" fill="url(#barQuranicGrad)" height="2" width="13" x="598" y="178"><title>z: 1,150</title></rect>
+<text fill="#94a3b8" font-family="monospace" font-size="9.5" text-anchor="middle" x="604.5" y="195">z</text>
+<!-- á: 4.8k -->
+<rect class="chart-bar" fill="url(#barQuranicVowel)" height="8" width="11" x="619" y="172"><title>á: 4,800</title></rect>
+<text fill="#059669" font-family="monospace" font-size="9" text-anchor="middle" x="624.5" y="195">á</text>
+<!-- é: 3.9k -->
+<rect class="chart-bar" fill="url(#barQuranicVowel)" height="6" width="11" x="635" y="174"><title>é: 3,900</title></rect>
+<text fill="#059669" font-family="monospace" font-size="9" text-anchor="middle" x="640.5" y="195">é</text>
+<!-- í: 4.1k -->
+<rect class="chart-bar" fill="url(#barQuranicVowel)" height="7" width="11" x="651" y="173"><title>í: 4,100</title></rect>
+<text fill="#059669" font-family="monospace" font-size="9" text-anchor="middle" x="656.5" y="195">í</text>
+<!-- ó: 3.1k -->
+<rect class="chart-bar" fill="url(#barQuranicVowel)" height="5" width="11" x="667" y="175"><title>ó: 3,100</title></rect>
+<text fill="#059669" font-family="monospace" font-size="9" text-anchor="middle" x="672.5" y="195">ó</text>
+<!-- ú: 1.2k -->
+<rect class="chart-bar" fill="url(#barQuranicVowel)" height="2" width="11" x="683" y="178"><title>ú: 1,200</title></rect>
+<text fill="#059669" font-family="monospace" font-size="9" text-anchor="middle" x="688.5" y="195">ú</text>
+<!-- ü: 0.1k -->
+<rect class="chart-bar" fill="#6ee7b7" height="1" width="11" x="699" y="179"><title>ü: 120</title></rect>
+<text fill="#6ee7b7" font-family="monospace" font-size="9" text-anchor="middle" x="704.5" y="195">ü</text>
+</svg>
+</div>
+<!-- Section 2.3: Top Collocations Strip Styled as Apple Notes Highlighter Tags -->
+<div class="mt-4 pt-3.5 border-t border-stone-200">
+<div class="flex items-center justify-between text-xs text-stone-500 mb-2">
+<span class="font-bold font-display uppercase tracking-wider text-[11px] text-stone-700 flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-emerald-600">label</span>
+      Bigramas Teológicos Característicos (Top z-score)
+    </span>
+<span class="font-mono text-[10px] text-stone-400 bg-stone-100 px-2 py-0.5 rounded-full">p &lt; 0.001</span>
+</div>
+<div class="grid grid-cols-3 gap-2.5 text-xs font-mono">
+<div class="p-2.5 bg-[#f0fbf4] rounded-2xl border border-emerald-200/70 text-center shadow-2xs hover:bg-[#e4f7eb] transition-colors">
+<span class="text-emerald-950 font-bold block truncate">"Dios es Indulgente"</span>
+<span class="text-[10px] text-stone-500 mt-0.5 block">n=320 | z=41.7</span>
+</div>
+<div class="p-2.5 bg-[#f0fbf4] rounded-2xl border border-emerald-200/70 text-center shadow-2xs hover:bg-[#e4f7eb] transition-colors">
+<span class="text-emerald-950 font-bold block truncate">"Día del Juicio"</span>
+<span class="text-[10px] text-stone-500 mt-0.5 block">n=215 | z=37.9</span>
+</div>
+<div class="p-2.5 bg-[#f0fbf4] rounded-2xl border border-emerald-200/70 text-center shadow-2xs hover:bg-[#e4f7eb] transition-colors">
+<span class="text-emerald-950 font-bold block truncate">"Cielos y la tierra"</span>
+<span class="text-[10px] text-stone-500 mt-0.5 block">n=188 | z=35.2</span>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+<!-- BEGIN: Scientific Notes & Epistemic Section styled as an Apple Notes Reference Document -->
+<section class="mt-9 bg-white/95 rounded-3xl border border-[#ebe5d7] p-7 shadow-note-md relative overflow-hidden" data-purpose="scientific-notes">
+<!-- Subtle top accent bar reminiscent of a notebook spine -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-300 via-amber-400 to-amber-200"></div>
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<span class="flex items-center justify-center w-7 h-7 rounded-xl bg-amber-100 text-amber-800">
+<span class="material-symbols-outlined text-[18px]">lightbulb</span>
+</span>
+<h3 class="font-display font-bold text-base text-stone-900 tracking-tight">Consideraciones Filológicas y Metodológicas</h3>
+</div>
+<span class="font-hand text-stone-400 text-base">anotaciones revisadas por pares 📝</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-stone-600 font-serif leading-relaxed">
+<div class="p-4 rounded-2xl bg-[#fbf9f4] border border-[#eee8db]">
+<div class="flex items-center gap-1.5 mb-1.5">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<h4 class="font-display font-bold text-stone-900 uppercase tracking-wider text-[11px]">1. Ley de Zipf &amp; Asimetría de Corpus</h4>
+</div>
+<p>
+        Ambos textos exhiben una clásica distribución potencial hiperbólica ($f(r) \propto 1/r^\alpha$). La masa de tokens de la Biblia (RV1909) es casi 4.7 veces superior a la del Corán, lo que explica la diferencia en la cota superior del histograma (400k vs. 100k), si bien la frecuencia relativa grafémica mantiene una correlación de Pearson $r = 0.992$ con la fonología castellana estándar.
+      </p>
+</div>
+<div class="p-4 rounded-2xl bg-[#fbf9f4] border border-[#eee8db]">
+<div class="flex items-center gap-1.5 mb-1.5">
+<span class="w-2 h-2 rounded-full bg-blue-500"></span>
+<h4 class="font-display font-bold text-stone-900 uppercase tracking-wider text-[11px]">2. Huella Teonímica y Colocaciones</h4>
+</div>
+<p>
+        En el corpus bíblico, la dualidad <em>"Jehová"</em> (Antiguo Testamento) y <em>"Señor"</em> genera una concentración semántica bifurcada. En contraparte, en la traducción cortesiana del Corán, el lema <em>"Dios"</em> canaliza unívocamente al monoteísmo coránico (<em>Allāh</em>), acompañado de epítetos característicos ausentes en la tradición bíblica (<em>Indulgente</em>, <em>Misericordioso</em>).
+      </p>
+</div>
+<div class="p-4 rounded-2xl bg-[#fbf9f4] border border-[#eee8db]">
+<div class="flex items-center gap-1.5 mb-1.5">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<h4 class="font-display font-bold text-stone-900 uppercase tracking-wider text-[11px]">3. Normalización Gráfica y Diacríticos</h4>
+</div>
+<p>
+        La preservación estricta de acentos gráficos (<em>á, é, í, ó, ú</em>) y la grafía <em>ñ</em> atestigua la morfología verbal en pretéritos indefinidos (<em>"dijo", "habló", "envió"</em>) característicos de la narrativa veterotestamentaria, frente a la exhortación en segunda persona de la retórica coránica (<em>"ustedes", "creyentes"</em>).
+      </p>
+</div>
+</div>
+<!-- Citation Footnote -->
+<div class="mt-5 pt-4 border-t border-[#ede7dc] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[11px] font-mono text-stone-500">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[15px] text-stone-400">format_quote</span>
+<span><strong class="text-stone-700 font-semibold">Citar como:</strong> Verbum Computational Philology Lab (2025). <em>Dual Corpus Hermeneutics: Biblia Reina-Valera vs. El Noble Corán</em>. Zenodo Open Data. DOI: 10.5281/zenodo.1084291</span>
+</div>
+<button class="px-3 py-1 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold border border-amber-200 transition-colors self-start sm:self-auto flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-[13px]">content_copy</span>
+<span>Copiar RIS / BibTeX</span>
+</button>
+</div>
+</section>
+<!-- END: Scientific Notes & Epistemic Drawer -->
+</main>
+<!-- END: Main Comparative Dual-Pane Split Section -->
+<!-- BEGIN: Minimal Academic / Apple Notes Footer -->
+<footer class="mt-auto bg-[#faf7f0]/80 border-t border-[#ebe4d5] py-4 text-center text-xs text-stone-500">
+<div class="max-w-[1720px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+<div class="flex items-center gap-1.5 font-medium text-stone-600">
+<span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
+<span>VERBUM Digital Humanities &amp; Computational Hermeneutics Lab</span>
+</div>
+<p>© 2025 CC-BY 4.0 International License • Publicación de acceso abierto para lingüística computacional.</p>
+</div>
+</footer>
+<!-- END: Minimal Academic Footer -->
+<!-- BEGIN: Interactive Toggle Script -->
+<script data-purpose="toggle-stopwords-filter">
+    const stopwordToggle = document.getElementById('stopword-toggle');
+    const stopwordStateLabel = document.getElementById('stopword-state-label');
+    const toggleBall = stopwordToggle.querySelector('span');
+
+    let isFilterActive = false;
+
+    const biblicalContainer = document.getElementById('biblical-words-container');
+    const quranicContainer = document.getElementById('quranic-words-container');
+
+    const grammaticalTokens = ['de', 'que', 'y', 'el', 'la', 'los', 'en', 'a', 'por', 'para', 'se', 'sus', 'su', 'no', 'del', 'al', 'con', 'es', 'un', 'las', 'pero', 'como'];
+
+    stopwordToggle.addEventListener('click', () => {
+      isFilterActive = !isFilterActive;
+
+      if (isFilterActive) {
+        stopwordToggle.classList.remove('bg-stone-300');
+        stopwordToggle.classList.add('bg-amber-500');
+        toggleBall.classList.add('translate-x-5');
+        stopwordStateLabel.textContent = 'Filtrado (Stopwords ON)';
+        stopwordStateLabel.classList.remove('text-stone-500');
+        stopwordStateLabel.classList.add('text-amber-600', 'font-semibold');
+
+        [biblicalContainer, quranicContainer].forEach(container => {
+          container.querySelectorAll('.cloud-word').forEach(word => {
+            const txt = word.textContent.trim().toLowerCase();
+            if (grammaticalTokens.includes(txt)) {
+              word.style.opacity = '0.2';
+              word.style.filter = 'grayscale(100%)';
+            } else {
+              word.style.transform = 'scale(1.15)';
+              word.style.fontWeight = '800';
+            }
+          });
+        });
+      } else {
+        stopwordToggle.classList.remove('bg-amber-500');
+        stopwordToggle.classList.add('bg-stone-300');
+        toggleBall.classList.remove('translate-x-5');
+        stopwordStateLabel.textContent = 'Crudo (Off)';
+        stopwordStateLabel.classList.remove('text-amber-600', 'font-semibold');
+        stopwordStateLabel.classList.add('text-stone-500');
+
+        [biblicalContainer, quranicContainer].forEach(container => {
+          container.querySelectorAll('.cloud-word').forEach(word => {
+            word.style.opacity = '1';
+            word.style.filter = 'none';
+            word.style.transform = 'none';
+            word.style.fontWeight = '';
+          });
+        });
+      }
+    });
+  </script>
+<!-- END: Interactive Toggle Script -->
+</body></html>
