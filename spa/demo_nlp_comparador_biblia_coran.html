@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo de NLP: Biblia vs Corán</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3-cloud@1.2.5/build/d3.layout.cloud.min.js"></script>
+<style>
+  :root {
+    --papel: #fbf9f3;
+    --papel-hondo: #f5f3ed;
+    --tarjeta: #ffffff;
+    --borde: #e2ddd3;
+    --borde-suave: #efe9dc;
+    --tinta: #1b1c18;
+    --tinta-2: #45474c;
+    --tenue: #7b7d82;
+    --biblia: #1e3a8a;
+    --biblia-acento: #2563eb;
+    --biblia-suave: #f4f8ff;
+    --biblia-borde: #dbe7fb;
+    --coran: #059669;
+    --coran-acento: #047857;
+    --coran-suave: #f2fbf6;
+    --coran-borde: #d3f0e0;
+    --oro: #b45309;
+    --oro-suave: #fef3c7;
+    --oro-borde: #fde9a8;
+    --sombra: 0 1px 3px rgba(30,41,59,.03), 0 4px 12px rgba(30,41,59,.02);
+    --sombra-alta: 0 8px 24px -4px rgba(30,41,59,.08), 0 2px 6px rgba(30,41,59,.04);
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    font-family: "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--tinta);
+    line-height: 1.55;
+    background-color: var(--papel);
+    background-image: radial-gradient(#eae4d6 0.75px, transparent 0.75px);
+    background-size: 26px 26px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: #fde9a8; color: #4a3406; }
+
+  code {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: .8em;
+    background: var(--papel-hondo);
+    border: 1px solid var(--borde);
+    border-radius: 5px;
+    padding: .05rem .35rem;
+    color: var(--tinta-2);
+    word-break: break-word;
+  }
+
+  /* ---------- Barra de marca (fija arriba) ---------- */
+  .barra-marca {
+    position: sticky;
+    top: 0;
+    z-index: 60;
+    background: rgba(251,249,243,.93);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    border-bottom: 1px solid var(--borde);
+  }
+
+  .barra-marca .interno {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: .6rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .marca { display: flex; align-items: center; gap: .7rem; }
+
+  .emblema {
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 9px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: .8rem;
+    letter-spacing: .02em;
+    box-shadow: 0 2px 6px rgba(180,83,9,.28);
+    flex-shrink: 0;
+  }
+
+  .marca-texto { display: flex; flex-direction: column; line-height: 1.25; }
+
+  .marca-fila { display: flex; align-items: center; gap: .5rem; font-size: .8rem; }
+
+  .marca-fila strong {
+    font-family: "Newsreader", Georgia, serif;
+    font-size: .98rem;
+    letter-spacing: .06em;
+    font-weight: 600;
+  }
+
+  .marca-fila .guion { color: var(--tenue); }
+  .marca-fila .ruta { color: var(--tinta-2); font-weight: 500; }
+
+  .chip-version {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .6rem;
+    background: var(--papel-hondo);
+    border: 1px solid var(--borde);
+    border-radius: 999px;
+    padding: .1rem .45rem;
+    color: var(--tinta-2);
+  }
+
+  .lema { margin: .1rem 0 0; font-size: .68rem; color: #9a9c9f; }
+
+  .modulos {
+    display: flex;
+    gap: .25rem;
+    background: #f1ede2;
+    border: 1px solid var(--borde);
+    padding: .3rem;
+    border-radius: 12px;
+  }
+
+  .modulos a {
+    font-size: .74rem;
+    font-weight: 600;
+    color: var(--tinta-2);
+    text-decoration: none;
+    padding: .4rem .75rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    white-space: nowrap;
+    transition: background .15s ease, color .15s ease;
+  }
+
+  .modulos a:hover { background: rgba(255,255,255,.7); color: var(--tinta); }
+
+  .modulos a.activo {
+    background: #ffffff;
+    color: var(--tinta);
+    box-shadow: inset 0 0 0 1px rgba(226,221,211,.95), 0 1px 2px rgba(30,41,59,.07);
+  }
+
+  .modulos a .punto { display: none; background: #d97706; }
+  .modulos a.activo .punto { display: inline-block; }
+
+  /* ---------- Cabecera con título y métricas ---------- */
+  header.cabecera-principal {
+    background: #fdfcf9;
+    border-bottom: 1px solid var(--borde);
+    padding: 2rem 2rem 1.6rem;
+    animation: fadeInDown .8s ease-out both;
+  }
+
+  header.cabecera-principal .interno { max-width: 1400px; margin: 0 auto; }
+
+  .cintillo {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    flex-wrap: wrap;
+    margin-bottom: .8rem;
+  }
+
+  .insignia {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    background: var(--oro-suave);
+    color: #92400e;
+    border: 1px solid var(--oro-borde);
+    border-radius: 999px;
+    padding: .3rem .7rem;
+  }
+
+  .chip-mono {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .66rem;
+    background: var(--papel-hondo);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: .28rem .55rem;
+    color: var(--tinta-2);
+  }
+
+  .nota-manuscrita {
+    font-family: "Newsreader", Georgia, serif;
+    font-style: italic;
+    font-size: .88rem;
+    color: #9a9c9f;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 400;
+    font-size: clamp(1.9rem, 4vw, 2.9rem);
+    line-height: 1.14;
+    letter-spacing: -.015em;
+    color: var(--tinta);
+    max-width: 62rem;
+  }
+
+  .subtitulo {
+    margin: .65rem 0 0;
+    font-family: "Newsreader", Georgia, serif;
+    font-style: italic;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: var(--tinta-2);
+    max-width: 46rem;
+  }
+
+  .metricas {
+    margin-top: 1.6rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--borde-suave);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(168px, 1fr));
+    gap: .9rem;
+  }
+
+  .metrica {
+    background: var(--tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 14px;
+    padding: .85rem 1rem;
+    box-shadow: var(--sombra);
+    transition: box-shadow .2s ease, transform .2s ease;
+  }
+
+  .metrica:hover { box-shadow: var(--sombra-alta); transform: translateY(-2px); }
+
+  .metrica-titulo {
+    margin: 0 0 .4rem;
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--tenue);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .etiqueta-metrica {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .56rem;
+    font-weight: 500;
+    letter-spacing: .06em;
+    color: #9a9c9f;
+  }
+
+  .metrica-valor {
+    margin: 0;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-weight: 700;
+    font-size: 1.45rem;
+    letter-spacing: -.02em;
+    color: var(--tinta);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metrica-pie {
+    margin: .4rem 0 0;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .64rem;
+    color: var(--tenue);
+    display: flex;
+    align-items: center;
+    gap: .35rem;
+    flex-wrap: wrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .metrica.biblia { background: var(--biblia-suave); border-color: var(--biblia-borde); }
+  .metrica.biblia .metrica-valor { color: var(--biblia); }
+  .metrica.biblia .metrica-titulo { color: #1e40af; }
+
+  .metrica.coran { background: var(--coran-suave); border-color: var(--coran-borde); }
+  .metrica.coran .metrica-valor { color: var(--coran-acento); }
+  .metrica.coran .metrica-titulo { color: #065f46; }
+
+  .punto {
+    display: inline-block;
+    width: .5rem;
+    height: .5rem;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .punto.biblia { background: var(--biblia-acento); }
+  .punto.coran { background: var(--coran); }
+
+  /* ---------- Encabezados de cada sección ---------- */
+  .seccion {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .seccion + .seccion {
+    border-top: 1px solid var(--borde);
+    margin-top: 2.5rem;
+  }
+
+  .cabecera-seccion {
+    padding: 2.75rem 0 .5rem;
+    animation: fadeInUp .6s ease-out both;
+  }
+
+  .cabecera-seccion h2 {
+    margin: 0;
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 500;
+    font-size: clamp(1.4rem, 2.6vw, 1.9rem);
+    letter-spacing: -.01em;
+    color: var(--tinta);
+    display: flex;
+    align-items: center;
+    gap: .7rem;
+  }
+
+  .cabecera-seccion .numero {
+    background: #1e293b;
+    color: #f8f6f0;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: "Inter", sans-serif;
+    font-size: .9rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(30,41,59,.18);
+  }
+
+  .cabecera-seccion p {
+    margin: .65rem 0 0 2.8rem;
+    font-size: .9rem;
+    line-height: 1.65;
+    color: var(--tinta-2);
+    max-width: 780px;
+  }
+
+  /* ---------- Comparador en dos columnas ---------- */
+  .comparador {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem;
+    padding: 1rem 0 2.5rem;
+  }
+
+  .columna {
+    flex: 1;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.3rem;
+    animation: fadeInUp .8s ease-out both;
+  }
+
+  .columna.biblia { animation-delay: .1s; }
+  .columna.coran { animation-delay: .2s; }
+
+  .etiqueta-columna {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .9rem 1.15rem;
+    border-radius: 14px;
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #ffffff;
+    box-shadow: var(--sombra-alta);
+  }
+
+  /* Cinta adhesiva de archivo sobre la cabecera de corpus */
+  .etiqueta-columna::after {
+    content: "";
+    position: absolute;
+    top: -.5rem;
+    left: 1.7rem;
+    width: 3.4rem;
+    height: 1.05rem;
+    border-radius: 2px;
+    background: rgba(253,236,177,.8);
+    transform: rotate(-2.5deg);
+    box-shadow: 0 1px 2px rgba(30,41,59,.1);
+  }
+
+  .etiqueta-columna.biblia { background: linear-gradient(100deg, #203a74 0%, #1d4ed8 55%, #1e3a8a 100%); }
+  .etiqueta-columna.coran { background: linear-gradient(100deg, #0d4534 0%, #047857 55%, #064e3b 100%); }
+
+  .panel {
+    background: var(--tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 1.3rem;
+    box-shadow: var(--sombra);
+    animation: fadeInUp .6s ease-out both;
+    transition: box-shadow .25s ease;
+  }
+
+  .panel:hover { box-shadow: var(--sombra-alta); }
+
+  .columna.biblia .panel { background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%); border-color: #dce7f9; }
+  .columna.coran .panel { background: linear-gradient(180deg, #ffffff 0%, #fbfffc 100%); border-color: #d6efe1; }
+
+  .panel h3 {
+    margin: 0 0 1rem;
+    font-family: "Newsreader", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.08rem;
+    color: var(--tinta);
+    border-bottom: 1px solid var(--borde-suave);
+    padding-bottom: .6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .panel h3 span {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .58rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--tenue);
+    background: var(--papel-hondo);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: .25rem .5rem;
+    white-space: nowrap;
+  }
+
+  svg {
+    width: 100%;
+    height: 340px;
+    display: block;
+    overflow: visible;
+    background: rgba(255,255,255,.72);
+    border: 1px solid var(--borde-suave);
+    border-radius: 12px;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .stats {
+    display: flex;
+    gap: .6rem;
+    margin-top: .9rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .73rem;
+    line-height: 1.45;
+    color: var(--tinta-2);
+    background: var(--papel-hondo);
+    border: 1px solid var(--borde);
+    border-radius: 8px;
+    padding: .5rem .75rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat strong {
+    display: block;
+    color: var(--tinta);
+    font-size: .98rem;
+    font-weight: 700;
+    letter-spacing: -.01em;
+  }
+
+  .columna.biblia .stat { background: var(--biblia-suave); border-color: var(--biblia-borde); }
+  .columna.coran .stat { background: var(--coran-suave); border-color: var(--coran-borde); }
+
+  .leyenda {
+    margin-top: .8rem;
+    font-family: "Newsreader", Georgia, serif;
+    font-style: italic;
+    font-size: .82rem;
+    color: #9a9c9f;
+  }
+
+  .lista-stopwords { margin-top: 1rem; font-size: .8rem; color: var(--tinta-2); }
+
+  .lista-stopwords summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: .78rem;
+    color: var(--tinta-2);
+    list-style: none;
+  }
+
+  .lista-stopwords summary::-webkit-details-marker { display: none; }
+
+  .lista-stopwords summary::before {
+    content: "▸ ";
+    display: inline-block;
+    transition: transform .2s ease;
+    color: var(--oro);
+  }
+
+  .lista-stopwords[open] summary::before { content: "▾ "; }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem;
+    margin-top: .75rem;
+    max-height: 190px;
+    overflow-y: auto;
+    padding: .25rem;
+  }
+
+  .chips::-webkit-scrollbar { width: 6px; }
+  .chips::-webkit-scrollbar-thumb { background: #d8d3c6; border-radius: 999px; }
+
+  .chips span {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .67rem;
+    background: var(--papel-hondo);
+    border: 1px solid var(--borde);
+    border-radius: 6px;
+    padding: .15rem .5rem;
+    color: var(--tinta-2);
+    animation: fadeInUp .3s ease-out both;
+  }
+
+  .columna.biblia .chips span { background: var(--biblia-suave); border-color: var(--biblia-borde); }
+  .columna.coran .chips span { background: var(--coran-suave); border-color: var(--coran-borde); }
+
+  /* ---------- Sección 4: PCA 3D ---------- */
+  .comparador.plano { flex-direction: column; }
+  .comparador.plano .columna { min-width: 0; }
+
+  .controles {
+    display: flex;
+    gap: .75rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+
+  .boton {
+    background: #1e293b;
+    color: #f8f6f0;
+    border: none;
+    border-radius: 8px;
+    padding: .55rem 1.1rem;
+    font-size: .8rem;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+    transition: background .15s ease, transform .15s ease;
+  }
+
+  .boton:hover { background: #334155; transform: translateY(-1px); }
+
+  .controles .ayuda {
+    font-family: "Newsreader", Georgia, serif;
+    font-style: italic;
+    font-size: .84rem;
+    color: #9a9c9f;
+  }
+
+  .leyenda-3d {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: .9rem;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .76rem;
+    color: var(--tinta-2);
+    font-weight: 600;
+  }
+
+  .leyenda-3d .punto { width: .6rem; height: .6rem; margin-right: .4rem; vertical-align: -1px; }
+
+  #pca-3d {
+    height: 560px;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  #pca-3d:active { cursor: grabbing; }
+
+  .trazo-eje {
+    stroke: #cbd5e1;
+    stroke-width: 1.5;
+    stroke-dasharray: 5 4;
+  }
+
+  .etiqueta-eje {
+    fill: var(--tinta-2);
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .tooltip-pca {
+    position: fixed;
+    pointer-events: none;
+    background: rgba(255,255,255,.93);
+    backdrop-filter: blur(12px) saturate(140%);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    border: 1px solid rgba(226,221,211,.95);
+    color: var(--tinta);
+    font-size: .78rem;
+    line-height: 1.5;
+    padding: .7rem .85rem;
+    border-radius: 12px;
+    max-width: 320px;
+    box-shadow: 0 8px 24px -4px rgba(30,41,59,.14), 0 2px 6px rgba(30,41,59,.05);
+    opacity: 0;
+    transition: opacity .15s ease;
+    z-index: 30;
+  }
+
+  .tooltip-pca.visible { opacity: 1; }
+
+  .tooltip-pca .cabecera-tooltip {
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: .68rem;
+    font-weight: 600;
+    color: #1e293b;
+    letter-spacing: .02em;
+  }
+
+  .tooltip-pca .vista {
+    display: block;
+    margin-top: .4rem;
+    font-family: "Newsreader", Georgia, serif;
+    font-style: italic;
+    font-size: .9rem;
+    color: var(--tinta-2);
+  }
+
+  /* ---------- Pie ---------- */
+  .pie {
+    margin-top: 2rem;
+    border-top: 1px solid var(--borde);
+    background: rgba(250,247,240,.9);
+    padding: 1.1rem 2rem;
+    font-size: .75rem;
+    color: var(--tenue);
+  }
+
+  .pie .interno {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .pie .marca-pie {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-weight: 600;
+    color: var(--tinta-2);
+  }
+
+  .pie .marca-pie .punto { background: #d97706; }
+
+  /* ---------- Gráficos y animaciones ---------- */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .barra { fill-opacity: .9; }
+
+  .eje-path, .eje-linea { stroke: #c5c6cd; stroke-width: 1; }
+
+  .texto-eje { fill: #7b7d82; font-size: 10px; }
+
+  @media (max-width: 1100px) {
+    .modulos { display: none; }
+  }
+
+  @media (max-width: 768px) {
+    .barra-marca .interno { padding: .6rem 1rem; }
+    header.cabecera-principal { padding: 1.5rem 1rem 1.25rem; }
+    .seccion { padding: 0 1rem; }
+    .cabecera-seccion { padding-top: 2rem; }
+    .cabecera-seccion p { margin-left: 0; }
+    .comparador { flex-direction: column; padding-bottom: 2rem; }
+    .pie { padding: 1rem; }
+    svg { height: 260px; }
+    #pca-3d { height: 440px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: .01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .01ms !important;
+    }
+  }
+
+</style>
+<link rel="stylesheet" href="seccion_lstm.css">
+<script>window.MathJax = { startup: { typeset: false } };</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-chtml.js"></script>
+</head>
+<body>
+
+<header class="cabecera-principal">
+  <h1>Demo de NLP: Bag of Words y Grafías</h1>
+  <p>Comparación lado a lado entre la Biblia (Reina Valera 1960) y el Corán (traducción al español)</p>
+</header>
+
+<!-- ============ SECCIÓN 1: BOW básico ============ -->
+<section class="seccion" id="seccion-bow">
+  <div class="cabecera-seccion">
+    <h2><span class="numero">1</span> Bolsa de palabras básica</h2>
+    <p>Frecuencia cruda de todos los términos de cada texto, sin quitar nada, más el histograma de grafías castellanas de los corpus originales.</p>
+  </div>
+
+  <div class="comparador">
+    <!-- Columna Biblia -->
+    <div class="columna biblia">
+      <div class="etiqueta-columna biblia">📖 Biblia</div>
+
+      <div class="panel">
+        <h3>Wordcloud - BOW crudo <span>Sin filtrar</span></h3>
+        <svg id="wc-biblia" role="img" aria-label="Nube de palabras de la Biblia"></svg>
+        <div class="stats" id="stats-biblia"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Histograma de grafías <span>Frecuencia de letras castellanas</span></h3>
+        <svg id="hist-biblia" role="img" aria-label="Histograma de letras de la Biblia"></svg>
+        <div class="leyenda">Se ignoran números, tildes repetidas y caracteres ajenos al castellano.</div>
+      </div>
+    </div>
+
+    <!-- Columna Corán -->
+    <div class="columna coran">
+      <div class="etiqueta-columna coran">🕌 Corán</div>
+
+      <div class="panel">
+        <h3>Wordcloud - BOW crudo <span>Sin filtrar</span></h3>
+        <svg id="wc-coran" role="img" aria-label="Nube de palabras del Corán"></svg>
+        <div class="stats" id="stats-coran"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Histograma de grafías <span>Frecuencia de letras castellanas</span></h3>
+        <svg id="hist-coran" role="img" aria-label="Histograma de letras del Corán"></svg>
+        <div class="leyenda">Se ignoran números, tildes repetidas y caracteres ajenos al castellano.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 2: Stopwords NLTK ============ -->
+<section class="seccion" id="seccion-nltk">
+  <div class="cabecera-seccion">
+    <h2><span class="numero">2</span> Nube de palabras con stopwords de NLTK</h2>
+    <p>El mismo Bag of Words tras quitar las 313 stopwords en español de <code>nltk.corpus.stopwords</code>. Los corpus se tokenizan y se cuentan con NLTK en <code>scripts/build_bow_nltk.py</code>.</p>
+  </div>
+
+  <div class="comparador">
+    <!-- Columna Biblia -->
+    <div class="columna biblia">
+      <div class="etiqueta-columna biblia">📖 Biblia</div>
+
+      <div class="panel">
+        <h3>Wordcloud - BOW con NLTK <span>Stopwords filtradas</span></h3>
+        <svg id="wc-biblia-nltk" role="img" aria-label="Nube de palabras de la Biblia con stopwords de NLTK"></svg>
+        <div class="stats" id="stats-biblia-nltk"></div>
+        <details class="lista-stopwords" id="sw-biblia-nltk">
+          <summary></summary>
+          <div class="chips" id="chips-biblia-nltk"></div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Columna Corán -->
+    <div class="columna coran">
+      <div class="etiqueta-columna coran">🕌 Corán</div>
+
+      <div class="panel">
+        <h3>Wordcloud - BOW con NLTK <span>Stopwords filtradas</span></h3>
+        <svg id="wc-coran-nltk" role="img" aria-label="Nube de palabras del Corán con stopwords de NLTK"></svg>
+        <div class="stats" id="stats-coran-nltk"></div>
+        <details class="lista-stopwords" id="sw-coran-nltk">
+          <summary></summary>
+          <div class="chips" id="chips-coran-nltk"></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 3: Lematización spaCy ============ -->
+<section class="seccion" id="seccion-spacy">
+  <div class="cabecera-seccion">
+    <h2><span class="numero">3</span> Lematización con spaCy (es_core_news_sm)</h2>
+    <p>Cada palabra del texto se lleva a su lema con el modelo en español entrenado con noticias (<code>es_core_news_sm</code>), y se quitan las 521 stopwords de spaCy, la puntuación y los términos de menos de 3 letras. Generado con <code>scripts/build_lemma_spacy.py</code>.</p>
+  </div>
+
+  <div class="comparador">
+    <!-- Columna Biblia -->
+    <div class="columna biblia">
+      <div class="etiqueta-columna biblia">📖 Biblia</div>
+
+      <div class="panel">
+        <h3>Nube de lemas - spaCy <span>Stopwords filtradas</span></h3>
+        <svg id="wc-biblia-spacy" role="img" aria-label="Nube de lemas de la Biblia con spaCy"></svg>
+        <div class="stats" id="stats-biblia-spacy"></div>
+        <details class="lista-stopwords" id="sw-biblia-spacy">
+          <summary></summary>
+          <div class="chips" id="chips-biblia-spacy"></div>
+        </details>
+      </div>
+    </div>
+
+    <!-- Columna Corán -->
+    <div class="columna coran">
+      <div class="etiqueta-columna coran">🕌 Corán</div>
+
+      <div class="panel">
+        <h3>Nube de lemas - spaCy <span>Stopwords filtradas</span></h3>
+        <svg id="wc-coran-spacy" role="img" aria-label="Nube de lemas del Corán con spaCy"></svg>
+        <div class="stats" id="stats-coran-spacy"></div>
+        <details class="lista-stopwords" id="sw-coran-spacy">
+          <summary></summary>
+          <div class="chips" id="chips-coran-spacy"></div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 4: TF-IDF + PCA 3D ============ -->
+<section class="seccion" id="seccion-tfidf">
+  <div class="cabecera-seccion">
+    <h2><span class="numero">4</span> TF-IDF y PCA a 3 dimensiones</h2>
+    <p>Cada texto se corta en documentos: la Biblia en ventanas de 200 palabras y el Corán primero por sura y luego en ventanas de hasta 200 palabras. Sobre una muestra aleatoria de 500 documentos (semilla 42) se calcula la matriz TF-IDF con un vocabulario compartido y se reduce con PCA a 3 componentes. Generado con <code>scripts/build_tfidf_pca.py</code>.</p>
+  </div>
+
+  <div class="comparador plano">
+    <div class="columna">
+      <div class="panel">
+        <h3>Proyección PCA 3D <span>Arrastra para girar · pasa el ratón por un punto</span></h3>
+
+        <div class="stats" id="stats-tfidf"></div>
+
+        <svg id="pca-3d" role="img" aria-label="Proyección en tres dimensiones con PCA de 500 documentos de la Biblia y el Corán"></svg>
+
+        <div class="controles">
+          <button class="boton" id="btn-rotacion" type="button">Pausar rotación</button>
+          <span class="ayuda">Cada punto es un documento: su posición viene de las 4.420 palabras que más pesan en el TF-IDF.</span>
+        </div>
+
+        <div class="leyenda-3d">
+          <span><span class="punto" style="background:#1e3a8a"></span>Biblia</span>
+          <span><span class="punto" style="background:#059669"></span>Corán</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECCIÓN 5: Clasificador LSTM ============ -->
+<section class="seccion" id="seccion-lstm">
+  <div class="cabecera-seccion">
+    <h2><span class="numero">5</span> Clasificador LSTM en PyTorch</h2>
+    <p>Una LSTM bidireccional de dos capas estima la probabilidad de que un documento pertenezca a la Biblia o al Corán. Se entrena en la GPU de platypy con <code>scripts/train_lstm_biblia_coran.py</code>.</p>
+  </div>
+
+  <div class="rejilla-lstm">
+    <div class="panel ancho">
+      <h3>Compuertas de la LSTM y clasificación <span>Valores reales del modelo</span></h3>
+      <div class="controles-celda">
+        <button class="boton" type="button" data-fragmento="1">Fragmento del Corán</button>
+        <button class="boton" type="button" data-fragmento="0">Fragmento de la Biblia</button>
+        <button class="boton" type="button" id="lstm-pausa">Pausar</button>
+      </div>
+      <div class="palabras-lstm" id="lstm-palabras"></div>
+      <div id="lstm-figura"></div>
+      <p class="clasificacion-lstm" id="lstm-clasificacion"></p>
+      <div id="lstm-unidades"></div>
+      <p class="texto-lstm">El agua es la memoria \(c\) de la celda y su nivel es \(|c|\) medio. Cada hoja ámbar sube según el valor medio de su compuerta, entre 0 (cerrada) y 1 (abierta), y las tiras muestran sus 64 unidades, de claro (cerrada) a oscuro (abierta). Se muestra una de las cuatro celdas del modelo, la de la capa 1 que lee hacia adelante; la probabilidad sale de las cuatro. Los fragmentos se eligieron porque su probabilidad cambia mucho, y con menos de 10 palabras es solo orientativa, porque el modelo se entrenó con 10 o más.</p>
+    </div>
+  </div>
+
+  <div class="rejilla-lstm">
+    <div class="panel ancho">
+      <h3>Métricas en prueba <span>Umbral p = 0,5</span></h3>
+      <div class="stats" id="lstm-stats"></div>
+      <div style="max-width:420px;margin-top:1rem" id="lstm-confusion"></div>
+      <p class="texto-lstm" id="lstm-dato-datos"></p>
+      <p class="aviso-lstm" id="lstm-dato-cero"></p>
+    </div>
+  </div>
+
+  <div class="rejilla-lstm">
+    <div class="panel">
+      <h3>Curvas de pérdida <span>Entropía cruzada binaria</span></h3>
+      <div class="leyenda-lstm" id="lstm-leyenda-perdida"></div>
+      <svg class="grafica-lstm" id="lstm-perdida" role="img" aria-label="Pérdida de entrenamiento y validación por época"></svg>
+    </div>
+    <div class="panel">
+      <h3>Exactitud balanceada según la longitud <span>Conjunto de prueba</span></h3>
+      <div class="leyenda-lstm" id="lstm-leyenda-largo"></div>
+      <svg class="grafica-lstm" id="lstm-largo" role="img" aria-label="Exactitud balanceada de la LSTM y de la línea base según las palabras por documento"></svg>
+      <p class="texto-lstm" id="lstm-dato-largo"></p>
+    </div>
+  </div>
+
+  <div class="rejilla-lstm">
+    <div class="panel">
+      <h3>Top 20 con todas las palabras <span>Valores de Shapley</span></h3>
+      <div class="leyenda-lstm" id="lstm-leyenda-top"></div>
+      <svg class="grafica-lstm top-lstm" id="lstm-top20" role="img" aria-label="Las 20 palabras con más contribución hacia la Biblia o el Corán"></svg>
+      <details class="tabla-oculta"><summary>Ver la tabla</summary><div id="lstm-tabla-top"></div></details>
+    </div>
+    <div class="panel">
+      <h3>Top 20 sin stopwords <span>Lista de NLTK</span></h3>
+      <div class="leyenda-lstm" id="lstm-leyenda-contenido"></div>
+      <svg class="grafica-lstm top-lstm" id="lstm-top20-contenido" role="img" aria-label="Las 20 palabras de contenido con más contribución hacia la Biblia o el Corán"></svg>
+      <details class="tabla-oculta"><summary>Ver la tabla</summary><div id="lstm-tabla-contenido"></div></details>
+    </div>
+  </div>
+
+  <div class="rejilla-lstm">
+    <div class="panel ancho">
+      <p class="texto-lstm" style="margin-top:0" id="lstm-dato-shap"></p>
+      <div class="leyenda-lstm" style="margin-top:1rem" id="lstm-leyenda-ejemplos"></div>
+      <div id="lstm-ejemplos"></div>
+    </div>
+  </div>
+
+  <div class="rejilla-lstm" style="padding-bottom:2.5rem">
+    <div class="panel ancho teoria-lstm" id="lstm-teoria">
+      <h3>Teoría matemática básica <span>Notación de PyTorch</span></h3>
+
+      <h4>Entrada de la celda</h4>
+      <p>La LSTM necesita números, así que cada palabra \(w_t\) se convierte en un vector \(x_t \in \mathbb{R}^{64}\) mediante una tabla que se aprende al entrenar (capa <code>nn.Embedding</code>).</p>
+
+      <h4>Compuertas y memoria</h4>
+      <p>Tres compuertas con valores entre 0 y 1 regulan la memoria \(c_t\). La función sigmoide \(\sigma\) produce esos valores y \(\odot\) multiplica unidad por unidad:</p>
+      \[
+      \begin{aligned}
+      f_t &= \sigma\!\left(W_{f} x_t + U_{f} h_{t-1} + b_f\right) && \text{olvido} \\
+      i_t &= \sigma\!\left(W_{i} x_t + U_{i} h_{t-1} + b_i\right) && \text{entrada} \\
+      \tilde c_t &= \tanh\!\left(W_{c} x_t + U_{c} h_{t-1} + b_c\right) && \text{contenido nuevo} \\
+      o_t &= \sigma\!\left(W_{o} x_t + U_{o} h_{t-1} + b_o\right) && \text{salida} \\
+      c_t &= f_t \odot c_{t-1} + i_t \odot \tilde c_t && \text{memoria} \\
+      h_t &= o_t \odot \tanh(c_t) && \text{estado entregado}
+      \end{aligned}
+      \]
+      <p id="lstm-dato-ecuaciones"></p>
+      <p>La memoria se actualiza sumando. Por eso, siguiendo el camino de \(c\), el gradiente hacia un paso lejano es un producto de compuertas que la red puede mantener cerca de 1, y evita el desvanecimiento de una red recurrente simple:</p>
+      \[ \frac{\partial c_T}{\partial c_k} \approx \prod_{t=k+1}^{T} \operatorname{diag}(f_t). \]
+
+      <h4>Clasificación</h4>
+      <p>Los estados finales de la capa superior, uno por sentido de lectura, se unen y pasan por una capa densa hasta el logit \(\ell\):</p>
+      \[ z = \left[\overset{\rightarrow}{h}{}^{(2)}_T ;\ \overset{\leftarrow}{h}{}^{(2)}_1\right] \in \mathbb{R}^{128}, \qquad a = \operatorname{ReLU}(W_1 z + b_1) \in \mathbb{R}^{32}, \qquad \ell = w_2^{\top} a + b_2, \]
+      \[ \hat p = P(\mathrm{Cor\acute{a}n} \mid d) = \sigma(\ell) = \frac{1}{1 + e^{-\ell}}, \qquad P(\mathrm{Biblia} \mid d) = 1 - \hat p. \]
+      <p id="lstm-dato-previa"></p>
+
+      <h4>Función de pérdida</h4>
+      <p>Se minimiza la entropía cruzada binaria con AdamW, donde \(y_n = 1\) si el documento es del Corán:</p>
+      \[ \mathcal{L} = -\frac{1}{N} \sum_{n=1}^{N} \Big[ y_n \ln \hat p_n + (1 - y_n) \ln (1 - \hat p_n) \Big]. \]
+
+      <h4>Valores de Shapley</h4>
+      <p>Para las palabras distintas \(N\) de un documento, \(v(S)\) es el logit cuando las palabras fuera de \(S\) se cambian por <code>&lt;unk&gt;</code>. Cada palabra recibe su contribución marginal promediada entre todos los órdenes, y las contribuciones suman la predicción:</p>
+      \[ \phi_w = \sum_{S \subseteq N \setminus \{w\}} \frac{|S|!\,(|N| - |S| - 1)!}{|N|!} \Big[ v(S \cup \{w\}) - v(S) \Big], \qquad \sum_{w \in N} \phi_w = v(N) - v(\varnothing). \]
+      <p>La suma se estima con permutaciones aleatorias, y el top 20 ordena las palabras por \(|C_w|\), su contribución media en \(D\) documentos:</p>
+      \[ C_w = \frac{1}{D} \sum_{d=1}^{D} \phi_{w,d}. \]
+    </div>
+  </div>
+</section>
+
+<div class="tooltip-pca" id="tooltip-pca"></div>
+
+<script>
+  const ALFABETO = "abcdefghijklmnñopqrstuvwxyzáéíóúü".split("");
+
+  // Colores en hex para que d3 pueda analizarlos (d3.color no entiende var(--...))
+  const COLOR_BIBLIA = "#1e3a8a";
+  const COLOR_CORAN = "#059669";
+
+  // ---- Procesamiento de la sección 1 (crudo, sin filtrar) ----
+  // ---- Dibujos compartidos ----
+  function dibujarWordcloud(idSvg, conteoPalabras, colorPrincipal, maxWords = 80) {
+    const svg = d3.select(idSvg);
+    const width = +svg.attr("width") || 560;
+    const height = +svg.attr("height") || 340;
+
+    const entradas = Object.entries(conteoPalabras)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, maxWords);
+
+    // Tamaños normalizados entre 11px y 54px para que quepan más palabras
+    const logs = entradas.map(d => Math.log(d[1] + 1));
+    const escalaTam = d3.scaleLinear()
+      .domain([d3.min(logs), d3.max(logs)])
+      .range([11, 54]);
+
+    const palabras = entradas.map(([texto, frec], i) => ({
+      texto,
+      tam: escalaTam(logs[i])
+    }));
+
+    const escalaColor = d3.scaleLinear()
+      .domain([0, d3.max(palabras, d => d.tam)])
+      .range([colorPrincipal, d3.color(colorPrincipal).darker(1)]);
+
+    const layout = d3.layout.cloud()
+      .size([width, height])
+      .words(palabras.map(d => ({ text: d.texto, size: d.tam })))
+      .padding(4)
+      .rotate(() => (Math.random() > 0.6 ? 0 : 30))
+      .font("Arial, sans-serif")
+      .fontSize(d => d.size)
+      .on("end", dibujar);
+
+    layout.start();
+
+    function dibujar(palabrasPos) {
+      svg.selectAll("*").remove();
+
+      const grupo = svg.append("g")
+        .attr("transform", `translate(${width / 2},${height / 2})`);
+
+      grupo.selectAll("text")
+        .data(palabrasPos)
+        .join("text")
+        .attr("text-anchor", "middle")
+        .attr("transform", d => `translate(${d.x},${d.y}) rotate(${d.rotate})`)
+        .style("font-size", d => d.size + "px")
+        .style("fill", d => escalaColor(d.size))
+        .style("font-weight", "600")
+        .text(d => d.text)
+        .style("opacity", 0)
+        .transition()
+        .duration(900)
+        .delay((d, i) => i * 25)
+        .style("opacity", 1);
+    }
+  }
+
+  function dibujarHistograma(idSvg, conteoGrafias, colorPrincipal) {
+    const svg = d3.select(idSvg);
+    const width = +svg.attr("width") || 560;
+    const height = +svg.attr("height") || 340;
+    const margin = { top: 20, right: 20, bottom: 60, left: 56 };
+    const ancho = width - margin.left - margin.right;
+    const alto = height - margin.top - margin.bottom;
+
+    const datos = ALFABETO.map(caracter => ({
+      caracter,
+      valor: conteoGrafias[caracter] || 0
+    }));
+
+    const maxValor = d3.max(datos, d => d.valor) || 1;
+
+    const x = d3.scaleBand()
+      .domain(datos.map(d => d.caracter))
+      .range([0, ancho])
+      .padding(0.25);
+
+    const y = d3.scaleLinear()
+      .domain([0, maxValor])
+      .nice()
+      .range([alto, 0]);
+
+    svg.selectAll("*").remove();
+
+    const g = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    g.append("g")
+      .attr("transform", `translate(0,${alto})`)
+      .call(d3.axisBottom(x))
+      .selectAll("text")
+      .attr("class", "texto-eje")
+      .style("font-weight", "600")
+      .style("fill", colorPrincipal);
+
+    g.append("g")
+      .call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("~s")))
+      .selectAll("line, path, text")
+      .attr("class", "texto-eje")
+      .style("font-weight", "600");
+
+    svg.append("text")
+      .attr("transform", `translate(${margin.left / 4},${height / 2}) rotate(-90)`)
+      .attr("text-anchor", "middle")
+      .attr("class", "texto-eje")
+      .style("font-size", "11px")
+      .text("Frecuencia");
+
+    g.selectAll("rect")
+      .data(datos)
+      .join("rect")
+      .attr("class", "barra")
+      .attr("x", d => x(d.caracter))
+      .attr("y", alto)
+      .attr("width", x.bandwidth())
+      .attr("height", 0)
+      .attr("fill", colorPrincipal)
+      .transition()
+      .duration(900)
+      .delay((d, i) => i * 20)
+      .attr("y", d => y(d.valor))
+      .attr("height", d => alto - y(d.valor));
+  }
+
+  // ---- Pintores de las secciones filtradas (NLTK y spaCy) ----
+  function pintarStatsFiltrado(id, datos) {
+    const quitadas = datos.palabras_leidas - datos.palabras_tras_filtro;
+    document.getElementById(id).innerHTML = `
+      <div class="stat"><strong>${datos.palabras_leidas.toLocaleString("es-ES")}</strong> palabras leídas</div>
+      <div class="stat"><strong>${quitadas.toLocaleString("es-ES")}</strong> quitadas por ${datos.n_stopwords} stopwords</div>
+      <div class="stat"><strong>${datos.palabras_unicas.toLocaleString("es-ES")}</strong> vocabulario</div>
+    `;
+  }
+
+  function pintarStopwords(idDetails, idChips, stopwords, fuente) {
+    document.querySelector(`#${idDetails} summary`).textContent =
+      `Ver las ${stopwords.length} stopwords de ${fuente} aplicadas`;
+    document.getElementById(idChips).innerHTML =
+      stopwords.map(s => `<span>${s}</span>`).join("");
+  }
+
+  // ---- Sección 4: TF-IDF + PCA 3D ----
+  function pintarStatsPCA(datos) {
+    const [v1, v2, v3] = datos.varianza_explicada;
+    const acumulada = v1 + v2 + v3;
+    const pct = d3.format(".1%");
+    document.getElementById("stats-tfidf").innerHTML = `
+      <div class="stat"><strong>${datos.documentos_pool.toLocaleString("es-ES")}</strong> documentos segmentados</div>
+      <div class="stat"><strong>${datos.documentos_muestra}</strong> en la muestra (${datos.reparto.biblia} biblia / ${datos.reparto.coran} corán)</div>
+      <div class="stat"><strong>${datos.vocabulario.toLocaleString("es-ES")}</strong> términos TF-IDF</div>
+      <div class="stat"><strong>${pct(acumulada)}</strong> varianza · PC1 ${pct(v1)} · PC2 ${pct(v2)} · PC3 ${pct(v3)}</div>
+    `;
+  }
+
+  function dibujarPCA(datos) {
+    const svg = d3.select("#pca-3d");
+    const W = 960, H = 560;
+    svg.attr("viewBox", `0 0 ${W} ${H}`);
+
+    // Escala por eje con cuantiles 1-99 para que los valores extremos no aplasten la nube
+    const escala = Object.create(null);
+    for (const eje of ["x", "y", "z"]) {
+      const valores = datos.documentos.map(d => d[eje]).sort(d3.ascending);
+      escala[eje] = d3.scaleLinear()
+        .domain([d3.quantile(valores, 0.01), d3.quantile(valores, 0.99)])
+        .range([-1, 1])
+        .clamp(true);
+    }
+
+    const docs = datos.documentos.map(d => ({
+      ...d,
+      nx: escala.x(d.x), ny: escala.y(d.y), nz: escala.z(d.z)
+    }));
+
+    const cx = W / 2, cy = H / 2, R = Math.min(W, H) * 0.36;
+    let angulo = -0.6, inclinacion = -0.45, corriendo = true;
+
+    // Rotación Y + inclinación X + perspectiva simple
+    function proyectar(nx, ny, nz) {
+      const ca = Math.cos(angulo), sa = Math.sin(angulo);
+      const x1 = nx * ca - nz * sa;
+      const z1 = nx * sa + nz * ca;
+      const ci = Math.cos(inclinacion), si = Math.sin(inclinacion);
+      const y1 = ny * ci - z1 * si;
+      const z2 = ny * si + z1 * ci;
+      const perspectiva = 2.6 / (2.6 - z2);
+      return { sx: cx + x1 * R * perspectiva, sy: cy + y1 * R * perspectiva, prof: z2 };
+    }
+
+    // Ejes del sistema de referencia (PC1, PC2, PC3)
+    const pct = d3.format(".1%");
+    const trazos = [
+      { nombre: "PC1", v: [1, 0, 0], p: datos.varianza_explicada[0] },
+      { nombre: "PC2", v: [0, 1, 0], p: datos.varianza_explicada[1] },
+      { nombre: "PC3", v: [0, 0, 1], p: datos.varianza_explicada[2] }
+    ];
+    const gEjes = svg.append("g");
+    const lineas = gEjes.selectAll("line").data(trazos).join("line")
+      .attr("class", "trazo-eje");
+    const etiquetas = gEjes.selectAll("text").data(trazos).join("text")
+      .attr("class", "etiqueta-eje")
+      .text(d => `${d.nombre} ${pct(d.p)}`);
+
+    const gPuntos = svg.append("g");
+    const circulos = gPuntos.selectAll("circle")
+      .data(docs)
+      .join("circle")
+      .attr("r", 0)
+      .attr("fill", d => d.texto === "biblia" ? COLOR_BIBLIA : COLOR_CORAN)
+      .attr("stroke", "#ffffff")
+      .attr("stroke-width", 0.6)
+      .attr("fill-opacity", 0)
+      .on("mousemove", mostrarTooltip)
+      .on("mouseleave", ocultarTooltip);
+
+    // Entrada progresiva: los puntos crecen escalonados
+    d3.timer(transcurrido => {
+      if (corriendo) angulo += 0.005;
+      const progreso = Math.min(1, transcurrido / 1400);
+
+      for (const d of docs) d._p = proyectar(d.nx, d.ny, d.nz);
+
+      circulos
+        .attr("cx", d => d._p.sx)
+        .attr("cy", d => d._p.sy)
+        .attr("r", (d, i) => {
+          const aparece = Math.max(0, Math.min(1, progreso * 2 - (i % 70) / 70));
+          return (2.4 + (d._p.prof + 1.4) * 1.8) * d3.easeCubicOut(aparece);
+        })
+        .attr("fill-opacity", (d, i) => {
+          const aparece = Math.max(0, Math.min(1, progreso * 2 - (i % 70) / 70));
+          return (0.35 + (d._p.prof + 1.4) * 0.18) * aparece;
+        });
+
+      // Orden por profundidad (algoritmo del pintor)
+      gPuntos.selectAll("circle").sort((a, b) => a._p.prof - b._p.prof);
+
+      lineas
+        .attr("x1", cx).attr("y1", cy)
+        .attr("x2", d => proyectar(...d.v).sx)
+        .attr("y2", d => proyectar(...d.v).sy);
+      etiquetas
+        .attr("x", d => proyectar(...d.v).sx + 8)
+        .attr("y", d => proyectar(...d.v).sy + 4);
+    });
+
+    // Arrastrar para girar (pausa la rotación automática)
+    svg.call(
+      d3.drag()
+        .on("start", () => { corriendo = false; refrescarBoton(); })
+        .on("drag", event => {
+          angulo += event.dx * 0.008;
+          inclinacion = Math.max(-1.3, Math.min(1.3, inclinacion + event.dy * 0.006));
+        })
+    );
+
+    const boton = document.getElementById("btn-rotacion");
+    function refrescarBoton() {
+      boton.textContent = corriendo ? "Pausar rotación" : "Reanudar rotación";
+    }
+    boton.addEventListener("click", () => {
+      corriendo = !corriendo;
+      refrescarBoton();
+    });
+
+    // Tooltip con el fragmento de texto del documento
+    const tooltip = d3.select("#tooltip-pca");
+    function mostrarTooltip(event, d) {
+      const nombre = d.texto === "biblia" ? "Biblia" : "Corán";
+      tooltip
+        .classed("visible", true)
+        .style("left", `${event.clientX + 16}px`)
+        .style("top", `${event.clientY + 16}px`)
+        .html(`<strong>Documento #${d.id} · ${nombre}</strong><br>${d.vista}…`);
+    }
+    function ocultarTooltip() {
+      tooltip.classed("visible", false);
+    }
+  }
+
+  async function init() {
+    const [crudo, datosBiblia, datosCoran, lemasBiblia, lemasCoran, datosPCA] = await Promise.all([
+      fetch("../data/processed/bow_crudo.json").then(r => r.json()),
+      fetch("../data/processed/bow_nltk_biblia.json").then(r => r.json()),
+      fetch("../data/processed/bow_nltk_coran.json").then(r => r.json()),
+      fetch("../data/processed/lemma_spacy_biblia.json").then(r => r.json()),
+      fetch("../data/processed/lemma_spacy_coran.json").then(r => r.json()),
+      fetch("../data/processed/tfidf_pca_muestra.json").then(r => r.json())
+    ]);
+
+    // ===== Sección 1: BOW básico + histogramas =====
+    const bowBiblia = crudo.biblia.bow;
+    const bowCoran = crudo.coran.bow;
+
+    const totalB = Object.values(bowBiblia).reduce((a, b) => a + b, 0);
+    const unicasB = Object.keys(bowBiblia).length;
+    const totalC = Object.values(bowCoran).reduce((a, b) => a + b, 0);
+    const unicasC = Object.keys(bowCoran).length;
+
+    document.getElementById("stats-biblia").innerHTML = `
+      <div class="stat"><strong>${totalB.toLocaleString("es-ES")}</strong> palabras leídas</div>
+      <div class="stat"><strong>${unicasB.toLocaleString("es-ES")}</strong> vocabulario</div>
+    `;
+
+    document.getElementById("stats-coran").innerHTML = `
+      <div class="stat"><strong>${totalC.toLocaleString("es-ES")}</strong> palabras leídas</div>
+      <div class="stat"><strong>${unicasC.toLocaleString("es-ES")}</strong> vocabulario</div>
+    `;
+
+    dibujarWordcloud("#wc-biblia", bowBiblia, COLOR_BIBLIA);
+    dibujarWordcloud("#wc-coran", bowCoran, COLOR_CORAN);
+
+    dibujarHistograma("#hist-biblia", crudo.biblia.grafias, COLOR_BIBLIA);
+    dibujarHistograma("#hist-coran", crudo.coran.grafias, COLOR_CORAN);
+
+    // ===== Sección 2: BOW con stopwords de NLTK =====
+    pintarStatsFiltrado("stats-biblia-nltk", datosBiblia);
+    pintarStatsFiltrado("stats-coran-nltk", datosCoran);
+
+    pintarStopwords("sw-biblia-nltk", "chips-biblia-nltk", datosBiblia.stopwords, "NLTK");
+    pintarStopwords("sw-coran-nltk", "chips-coran-nltk", datosCoran.stopwords, "NLTK");
+
+    dibujarWordcloud("#wc-biblia-nltk", datosBiblia.bow, COLOR_BIBLIA);
+    dibujarWordcloud("#wc-coran-nltk", datosCoran.bow, COLOR_CORAN);
+
+    // ===== Sección 3: lemas con spaCy =====
+    pintarStatsFiltrado("stats-biblia-spacy", lemasBiblia);
+    pintarStatsFiltrado("stats-coran-spacy", lemasCoran);
+
+    pintarStopwords("sw-biblia-spacy", "chips-biblia-spacy", lemasBiblia.stopwords, "spaCy");
+    pintarStopwords("sw-coran-spacy", "chips-coran-spacy", lemasCoran.stopwords, "spaCy");
+
+    dibujarWordcloud("#wc-biblia-spacy", lemasBiblia.bow, COLOR_BIBLIA);
+    dibujarWordcloud("#wc-coran-spacy", lemasCoran.bow, COLOR_CORAN);
+
+    // ===== Sección 4: TF-IDF + PCA 3D =====
+    pintarStatsPCA(datosPCA);
+    dibujarPCA(datosPCA);
+  }
+
+  init().catch(err => {
+    console.error("Error en la demo:", err);
+    const aviso = document.createElement("div");
+    aviso.setAttribute("role", "alert");
+    aviso.style.cssText = "max-width:900px;margin:1rem auto;padding:.8rem 1rem;background:#fef3c7;border:1px solid #fde9a8;border-radius:10px;font-size:.9rem";
+    aviso.innerHTML = location.protocol === "file:"
+      ? "Las secciones 1 a 4 leen archivos JSON que el navegador bloquea al abrir la página con doble clic. Para verlas, ejecuta <code>python3 -m http.server 8000</code> en la raíz del repositorio y abre <code>http://localhost:8000/spa/demo_nlp_comparador_biblia_coran.html</code>. La sección 5 funciona igualmente."
+      : "Error al preparar la demo: " + err.message;
+    document.querySelector(".cabecera-principal").after(aviso);
+  });
+</script>
+
+<script src="lstm_datos.js"></script>
+<script src="seccion_lstm.js"></script>
+</body>
+</html>

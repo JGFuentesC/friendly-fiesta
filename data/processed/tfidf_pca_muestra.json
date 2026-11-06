@@ -1,0 +1,4023 @@
+{
+  "fuente": "scikit-learn 1.9.1",
+  "semilla": 42,
+  "ventana_palabras": 200,
+  "documentos_pool": 4416,
+  "pool": {
+    "biblia": 3594,
+    "coran": 822
+  },
+  "documentos_muestra": 500,
+  "reparto": {
+    "biblia": 417,
+    "coran": 83
+  },
+  "vocabulario": 4420,
+  "varianza_explicada": [
+    0.01534,
+    0.01203,
+    0.00972
+  ],
+  "documentos": [
+    {
+      "id": 0,
+      "texto": "biblia",
+      "vista": "ha dado salvación en israel mas samuel dijo al pueblo venid vamos a gilgal",
+      "x": 0.1315,
+      "y": 0.0854,
+      "z": 0.1411
+    },
+    {
+      "id": 1,
+      "texto": "biblia",
+      "vista": "en la tierra al día siguiente jehová hizo aquello y murió todo el ganado",
+      "x": 0.159,
+      "y": -0.0568,
+      "z": -0.0383
+    },
+    {
+      "id": 2,
+      "texto": "biblia",
+      "vista": "adonde lo llevaron cautivo y no verá más esta tierra ay del que edifica",
+      "x": 0.0554,
+      "y": 0.1016,
+      "z": -0.0296
+    },
+    {
+      "id": 3,
+      "texto": "biblia",
+      "vista": "labios del necio causan su propia ruina el principio de las palabras de su",
+      "x": -0.0057,
+      "y": 0.0592,
+      "z": -0.042
+    },
+    {
+      "id": 4,
+      "texto": "biblia",
+      "vista": "está en la reunión de los dioses en medio de los dioses juzga hasta",
+      "x": 0.0502,
+      "y": 0.1689,
+      "z": -0.0869
+    },
+    {
+      "id": 5,
+      "texto": "biblia",
+      "vista": "pero el rey salomón amó además de la hija de faraón a muchas mujeres",
+      "x": 0.1219,
+      "y": -0.0598,
+      "z": -0.0497
+    },
+    {
+      "id": 6,
+      "texto": "biblia",
+      "vista": "en lehi hasta hoy y juzgó a israel en los días de los filisteos",
+      "x": 0.1023,
+      "y": -0.1322,
+      "z": 0.007
+    },
+    {
+      "id": 7,
+      "texto": "biblia",
+      "vista": "tu grande nombre y jehová dijo a josué levántate por qué te postras así",
+      "x": 0.078,
+      "y": 0.1081,
+      "z": 0.0133
+    },
+    {
+      "id": 8,
+      "texto": "biblia",
+      "vista": "manos ellos perecerán mas tú permaneces y todos ellos se envejecerán como una vestidura",
+      "x": -0.0748,
+      "y": 0.0702,
+      "z": 0.054
+    },
+    {
+      "id": 9,
+      "texto": "biblia",
+      "vista": "por encima las alas cubriendo con sus alas el propiciatorio sus rostros el uno",
+      "x": 0.0366,
+      "y": -0.1168,
+      "z": -0.0823
+    },
+    {
+      "id": 10,
+      "texto": "biblia",
+      "vista": "y reposó en el séptimo día por tanto jehová bendijo el día de reposo",
+      "x": 0.0804,
+      "y": 0.0514,
+      "z": 0.0014
+    },
+    {
+      "id": 11,
+      "texto": "biblia",
+      "vista": "de israel oyeron decir que los hijos de rubén y los hijos de gad",
+      "x": 0.1489,
+      "y": -0.1838,
+      "z": -0.0761
+    },
+    {
+      "id": 12,
+      "texto": "biblia",
+      "vista": "disparen sus saetas sean hechas pedazos pasen ellos como el caracol que se deslíe",
+      "x": -0.0029,
+      "y": 0.168,
+      "z": -0.083
+    },
+    {
+      "id": 13,
+      "texto": "biblia",
+      "vista": "ti oh jehová dije tú eres mi esperanza y mi porción en la tierra",
+      "x": 0.0018,
+      "y": 0.3324,
+      "z": -0.111
+    },
+    {
+      "id": 14,
+      "texto": "coran",
+      "vista": "en medina no se abstienen te daré poder sobre ellos y en consecuencia no",
+      "x": -0.2368,
+      "y": -0.0004,
+      "z": -0.1191
+    },
+    {
+      "id": 15,
+      "texto": "biblia",
+      "vista": "de israel fueron e hicieron puntualmente así como jehová había mandado a moisés y",
+      "x": 0.1718,
+      "y": -0.0849,
+      "z": -0.015
+    },
+    {
+      "id": 16,
+      "texto": "biblia",
+      "vista": "de amán enemigo de los judíos y mardoqueo vino delante del rey porque ester",
+      "x": 0.0697,
+      "y": -0.0765,
+      "z": 0.0223
+    },
+    {
+      "id": 17,
+      "texto": "biblia",
+      "vista": "sea puesta en la lista sólo la viuda no menor de sesenta años que",
+      "x": -0.0987,
+      "y": -0.021,
+      "z": 0.079
+    },
+    {
+      "id": 18,
+      "texto": "biblia",
+      "vista": "afligiendo con ayuno mi alma y esto me ha sido por afrenta puse además",
+      "x": 0.0076,
+      "y": 0.2846,
+      "z": -0.0997
+    },
+    {
+      "id": 19,
+      "texto": "coran",
+      "vista": "tomado una decisión encomiéndate a dios porque dios ama a los que se encomiendan",
+      "x": -0.2347,
+      "y": -0.061,
+      "z": -0.0464
+    },
+    {
+      "id": 20,
+      "texto": "biblia",
+      "vista": "porque yo sé los pensamientos que tengo acerca de vosotros dice jehová pensamientos de",
+      "x": 0.127,
+      "y": 0.158,
+      "z": 0.1391
+    },
+    {
+      "id": 21,
+      "texto": "biblia",
+      "vista": "yo no podré escapar al monte no sea que me alcance el mal y",
+      "x": 0.072,
+      "y": 0.0122,
+      "z": 0.0066
+    },
+    {
+      "id": 22,
+      "texto": "biblia",
+      "vista": "las mujeres del rey a sus oficiales y a los poderosos de la tierra",
+      "x": 0.1845,
+      "y": -0.1605,
+      "z": -0.0502
+    },
+    {
+      "id": 23,
+      "texto": "biblia",
+      "vista": "los cielos jesús el hijo de dios retengamos nuestra profesión porque no tenemos un",
+      "x": -0.0556,
+      "y": 0.0322,
+      "z": 0.1321
+    },
+    {
+      "id": 24,
+      "texto": "biblia",
+      "vista": "anda por lugares secos buscando reposo y no lo halla entonces dice volveré a",
+      "x": -0.007,
+      "y": -0.0187,
+      "z": 0.156
+    },
+    {
+      "id": 25,
+      "texto": "biblia",
+      "vista": "jeremías diciendo ve y habla a hananías diciendo así ha dicho jehová yugos de",
+      "x": 0.189,
+      "y": 0.0248,
+      "z": 0.0115
+    },
+    {
+      "id": 26,
+      "texto": "biblia",
+      "vista": "no habéis de hacer esto jehová amonestó entonces a israel y a judá por",
+      "x": 0.1102,
+      "y": -0.0295,
+      "z": -0.0245
+    },
+    {
+      "id": 27,
+      "texto": "biblia",
+      "vista": "los impíos serán quebrados mas el que sostiene a los justos es jehová conoce",
+      "x": -0.0093,
+      "y": 0.1029,
+      "z": -0.0539
+    },
+    {
+      "id": 28,
+      "texto": "biblia",
+      "vista": "una tilde pasará de la ley hasta que todo se haya cumplido de manera",
+      "x": -0.0268,
+      "y": 0.0208,
+      "z": 0.0763
+    },
+    {
+      "id": 29,
+      "texto": "biblia",
+      "vista": "les contestaron sansón el yerno del timnateo porque le quitó su mujer y la",
+      "x": 0.0579,
+      "y": -0.0539,
+      "z": 0.0941
+    },
+    {
+      "id": 30,
+      "texto": "biblia",
+      "vista": "ciudades de refugio de las cuales yo os hablé por medio de moisés para",
+      "x": 0.0721,
+      "y": -0.1152,
+      "z": 0.0591
+    },
+    {
+      "id": 31,
+      "texto": "biblia",
+      "vista": "él venga convencerá al mundo de pecado de justicia y de juicio de pecado",
+      "x": -0.1071,
+      "y": 0.0684,
+      "z": 0.2193
+    },
+    {
+      "id": 32,
+      "texto": "biblia",
+      "vista": "subió con él y heber ceneo de los hijos de hobab suegro de moisés",
+      "x": 0.1288,
+      "y": -0.0829,
+      "z": -0.0363
+    },
+    {
+      "id": 33,
+      "texto": "biblia",
+      "vista": "reprendido por juan a causa de herodías mujer de felipe su hermano y de",
+      "x": 0.0504,
+      "y": -0.0951,
+      "z": 0.0867
+    },
+    {
+      "id": 34,
+      "texto": "biblia",
+      "vista": "bautizado y ellos le dijeron podemos el les dijo a la verdad de mi",
+      "x": -0.0522,
+      "y": -0.0144,
+      "z": 0.1294
+    },
+    {
+      "id": 35,
+      "texto": "biblia",
+      "vista": "nuestros pecados el prevaricar y mentir contra jehová y el apartarse de en pos",
+      "x": 0.0123,
+      "y": 0.0428,
+      "z": -0.0487
+    },
+    {
+      "id": 36,
+      "texto": "biblia",
+      "vista": "langostín según su especie el argol según su especie y el hagab según su",
+      "x": -0.0129,
+      "y": -0.0801,
+      "z": -0.0208
+    },
+    {
+      "id": 37,
+      "texto": "coran",
+      "vista": "es sabio conocedor lo agracié a abraham con isaac y a este con jacob",
+      "x": -0.1861,
+      "y": -0.1048,
+      "z": -0.0331
+    },
+    {
+      "id": 38,
+      "texto": "coran",
+      "vista": "sura la noche juro por la noche cuando cubre con la oscuridad por el",
+      "x": -0.182,
+      "y": -0.029,
+      "z": -0.0354
+    },
+    {
+      "id": 39,
+      "texto": "biblia",
+      "vista": "boset dijo el rey comerá a mi mesa como uno de los hijos del",
+      "x": 0.1113,
+      "y": -0.0803,
+      "z": -0.0567
+    },
+    {
+      "id": 40,
+      "texto": "biblia",
+      "vista": "el brazo del señor por esto no podían creer porque también dijo isaías cegó",
+      "x": -0.0595,
+      "y": 0.1108,
+      "z": 0.1615
+    },
+    {
+      "id": 41,
+      "texto": "biblia",
+      "vista": "aborreciere y le atribuyere faltas que den que hablar y dijere a esta mujer",
+      "x": 0.0445,
+      "y": -0.0241,
+      "z": 0.0396
+    },
+    {
+      "id": 42,
+      "texto": "biblia",
+      "vista": "para destruiros entonces aumentaré el hambre sobre vosotros y quebrantaré entre vosotros el sustento",
+      "x": 0.1344,
+      "y": 0.0973,
+      "z": -0.0144
+    },
+    {
+      "id": 43,
+      "texto": "biblia",
+      "vista": "aquel a quien se le perdona poco poco ama y a ella le dijo",
+      "x": -0.0429,
+      "y": -0.105,
+      "z": 0.0645
+    },
+    {
+      "id": 44,
+      "texto": "biblia",
+      "vista": "convoqué a los sacerdotes y les hice jurar que harían conforme a esto además",
+      "x": 0.0933,
+      "y": -0.059,
+      "z": 0.025
+    },
+    {
+      "id": 45,
+      "texto": "biblia",
+      "vista": "del amorreo y a todas sus comarcas en el arabá en el monte en",
+      "x": 0.0829,
+      "y": 0.0365,
+      "z": 0.101
+    },
+    {
+      "id": 46,
+      "texto": "biblia",
+      "vista": "inmunda cualquiera que tocare cualquiera cosa que haya estado debajo de él será inmundo",
+      "x": 0.0131,
+      "y": -0.0878,
+      "z": -0.0287
+    },
+    {
+      "id": 47,
+      "texto": "biblia",
+      "vista": "de jehová petición de ayuda contra el enemigo sal cántico salmo de david mi",
+      "x": 0.0244,
+      "y": 0.209,
+      "z": -0.1519
+    },
+    {
+      "id": 48,
+      "texto": "biblia",
+      "vista": "pobres del país dejó nabuzaradán capitán de la guardia para viñadores y labradores y",
+      "x": 0.0769,
+      "y": -0.1782,
+      "z": -0.0544
+    },
+    {
+      "id": 49,
+      "texto": "biblia",
+      "vista": "para el huérfano y para la viuda y acuérdate que fuiste siervo en tierra",
+      "x": 0.002,
+      "y": -0.0106,
+      "z": 0.0185
+    },
+    {
+      "id": 50,
+      "texto": "biblia",
+      "vista": "las muchas aguas de la mano de los hombres extraños cuya boca habla vanidad",
+      "x": 0.0257,
+      "y": 0.1283,
+      "z": -0.1402
+    },
+    {
+      "id": 51,
+      "texto": "biblia",
+      "vista": "le he dado palabra a jehová y no podré retractarme ella entonces le respondió",
+      "x": 0.1079,
+      "y": -0.0183,
+      "z": -0.0134
+    },
+    {
+      "id": 52,
+      "texto": "biblia",
+      "vista": "un poco no entendemos lo que habla jesús conoció que querían preguntarle y les",
+      "x": -0.0591,
+      "y": 0.0996,
+      "z": 0.3235
+    },
+    {
+      "id": 53,
+      "texto": "biblia",
+      "vista": "jerusalén los artífices y los ingenieros de jerusalén por mano de elasa hijo de",
+      "x": 0.1444,
+      "y": 0.002,
+      "z": 0.045
+    },
+    {
+      "id": 54,
+      "texto": "coran",
+      "vista": "la resurrección dios no ha de conceder a los que rechazan el mensaje la",
+      "x": -0.2815,
+      "y": -0.0564,
+      "z": -0.0488
+    },
+    {
+      "id": 55,
+      "texto": "biblia",
+      "vista": "le será perdonado cuando os trajeren a las sinagogas y ante los magistrados y",
+      "x": -0.0543,
+      "y": 0.0601,
+      "z": 0.112
+    },
+    {
+      "id": 56,
+      "texto": "biblia",
+      "vista": "asán con sus ejidos y bet semes con sus ejidos y de la tribu",
+      "x": 0.1083,
+      "y": -0.225,
+      "z": -0.1387
+    },
+    {
+      "id": 57,
+      "texto": "biblia",
+      "vista": "levantaos y orad para que no entréis en tentación arresto de jesús mt mr",
+      "x": 0.0104,
+      "y": -0.1305,
+      "z": 0.1888
+    },
+    {
+      "id": 58,
+      "texto": "biblia",
+      "vista": "el profeta daniel puesta donde no debe estar el que lee entienda entonces los",
+      "x": -0.0324,
+      "y": -0.0105,
+      "z": 0.1576
+    },
+    {
+      "id": 59,
+      "texto": "biblia",
+      "vista": "jehová y dijo yo conozco que todo lo puedes y que no hay pensamiento",
+      "x": 0.05,
+      "y": 0.1547,
+      "z": 0.0451
+    },
+    {
+      "id": 60,
+      "texto": "biblia",
+      "vista": "culpables mal venía sobre ellos dice jehová oíd la palabra de jehová casa de",
+      "x": 0.1065,
+      "y": 0.0503,
+      "z": 0.0343
+    },
+    {
+      "id": 61,
+      "texto": "biblia",
+      "vista": "hasta en medio de los cielos con tinieblas nube y oscuridad y habló jehová",
+      "x": 0.0581,
+      "y": 0.0292,
+      "z": 0.0735
+    },
+    {
+      "id": 62,
+      "texto": "biblia",
+      "vista": "grupos de los sacerdotes y de los levitas para todo el ministerio de la",
+      "x": 0.0766,
+      "y": -0.0078,
+      "z": -0.0363
+    },
+    {
+      "id": 63,
+      "texto": "coran",
+      "vista": "ser humano debería reflexionar sobre su alimento hice descender el agua en abundancia luego",
+      "x": -0.0874,
+      "y": -0.0862,
+      "z": -0.0362
+    },
+    {
+      "id": 64,
+      "texto": "biblia",
+      "vista": "mal olor al perfume del perfumista así una pequeña locura al que es estimado",
+      "x": -0.0565,
+      "y": 0.0209,
+      "z": -0.0074
+    },
+    {
+      "id": 65,
+      "texto": "biblia",
+      "vista": "el tercero noha el cuarto y rafa el quinto y los hijos de bela",
+      "x": 0.0781,
+      "y": -0.1908,
+      "z": -0.0801
+    },
+    {
+      "id": 66,
+      "texto": "coran",
+      "vista": "de no haber sido por él la promesa con la que vinieron los mensajeros",
+      "x": -0.1999,
+      "y": -0.0831,
+      "z": -0.0692
+    },
+    {
+      "id": 67,
+      "texto": "biblia",
+      "vista": "corazón ni tenga miedo habéis oído que yo os he dicho voy y vengo",
+      "x": -0.0414,
+      "y": 0.1275,
+      "z": 0.2896
+    },
+    {
+      "id": 68,
+      "texto": "biblia",
+      "vista": "la batalla aun la cigüeña en el cielo conoce su tiempo y la tórtola",
+      "x": -0.0035,
+      "y": 0.0444,
+      "z": 0.0252
+    },
+    {
+      "id": 69,
+      "texto": "biblia",
+      "vista": "poned gloria en su alabanza decid a dios cuán asombrosas son tus obras por",
+      "x": -0.0022,
+      "y": 0.1652,
+      "z": -0.1748
+    },
+    {
+      "id": 70,
+      "texto": "biblia",
+      "vista": "de los que van a cautividad y se acercará el duelo de los que",
+      "x": 0.0368,
+      "y": 0.0691,
+      "z": 0.0634
+    },
+    {
+      "id": 71,
+      "texto": "biblia",
+      "vista": "para expiación y para ofrenda de paz dos bueyes cinco carneros cinco machos cabríos",
+      "x": 0.0436,
+      "y": -0.1633,
+      "z": -0.0914
+    },
+    {
+      "id": 72,
+      "texto": "biblia",
+      "vista": "y mi cántico es jah y él me ha sido por salvación voz de",
+      "x": 0.0036,
+      "y": 0.1617,
+      "z": -0.025
+    },
+    {
+      "id": 73,
+      "texto": "biblia",
+      "vista": "serán de una pieza todo ello una pieza labrada a martillo de oro puro",
+      "x": 0.0098,
+      "y": -0.1447,
+      "z": -0.0811
+    },
+    {
+      "id": 74,
+      "texto": "biblia",
+      "vista": "la escritura al rey y le daré la interpretación el altísimo dios oh rey",
+      "x": 0.0195,
+      "y": 0.0336,
+      "z": -0.0444
+    },
+    {
+      "id": 75,
+      "texto": "biblia",
+      "vista": "otra vez dice isaías estará la raíz de isaí y el que se levantará",
+      "x": -0.0852,
+      "y": 0.0511,
+      "z": 0.2339
+    },
+    {
+      "id": 76,
+      "texto": "biblia",
+      "vista": "con los extraños debajo de todo árbol frondoso y no oíste mi voz dice",
+      "x": 0.1201,
+      "y": 0.0962,
+      "z": 0.0574
+    },
+    {
+      "id": 77,
+      "texto": "biblia",
+      "vista": "por expiación además del holocausto continuo con su ofrenda y su libación el octavo",
+      "x": 0.0933,
+      "y": -0.0883,
+      "z": -0.0276
+    },
+    {
+      "id": 78,
+      "texto": "biblia",
+      "vista": "dar la recompensa con tu mano a ti se acoge el desvalido tú eres",
+      "x": 0.0317,
+      "y": 0.1514,
+      "z": -0.1115
+    },
+    {
+      "id": 79,
+      "texto": "biblia",
+      "vista": "debajo de él y las aves de sus ramas mas la cepa de sus",
+      "x": 0.0069,
+      "y": 0.0581,
+      "z": -0.0185
+    },
+    {
+      "id": 80,
+      "texto": "biblia",
+      "vista": "el mal contra ti fraguaron maquinaciones mas no prevalecerán pues tú los pondrás en",
+      "x": 0.0303,
+      "y": 0.2189,
+      "z": -0.1131
+    },
+    {
+      "id": 81,
+      "texto": "coran",
+      "vista": "el camino correcto cuando llegó a la aguada de madián encontró pastores dando de",
+      "x": -0.0703,
+      "y": -0.0599,
+      "z": -0.0083
+    },
+    {
+      "id": 82,
+      "texto": "biblia",
+      "vista": "acordaron matar a los presos para que ninguno se fugase nadando pero el centurión",
+      "x": -0.0561,
+      "y": -0.084,
+      "z": 0.0502
+    },
+    {
+      "id": 83,
+      "texto": "coran",
+      "vista": "diles yo sigo la palabra que proviene de mi señor que ustedes desmienten lo",
+      "x": -0.2177,
+      "y": -0.0061,
+      "z": -0.0507
+    },
+    {
+      "id": 84,
+      "texto": "biblia",
+      "vista": "los filisteos y el pueblo que estaba en el campamento oyó decir zimri ha",
+      "x": 0.122,
+      "y": -0.1264,
+      "z": -0.0254
+    },
+    {
+      "id": 85,
+      "texto": "biblia",
+      "vista": "los hijos de los que te afligieron y a las pisadas de tus pies",
+      "x": 0.057,
+      "y": 0.1445,
+      "z": -0.1122
+    },
+    {
+      "id": 86,
+      "texto": "biblia",
+      "vista": "tu estatura es semejante a la palmera y tus pechos a los racimos yo",
+      "x": -0.0004,
+      "y": 0.1708,
+      "z": -0.0612
+    },
+    {
+      "id": 87,
+      "texto": "coran",
+      "vista": "sura los hombres di me refugio en el señor de los seres humanos en",
+      "x": -0.0944,
+      "y": -0.0679,
+      "z": -0.0683
+    },
+    {
+      "id": 88,
+      "texto": "biblia",
+      "vista": "todos los confines de la tierra verán la salvación del dios nuestro apartaos apartaos",
+      "x": 0.0341,
+      "y": 0.0804,
+      "z": -0.0115
+    },
+    {
+      "id": 89,
+      "texto": "biblia",
+      "vista": "que el juicio comience por la casa de dios y si primero comienza por",
+      "x": -0.0877,
+      "y": 0.0167,
+      "z": 0.1656
+    },
+    {
+      "id": 90,
+      "texto": "biblia",
+      "vista": "al que quiere endurecer endurece pero me dirás por qué pues inculpa porque quién",
+      "x": -0.037,
+      "y": 0.0448,
+      "z": 0.073
+    },
+    {
+      "id": 91,
+      "texto": "biblia",
+      "vista": "viento en el lago y se anegaban y peligraban y vinieron a él y",
+      "x": -0.0201,
+      "y": -0.0479,
+      "z": 0.1504
+    },
+    {
+      "id": 92,
+      "texto": "biblia",
+      "vista": "tierra seca y árida donde no hay aguas para ver tu poder y tu",
+      "x": -0.0147,
+      "y": 0.2712,
+      "z": -0.1495
+    },
+    {
+      "id": 93,
+      "texto": "biblia",
+      "vista": "oh señor jehová cuando acabó salomón de hacer a jehová toda esta oración y",
+      "x": 0.0688,
+      "y": 0.0623,
+      "z": -0.0373
+    },
+    {
+      "id": 94,
+      "texto": "coran",
+      "vista": "les pasa cómo es que juzgan no van a pensar antes de hablar o",
+      "x": -0.3056,
+      "y": -0.0443,
+      "z": -0.0634
+    },
+    {
+      "id": 95,
+      "texto": "coran",
+      "vista": "que ya no tengan deseo sexual y los niños que todavía no sienten atracción",
+      "x": -0.2172,
+      "y": -0.0591,
+      "z": -0.0585
+    },
+    {
+      "id": 96,
+      "texto": "biblia",
+      "vista": "pasa al lado del monte de jearim hacia el norte el cual es quesalón",
+      "x": 0.1146,
+      "y": -0.1483,
+      "z": -0.0111
+    },
+    {
+      "id": 97,
+      "texto": "biblia",
+      "vista": "la comiere será cortado y cualquier persona así de los naturales como de los",
+      "x": 0.0358,
+      "y": 0.0532,
+      "z": -0.0254
+    },
+    {
+      "id": 98,
+      "texto": "biblia",
+      "vista": "filisteos contra israel y al oír esto los hijos de israel tuvieron temor de",
+      "x": 0.1361,
+      "y": -0.1282,
+      "z": -0.0492
+    },
+    {
+      "id": 99,
+      "texto": "biblia",
+      "vista": "madre fue sibia de beerseba y joás hizo lo recto ante los ojos de",
+      "x": 0.0651,
+      "y": -0.0975,
+      "z": 0.0452
+    },
+    {
+      "id": 100,
+      "texto": "biblia",
+      "vista": "de una columna era de dieciocho codos y tenía encima un capitel de bronce",
+      "x": 0.115,
+      "y": -0.2152,
+      "z": -0.0568
+    },
+    {
+      "id": 101,
+      "texto": "biblia",
+      "vista": "que por cuanto los hijos participaron de carne y sangre él también participó de",
+      "x": -0.0485,
+      "y": -0.0548,
+      "z": 0.1525
+    },
+    {
+      "id": 102,
+      "texto": "biblia",
+      "vista": "al encuentro de balaam y puso palabra en su boca y le dijo vuelve",
+      "x": 0.0905,
+      "y": 0.048,
+      "z": 0.0207
+    },
+    {
+      "id": 103,
+      "texto": "biblia",
+      "vista": "doctor de la ley venerado de todo el pueblo mandó que sacasen fuera por",
+      "x": -0.0331,
+      "y": -0.0893,
+      "z": 0.1642
+    },
+    {
+      "id": 104,
+      "texto": "biblia",
+      "vista": "pero uno de los soldados le abrió el costado con una lanza y al",
+      "x": -0.0571,
+      "y": -0.0975,
+      "z": 0.1936
+    },
+    {
+      "id": 105,
+      "texto": "coran",
+      "vista": "sus bienes materiales y combatir dios sabe bien quiénes son los piadosos los que",
+      "x": -0.2794,
+      "y": -0.0637,
+      "z": -0.0778
+    },
+    {
+      "id": 106,
+      "texto": "coran",
+      "vista": "sura la soberanía bendito sea aquel en cuyas manos está el reino y tiene",
+      "x": -0.2173,
+      "y": -0.0432,
+      "z": -0.0203
+    },
+    {
+      "id": 107,
+      "texto": "biblia",
+      "vista": "se ceñirán de cilicio en sus calles en sus terrados y en sus plazas",
+      "x": 0.0568,
+      "y": -0.0242,
+      "z": -0.0601
+    },
+    {
+      "id": 108,
+      "texto": "biblia",
+      "vista": "éste y llamó su nombre simeón y concibió otra vez y dio a luz",
+      "x": 0.0616,
+      "y": 0.0127,
+      "z": 0.0317
+    },
+    {
+      "id": 109,
+      "texto": "biblia",
+      "vista": "se hará al hombre que le venciere y oyéndole hablar eliab su hermano mayor",
+      "x": 0.0561,
+      "y": 0.037,
+      "z": 0.0245
+    },
+    {
+      "id": 110,
+      "texto": "coran",
+      "vista": "sura la evidencia no es concebible que los incrédulos de la gente del libro",
+      "x": -0.2721,
+      "y": -0.1096,
+      "z": -0.0957
+    },
+    {
+      "id": 111,
+      "texto": "biblia",
+      "vista": "hablar porque soy niño y me dijo jehová no digas soy un niño porque",
+      "x": 0.0952,
+      "y": 0.1755,
+      "z": 0.0068
+    },
+    {
+      "id": 112,
+      "texto": "biblia",
+      "vista": "malas cosas mas yo os digo que de toda palabra ociosa que hablen los",
+      "x": 0.0117,
+      "y": -0.003,
+      "z": 0.1059
+    },
+    {
+      "id": 113,
+      "texto": "biblia",
+      "vista": "jehová es testigo contra vosotros y su ungido también es testigo en este día",
+      "x": 0.1454,
+      "y": -0.0013,
+      "z": 0.0437
+    },
+    {
+      "id": 114,
+      "texto": "biblia",
+      "vista": "está el día día de tumulto y no de alegría sobre los montes ahora",
+      "x": 0.022,
+      "y": 0.1453,
+      "z": -0.0416
+    },
+    {
+      "id": 115,
+      "texto": "biblia",
+      "vista": "oí del cielo habló otra vez conmigo y dijo ve y toma el librito",
+      "x": -0.0041,
+      "y": -0.0034,
+      "z": -0.012
+    },
+    {
+      "id": 116,
+      "texto": "biblia",
+      "vista": "safán hijo de azalía hijo de mesulam escriba a la casa de jehová diciendo",
+      "x": 0.0502,
+      "y": -0.0881,
+      "z": -0.0211
+    },
+    {
+      "id": 117,
+      "texto": "coran",
+      "vista": "encima de ellos y les dije ingresen por la puerta principal de la ciudad",
+      "x": -0.2155,
+      "y": -0.0472,
+      "z": -0.0363
+    },
+    {
+      "id": 118,
+      "texto": "biblia",
+      "vista": "tomaron la ropa y la pusieron sobre sus propios hombros y andando hacia atrás",
+      "x": 0.0499,
+      "y": -0.1053,
+      "z": -0.0648
+    },
+    {
+      "id": 119,
+      "texto": "biblia",
+      "vista": "jefe y por maestro a las naciones he aquí llamarás a gente que no",
+      "x": 0.0158,
+      "y": 0.1807,
+      "z": -0.0196
+    },
+    {
+      "id": 120,
+      "texto": "coran",
+      "vista": "sura la araña álif lam mim acaso piensa la gente que se los dejará",
+      "x": -0.2485,
+      "y": -0.0259,
+      "z": -0.0749
+    },
+    {
+      "id": 121,
+      "texto": "biblia",
+      "vista": "y asimismo todo judá y los moradores de jerusalén se postraron delante de jehová",
+      "x": 0.1043,
+      "y": -0.0832,
+      "z": -0.0435
+    },
+    {
+      "id": 122,
+      "texto": "coran",
+      "vista": "sura ya sin iá sín juro por el corán que está lleno de sabiduría",
+      "x": -0.2425,
+      "y": -0.0499,
+      "z": -0.0957
+    },
+    {
+      "id": 123,
+      "texto": "biblia",
+      "vista": "y su suegra vio lo que había recogido sacó también luego lo que le",
+      "x": 0.0218,
+      "y": -0.0121,
+      "z": 0.0003
+    },
+    {
+      "id": 124,
+      "texto": "biblia",
+      "vista": "rectos por tanto yo os juzgaré a cada uno según sus caminos oh casa",
+      "x": 0.0867,
+      "y": 0.0195,
+      "z": 0.0341
+    },
+    {
+      "id": 125,
+      "texto": "biblia",
+      "vista": "judío he aquí yo he dado a ester la casa de amán y a",
+      "x": 0.0784,
+      "y": -0.0918,
+      "z": 0.0561
+    },
+    {
+      "id": 126,
+      "texto": "biblia",
+      "vista": "honran al padre el que no honra al hijo no honra al padre que",
+      "x": -0.0849,
+      "y": 0.0736,
+      "z": 0.2356
+    },
+    {
+      "id": 127,
+      "texto": "biblia",
+      "vista": "simón amnón rina ben hanán y tilón y los hijos de isi zohet y",
+      "x": 0.1301,
+      "y": -0.1961,
+      "z": -0.0641
+    },
+    {
+      "id": 128,
+      "texto": "coran",
+      "vista": "los pecadores juro por lo que ven y por lo que no puede verse",
+      "x": -0.2428,
+      "y": -0.0241,
+      "z": -0.0402
+    },
+    {
+      "id": 129,
+      "texto": "biblia",
+      "vista": "jehová y sacó el criado alhajas de plata y alhajas de oro y vestidos",
+      "x": 0.0525,
+      "y": -0.0408,
+      "z": 0.0141
+    },
+    {
+      "id": 130,
+      "texto": "biblia",
+      "vista": "me ofrecisteis sacrificios y ofrendas en el desierto en cuarenta años oh casa de",
+      "x": 0.0779,
+      "y": 0.0086,
+      "z": 0.0265
+    },
+    {
+      "id": 131,
+      "texto": "coran",
+      "vista": "sura los profetas se aproxima la hora en que la gente deberá comparecer ante",
+      "x": -0.2993,
+      "y": -0.0155,
+      "z": -0.0567
+    },
+    {
+      "id": 132,
+      "texto": "biblia",
+      "vista": "josé enviaba para llevarlo su espíritu revivió entonces dijo israel basta josé mi hijo",
+      "x": 0.1322,
+      "y": -0.0472,
+      "z": -0.0312
+    },
+    {
+      "id": 133,
+      "texto": "biblia",
+      "vista": "dos mil en micmas y en el monte de bet el y mil estaban",
+      "x": 0.1354,
+      "y": -0.1686,
+      "z": 0.0003
+    },
+    {
+      "id": 134,
+      "texto": "biblia",
+      "vista": "días no dijeron nada a nadie de lo que habían visto jesús sana a",
+      "x": -0.0381,
+      "y": -0.0204,
+      "z": 0.1817
+    },
+    {
+      "id": 135,
+      "texto": "biblia",
+      "vista": "porque he hablado en mi celo y en el fuego de mi ira que",
+      "x": 0.1049,
+      "y": 0.1402,
+      "z": -0.0678
+    },
+    {
+      "id": 136,
+      "texto": "biblia",
+      "vista": "él el que oprime al pobre para aumentar sus ganancias o que da al",
+      "x": -0.0433,
+      "y": 0.1658,
+      "z": -0.0541
+    },
+    {
+      "id": 137,
+      "texto": "biblia",
+      "vista": "sobre ellos y moisés volvió al campamento él y los ancianos de israel y",
+      "x": 0.0993,
+      "y": -0.1303,
+      "z": -0.0031
+    },
+    {
+      "id": 138,
+      "texto": "biblia",
+      "vista": "contenerla es como refrenar el viento o sujetar el aceite en la mano derecha",
+      "x": -0.0258,
+      "y": 0.0541,
+      "z": -0.0797
+    },
+    {
+      "id": 139,
+      "texto": "biblia",
+      "vista": "los pies de los sacerdotes doce piedras las cuales pasaréis con vosotros y levantadlas",
+      "x": 0.1647,
+      "y": -0.1321,
+      "z": 0.0257
+    },
+    {
+      "id": 140,
+      "texto": "coran",
+      "vista": "encuentre y me ha encomendado hacer la oración dar caridad mientras viva honrar a",
+      "x": -0.1968,
+      "y": -0.0153,
+      "z": -0.0068
+    },
+    {
+      "id": 141,
+      "texto": "biblia",
+      "vista": "la cual yo habito porque yo jehová habito en medio de los hijos de",
+      "x": 0.1559,
+      "y": -0.0866,
+      "z": -0.0876
+    },
+    {
+      "id": 142,
+      "texto": "coran",
+      "vista": "sura el hombre acaso no hubo un lapso enorme de tiempo en el cual",
+      "x": -0.2197,
+      "y": -0.0502,
+      "z": -0.0792
+    },
+    {
+      "id": 143,
+      "texto": "biblia",
+      "vista": "te ungí por rey sobre israel y te libré de la mano de saúl",
+      "x": 0.1503,
+      "y": 0.1295,
+      "z": -0.0661
+    },
+    {
+      "id": 144,
+      "texto": "biblia",
+      "vista": "abisai y a todos sus siervos he aquí mi hijo que ha salido de",
+      "x": 0.1177,
+      "y": 0.0336,
+      "z": 0.0076
+    },
+    {
+      "id": 145,
+      "texto": "coran",
+      "vista": "adoran en lugar de dios no son sino nombres que ustedes y sus padres",
+      "x": -0.1233,
+      "y": -0.0514,
+      "z": 0.0084
+    },
+    {
+      "id": 146,
+      "texto": "biblia",
+      "vista": "dios de nuestros padres y lo demande entonces el espíritu vino sobre amasai jefe",
+      "x": 0.0658,
+      "y": -0.0607,
+      "z": -0.0372
+    },
+    {
+      "id": 147,
+      "texto": "biblia",
+      "vista": "sacerdotes de jehová ministros de nuestro dios seréis llamados comeréis las riquezas de las",
+      "x": 0.0248,
+      "y": 0.1237,
+      "z": -0.0143
+    },
+    {
+      "id": 148,
+      "texto": "coran",
+      "vista": "igual forma luego tendrán que comparecer ante el conocedor de lo oculto y de",
+      "x": -0.2314,
+      "y": -0.0849,
+      "z": -0.0778
+    },
+    {
+      "id": 149,
+      "texto": "biblia",
+      "vista": "de los reyes y le bendijo a quien asimismo dio abraham los diezmos de",
+      "x": -0.0226,
+      "y": -0.0688,
+      "z": 0.1067
+    },
+    {
+      "id": 150,
+      "texto": "biblia",
+      "vista": "sí oscuridad de aguas nubes de los cielos por el resplandor de su presencia",
+      "x": 0.059,
+      "y": 0.1468,
+      "z": -0.0444
+    },
+    {
+      "id": 151,
+      "texto": "biblia",
+      "vista": "conmigo sería aún mi consuelo si me asaltase con dolor sin dar más tregua",
+      "x": -0.0337,
+      "y": 0.0926,
+      "z": 0.1119
+    },
+    {
+      "id": 152,
+      "texto": "biblia",
+      "vista": "lado derecho y salió el varón hacia el oriente llevando un cordel en su",
+      "x": 0.0434,
+      "y": -0.0813,
+      "z": 0.0106
+    },
+    {
+      "id": 153,
+      "texto": "biblia",
+      "vista": "que a los que aman a dios todas las cosas les ayudan a bien",
+      "x": -0.0925,
+      "y": 0.0023,
+      "z": 0.1421
+    },
+    {
+      "id": 154,
+      "texto": "biblia",
+      "vista": "samaritanos de aquella ciudad creyeron en él por la palabra de la mujer que",
+      "x": 0.0125,
+      "y": -0.1027,
+      "z": 0.1946
+    },
+    {
+      "id": 155,
+      "texto": "biblia",
+      "vista": "descender del cielo de dios dispuesta como una esposa ataviada para su marido y",
+      "x": -0.0078,
+      "y": 0.0372,
+      "z": 0.0505
+    },
+    {
+      "id": 156,
+      "texto": "coran",
+      "vista": "faraón cuando se les presentó un mensajero noble que les dijo dejen en libertad",
+      "x": -0.1357,
+      "y": -0.0291,
+      "z": -0.0442
+    },
+    {
+      "id": 157,
+      "texto": "coran",
+      "vista": "morarán eternamente donde tendrán esposas purificadas bajo buena sombra dios les ordena que restituyan",
+      "x": -0.282,
+      "y": -0.0273,
+      "z": -0.113
+    },
+    {
+      "id": 158,
+      "texto": "biblia",
+      "vista": "saúl y de sus hijos cr samuel los filisteos pues pelearon contra israel y",
+      "x": 0.1377,
+      "y": -0.152,
+      "z": -0.0289
+    },
+    {
+      "id": 159,
+      "texto": "biblia",
+      "vista": "pobre está en vuestras casas qué pensáis vosotros que majáis mi pueblo y moléis",
+      "x": 0.0515,
+      "y": 0.0253,
+      "z": -0.0526
+    },
+    {
+      "id": 160,
+      "texto": "biblia",
+      "vista": "ira y tu indignación según que debes ser temido enséñanos de tal modo a",
+      "x": 0.0034,
+      "y": 0.0913,
+      "z": -0.1088
+    },
+    {
+      "id": 161,
+      "texto": "biblia",
+      "vista": "de la costa de quitim y afligirán a asiria afligirán también a heber mas",
+      "x": 0.1706,
+      "y": -0.1179,
+      "z": -0.0535
+    },
+    {
+      "id": 162,
+      "texto": "biblia",
+      "vista": "por el profeta isaías cuando dijo el mismo tomó nuestras enfermedades y llevó nuestras",
+      "x": -0.0231,
+      "y": -0.0965,
+      "z": 0.1491
+    },
+    {
+      "id": 163,
+      "texto": "biblia",
+      "vista": "israel será dan serpiente junto al camino víbora junto a la senda que muerde",
+      "x": 0.0209,
+      "y": -0.0198,
+      "z": -0.0887
+    },
+    {
+      "id": 164,
+      "texto": "biblia",
+      "vista": "guardado mi alma la exposición de tus palabras alumbra hace entender a los simples",
+      "x": 0.0278,
+      "y": 0.2911,
+      "z": -0.1034
+    },
+    {
+      "id": 165,
+      "texto": "biblia",
+      "vista": "él da fuerza y vigor a su pueblo bendito sea dios un grito de",
+      "x": 0.0006,
+      "y": 0.2659,
+      "z": -0.0907
+    },
+    {
+      "id": 166,
+      "texto": "biblia",
+      "vista": "como dios le había mandado y era abraham de cien años cuando nació isaac",
+      "x": 0.0556,
+      "y": -0.0118,
+      "z": 0.0327
+    },
+    {
+      "id": 167,
+      "texto": "biblia",
+      "vista": "dado hasta que jehová dé reposo a vuestros hermanos así como a vosotros y",
+      "x": 0.0913,
+      "y": 0.1225,
+      "z": 0.1288
+    },
+    {
+      "id": 168,
+      "texto": "biblia",
+      "vista": "ira y grande en misericordia que perdona la iniquidad y la rebelión aunque de",
+      "x": 0.1108,
+      "y": 0.1248,
+      "z": 0.012
+    },
+    {
+      "id": 169,
+      "texto": "biblia",
+      "vista": "todas pueblos todos alabadle porque ha engrandecido sobre nosotros su misericordia y la fidelidad",
+      "x": 0.0414,
+      "y": 0.1303,
+      "z": -0.0154
+    },
+    {
+      "id": 170,
+      "texto": "biblia",
+      "vista": "de vuestros padres prole de hombres pecadores para añadir aún a la ira de",
+      "x": 0.1247,
+      "y": -0.0681,
+      "z": 0.0487
+    },
+    {
+      "id": 171,
+      "texto": "biblia",
+      "vista": "del pueblo el cual dijo haremos todas las cosas que jehová ha dicho y",
+      "x": 0.1587,
+      "y": -0.0468,
+      "z": 0.0161
+    },
+    {
+      "id": 172,
+      "texto": "biblia",
+      "vista": "estoy con vosotros dice jehová y despertó jehová el espíritu de zorobabel hijo de",
+      "x": 0.1425,
+      "y": 0.0167,
+      "z": 0.1284
+    },
+    {
+      "id": 173,
+      "texto": "biblia",
+      "vista": "y la mitad del monte de galaad con sus ciudades la di a los",
+      "x": 0.1291,
+      "y": -0.099,
+      "z": 0.025
+    },
+    {
+      "id": 174,
+      "texto": "coran",
+      "vista": "sura se han expresado con claridad ha mim esta es una revelación descendida por",
+      "x": -0.2473,
+      "y": -0.0617,
+      "z": -0.0869
+    },
+    {
+      "id": 175,
+      "texto": "biblia",
+      "vista": "plata y la hornaza para el oro pero jehová prueba los corazones el malo",
+      "x": -0.0771,
+      "y": -0.0237,
+      "z": -0.044
+    },
+    {
+      "id": 176,
+      "texto": "biblia",
+      "vista": "de israel diciendo escríbete en un libro todas las palabras que te he hablado",
+      "x": 0.1035,
+      "y": 0.1692,
+      "z": -0.0031
+    },
+    {
+      "id": 177,
+      "texto": "coran",
+      "vista": "superior a lo que puedan ofrecerme ayúdenme y erigiré una muralla entre ustedes y",
+      "x": -0.202,
+      "y": -0.0552,
+      "z": -0.0731
+    },
+    {
+      "id": 178,
+      "texto": "biblia",
+      "vista": "no no se acercan a ti muchos dolores habrá para el impío mas al",
+      "x": 0.02,
+      "y": 0.0903,
+      "z": -0.047
+    },
+    {
+      "id": 179,
+      "texto": "biblia",
+      "vista": "junto a la puerta entonces los tres valientes irrumpieron por el campamento de los",
+      "x": 0.0642,
+      "y": -0.1065,
+      "z": -0.0101
+    },
+    {
+      "id": 180,
+      "texto": "coran",
+      "vista": "pobres y débiles es que no recapacitan no les digo que poseo los tesoros",
+      "x": -0.2536,
+      "y": 0.0218,
+      "z": -0.0165
+    },
+    {
+      "id": 181,
+      "texto": "biblia",
+      "vista": "hace dios para que delante de él teman los hombres aquello que fue ya",
+      "x": -0.0982,
+      "y": 0.0236,
+      "z": 0.0326
+    },
+    {
+      "id": 182,
+      "texto": "coran",
+      "vista": "lugar apartado oh hijito mío sube al arca con nosotros y no te cuentes",
+      "x": -0.0769,
+      "y": 0.0528,
+      "z": -0.0818
+    },
+    {
+      "id": 183,
+      "texto": "biblia",
+      "vista": "mirad que esté con vosotros con tranquilidad porque él hace la obra del señor",
+      "x": -0.0447,
+      "y": 0.0523,
+      "z": 0.2568
+    },
+    {
+      "id": 184,
+      "texto": "biblia",
+      "vista": "en la calle ni la obra es de un día ni de dos porque",
+      "x": 0.0426,
+      "y": -0.1587,
+      "z": -0.0366
+    },
+    {
+      "id": 185,
+      "texto": "biblia",
+      "vista": "en guardar y hacer todo lo que está escrito en el libro de la",
+      "x": 0.0384,
+      "y": 0.1051,
+      "z": 0.1406
+    },
+    {
+      "id": 186,
+      "texto": "biblia",
+      "vista": "israel y la mano de los hijos de israel fue endureciéndose más y más",
+      "x": 0.1166,
+      "y": -0.0014,
+      "z": -0.0515
+    },
+    {
+      "id": 187,
+      "texto": "biblia",
+      "vista": "en verdad y en amor permaneced en la doctrina de cristo mucho me regocijé",
+      "x": -0.0782,
+      "y": 0.0687,
+      "z": 0.2628
+    },
+    {
+      "id": 188,
+      "texto": "biblia",
+      "vista": "habéis hecho cueva de ladrones y lo oyeron los escribas y los principales sacerdotes",
+      "x": -0.014,
+      "y": -0.0334,
+      "z": 0.2839
+    },
+    {
+      "id": 189,
+      "texto": "biblia",
+      "vista": "tabernáculo que levantó el señor y no el hombre porque todo sumo sacerdote está",
+      "x": 0.004,
+      "y": 0.0033,
+      "z": 0.0736
+    },
+    {
+      "id": 190,
+      "texto": "biblia",
+      "vista": "en pedro para el apostolado de la circuncisión actuó también en mí para con",
+      "x": -0.0668,
+      "y": -0.053,
+      "z": 0.1464
+    },
+    {
+      "id": 191,
+      "texto": "coran",
+      "vista": "sura el arrepentimiento dios y su mensajero están exentos de responsabilidad sobre el pacto",
+      "x": -0.2297,
+      "y": -0.069,
+      "z": -0.0896
+    },
+    {
+      "id": 192,
+      "texto": "biblia",
+      "vista": "todos los que entran en compañía para ministrar en el tabernáculo de reunión y",
+      "x": 0.1068,
+      "y": -0.1836,
+      "z": -0.0964
+    },
+    {
+      "id": 193,
+      "texto": "biblia",
+      "vista": "en tres escuadrones dio a todos ellos trompetas en sus manos y cántaros vacíos",
+      "x": 0.0843,
+      "y": -0.066,
+      "z": 0.0197
+    },
+    {
+      "id": 194,
+      "texto": "biblia",
+      "vista": "sobre la vara de leví porque cada jefe de familia de sus padres tendrá",
+      "x": 0.163,
+      "y": -0.1122,
+      "z": -0.0242
+    },
+    {
+      "id": 195,
+      "texto": "biblia",
+      "vista": "son vanos así que ninguno se gloríe en los hombres porque todo es vuestro",
+      "x": -0.1173,
+      "y": 0.0796,
+      "z": 0.2458
+    },
+    {
+      "id": 196,
+      "texto": "biblia",
+      "vista": "que recibe a un justo por cuanto es justo recompensa de justo recibirá y",
+      "x": -0.0695,
+      "y": -0.09,
+      "z": 0.1423
+    },
+    {
+      "id": 197,
+      "texto": "biblia",
+      "vista": "bet semes él nos ha hecho este mal tan grande y si no sabremos",
+      "x": 0.0708,
+      "y": -0.1076,
+      "z": -0.0455
+    },
+    {
+      "id": 198,
+      "texto": "biblia",
+      "vista": "él había serafines cada uno tenía seis alas con dos cubrían sus rostros con",
+      "x": 0.0845,
+      "y": 0.0773,
+      "z": 0.0095
+    },
+    {
+      "id": 199,
+      "texto": "biblia",
+      "vista": "la entrada de la casa de eliasib hasta el extremo de la casa de",
+      "x": 0.0849,
+      "y": -0.1594,
+      "z": -0.0158
+    },
+    {
+      "id": 200,
+      "texto": "biblia",
+      "vista": "se entristeció a causa del pecado de los del cautiverio e hicieron pregonar en",
+      "x": 0.114,
+      "y": -0.0593,
+      "z": 0.0405
+    },
+    {
+      "id": 201,
+      "texto": "coran",
+      "vista": "sura la claridad de la mañana juro por el resplandor matinal por la noche",
+      "x": -0.0864,
+      "y": 0.078,
+      "z": -0.1251
+    },
+    {
+      "id": 202,
+      "texto": "coran",
+      "vista": "cómo terminaron aquellos que desmintieron la verdad esto debería ser una lección clara para",
+      "x": -0.2588,
+      "y": -0.073,
+      "z": -0.0358
+    },
+    {
+      "id": 203,
+      "texto": "biblia",
+      "vista": "a ti y tú reinarás en todas las cosas que deseare tu alma y",
+      "x": 0.1402,
+      "y": 0.0257,
+      "z": -0.069
+    },
+    {
+      "id": 204,
+      "texto": "biblia",
+      "vista": "de la casa de sadoc le contestó desde que comenzaron a traer las ofrendas",
+      "x": 0.0816,
+      "y": -0.1025,
+      "z": -0.0136
+    },
+    {
+      "id": 205,
+      "texto": "coran",
+      "vista": "no brota sino poco así explico los signos a la gente agradecida envié a",
+      "x": -0.2401,
+      "y": -0.0371,
+      "z": -0.0573
+    },
+    {
+      "id": 206,
+      "texto": "biblia",
+      "vista": "haréis en el día del castigo a quién os acogeréis para que os ayude",
+      "x": -0.0093,
+      "y": 0.1036,
+      "z": 0.0383
+    },
+    {
+      "id": 207,
+      "texto": "biblia",
+      "vista": "holocaustos la carne y la sangre sobre el altar de jehová tu dios y",
+      "x": 0.0506,
+      "y": 0.1375,
+      "z": -0.138
+    },
+    {
+      "id": 208,
+      "texto": "coran",
+      "vista": "misericordioso y cuando hayan terminado con los ritos que deben realizar celebren el nombre",
+      "x": -0.2333,
+      "y": -0.0049,
+      "z": -0.0893
+    },
+    {
+      "id": 209,
+      "texto": "biblia",
+      "vista": "todos los que estaban junto a él contenderéis vosotros por baal defenderéis su causa",
+      "x": 0.0371,
+      "y": -0.051,
+      "z": 0.0448
+    },
+    {
+      "id": 210,
+      "texto": "biblia",
+      "vista": "que se hubiere vendido podrá ser rescatado uno de sus hermanos lo rescatará o",
+      "x": 0.0213,
+      "y": -0.0762,
+      "z": -0.0077
+    },
+    {
+      "id": 211,
+      "texto": "biblia",
+      "vista": "de entre los hijos de esaú hijos de elifaz primogénito de esaú los jefes",
+      "x": 0.0577,
+      "y": -0.1614,
+      "z": -0.0718
+    },
+    {
+      "id": 212,
+      "texto": "biblia",
+      "vista": "de la tribu de zabulón jocneam con sus ejidos carta con sus ejidos dimna",
+      "x": 0.1381,
+      "y": -0.2041,
+      "z": -0.1166
+    },
+    {
+      "id": 213,
+      "texto": "biblia",
+      "vista": "en el hocico de un cerdo es la mujer hermosa y apartada de razón",
+      "x": -0.0994,
+      "y": 0.0396,
+      "z": -0.0262
+    },
+    {
+      "id": 214,
+      "texto": "biblia",
+      "vista": "jeiel semiramot jehiel matatías eliab benaía obed edom y jeiel con sus instrumentos de",
+      "x": 0.0893,
+      "y": 0.0231,
+      "z": -0.0827
+    },
+    {
+      "id": 215,
+      "texto": "biblia",
+      "vista": "resurrección de muertos porque si no hay resurrección de muertos tampoco cristo resucitó y",
+      "x": -0.1102,
+      "y": -0.008,
+      "z": 0.1656
+    },
+    {
+      "id": 216,
+      "texto": "coran",
+      "vista": "sura maría kaf ha ia ain sad esto es un relato de la misericordia",
+      "x": -0.072,
+      "y": 0.1038,
+      "z": -0.012
+    },
+    {
+      "id": 217,
+      "texto": "coran",
+      "vista": "engaño si lo hacen se los castigará por haberse extraviado y desviado a otros",
+      "x": -0.3261,
+      "y": -0.0426,
+      "z": -0.0979
+    },
+    {
+      "id": 218,
+      "texto": "biblia",
+      "vista": "has exaltado y no permitiste que mis enemigos se alegraran de mí jehová dios",
+      "x": -0.0104,
+      "y": 0.3237,
+      "z": -0.1379
+    },
+    {
+      "id": 219,
+      "texto": "biblia",
+      "vista": "uno de nosotros agrade a su prójimo en lo que es bueno para edificación",
+      "x": -0.1084,
+      "y": 0.0831,
+      "z": 0.2118
+    },
+    {
+      "id": 220,
+      "texto": "biblia",
+      "vista": "la tierra de egipto o en este desierto ojalá muriéramos y por qué nos",
+      "x": 0.1037,
+      "y": -0.0614,
+      "z": -0.0183
+    },
+    {
+      "id": 221,
+      "texto": "biblia",
+      "vista": "la defendieron y vencieron a los filisteos porque jehová los favoreció con una gran",
+      "x": 0.0818,
+      "y": -0.0912,
+      "z": -0.0174
+    },
+    {
+      "id": 222,
+      "texto": "biblia",
+      "vista": "lo que vas a hacer hazlo más pronto pero ninguno de los que estaban",
+      "x": -0.0882,
+      "y": -0.0142,
+      "z": 0.3328
+    },
+    {
+      "id": 223,
+      "texto": "biblia",
+      "vista": "trescientos codos la longitud del arca de cincuenta codos su anchura y de treinta",
+      "x": 0.0372,
+      "y": -0.0577,
+      "z": -0.0858
+    },
+    {
+      "id": 224,
+      "texto": "biblia",
+      "vista": "las heridas y en seguida se bautizó él con todos los suyos y llevándolos",
+      "x": -0.011,
+      "y": -0.118,
+      "z": 0.0948
+    },
+    {
+      "id": 225,
+      "texto": "biblia",
+      "vista": "antorcha entonces verán las gentes tu justicia y todos los reyes tu gloria y",
+      "x": 0.0443,
+      "y": 0.1746,
+      "z": -0.079
+    },
+    {
+      "id": 226,
+      "texto": "coran",
+      "vista": "no se nos presentó nadie que nos albriciara con el monoteísmo y nos advirtiera",
+      "x": -0.1767,
+      "y": -0.013,
+      "z": -0.0609
+    },
+    {
+      "id": 227,
+      "texto": "biblia",
+      "vista": "a todo el pueblo a los hombres y a las mujeres y a todo",
+      "x": 0.1685,
+      "y": 0.0599,
+      "z": 0.0388
+    },
+    {
+      "id": 228,
+      "texto": "biblia",
+      "vista": "fin para plena certeza de la esperanza a fin de que no os hagáis",
+      "x": -0.0383,
+      "y": -0.0234,
+      "z": 0.0999
+    },
+    {
+      "id": 229,
+      "texto": "coran",
+      "vista": "los ídolos como divinidades en lugar de dios para que les dieran protección pero",
+      "x": -0.1817,
+      "y": -0.0699,
+      "z": -0.0706
+    },
+    {
+      "id": 230,
+      "texto": "biblia",
+      "vista": "durmió jotam con sus padres y fue sepultado con ellos en la ciudad de",
+      "x": 0.175,
+      "y": -0.1396,
+      "z": -0.0555
+    },
+    {
+      "id": 231,
+      "texto": "biblia",
+      "vista": "estoy para levantar oh dios mío mi rostro a ti porque nuestras iniquidades se",
+      "x": 0.0061,
+      "y": 0.1073,
+      "z": -0.0416
+    },
+    {
+      "id": 232,
+      "texto": "biblia",
+      "vista": "y lavé tus sangres de encima de ti y te ungí con aceite y",
+      "x": 0.0592,
+      "y": 0.0785,
+      "z": -0.1278
+    },
+    {
+      "id": 233,
+      "texto": "biblia",
+      "vista": "aquí tú amas la verdad en lo íntimo y en lo secreto me has",
+      "x": -0.0157,
+      "y": 0.2358,
+      "z": -0.0984
+    },
+    {
+      "id": 234,
+      "texto": "biblia",
+      "vista": "y las ciudades muy grandes y fortificadas y también vimos allí a los hijos",
+      "x": 0.1077,
+      "y": -0.11,
+      "z": -0.0094
+    },
+    {
+      "id": 235,
+      "texto": "biblia",
+      "vista": "tuyo la ofrenda elevada de sus dones y todas las ofrendas mecidas de los",
+      "x": 0.0806,
+      "y": -0.0063,
+      "z": -0.1122
+    },
+    {
+      "id": 236,
+      "texto": "biblia",
+      "vista": "los dedos en parte de barro cocido de alfarero y en parte de hierro",
+      "x": -0.0061,
+      "y": -0.0481,
+      "z": -0.015
+    },
+    {
+      "id": 237,
+      "texto": "biblia",
+      "vista": "de helón después que estaba ya desarmado el tabernáculo se movieron los hijos de",
+      "x": 0.0897,
+      "y": -0.2014,
+      "z": -0.0883
+    },
+    {
+      "id": 238,
+      "texto": "biblia",
+      "vista": "este año de jubileo volveréis cada uno a vuestra posesión y cuando vendiereis algo",
+      "x": 0.0457,
+      "y": 0.035,
+      "z": 0.0573
+    },
+    {
+      "id": 239,
+      "texto": "coran",
+      "vista": "sura el trueno álif lam ra éstos son los versículos del libro que te",
+      "x": -0.2286,
+      "y": -0.0632,
+      "z": -0.108
+    },
+    {
+      "id": 240,
+      "texto": "coran",
+      "vista": "lluvia para que brote generosamente toda clase de vegetación esa es la creación de",
+      "x": -0.1679,
+      "y": -0.0218,
+      "z": -0.0494
+    },
+    {
+      "id": 241,
+      "texto": "coran",
+      "vista": "juicio irán al fuego ya que encontrarán que sus ídolos y poderosos no podrán",
+      "x": -0.1072,
+      "y": 0.0352,
+      "z": -0.0776
+    },
+    {
+      "id": 242,
+      "texto": "biblia",
+      "vista": "ezequías había dicho a isaías qué señal tendré de que jehová me sanará y",
+      "x": 0.0754,
+      "y": -0.073,
+      "z": 0.0269
+    },
+    {
+      "id": 243,
+      "texto": "biblia",
+      "vista": "como el natural de la tierra la nube sobre el tabernáculo ex el día",
+      "x": 0.0559,
+      "y": -0.1308,
+      "z": -0.0608
+    },
+    {
+      "id": 244,
+      "texto": "coran",
+      "vista": "valdría ni podrían protegerme si lo hiciera estaría en un error evidente escúchenme yo",
+      "x": -0.143,
+      "y": -0.0276,
+      "z": -0.0461
+    },
+    {
+      "id": 245,
+      "texto": "biblia",
+      "vista": "mano y la pondrá delante del altar de jehová tu dios entonces hablarás y",
+      "x": 0.0978,
+      "y": 0.1289,
+      "z": -0.0686
+    },
+    {
+      "id": 246,
+      "texto": "biblia",
+      "vista": "al mandamiento del rey josías y los hijos de israel que estaban allí celebraron",
+      "x": 0.1091,
+      "y": -0.0492,
+      "z": 0.0438
+    },
+    {
+      "id": 247,
+      "texto": "biblia",
+      "vista": "también de cada tribu un príncipe para dar la posesión de la tierra y",
+      "x": 0.1535,
+      "y": -0.2136,
+      "z": -0.0934
+    },
+    {
+      "id": 248,
+      "texto": "biblia",
+      "vista": "y vinieron a elim donde había doce fuentes de aguas y setenta palmeras y",
+      "x": 0.052,
+      "y": -0.1176,
+      "z": -0.0206
+    },
+    {
+      "id": 249,
+      "texto": "biblia",
+      "vista": "de la ramera hijo mío guarda mis razones y atesora contigo mis mandamientos guarda",
+      "x": 0.035,
+      "y": 0.0748,
+      "z": -0.0369
+    },
+    {
+      "id": 250,
+      "texto": "biblia",
+      "vista": "pues esto por bueno a causa de la necesidad que apremia que hará bien",
+      "x": -0.1084,
+      "y": 0.0232,
+      "z": 0.1378
+    },
+    {
+      "id": 251,
+      "texto": "biblia",
+      "vista": "medio de ella pregunte y sus criados le respondieron he aquí hay una mujer",
+      "x": 0.069,
+      "y": 0.0608,
+      "z": 0.0588
+    },
+    {
+      "id": 252,
+      "texto": "biblia",
+      "vista": "las principales especias aromáticas fuente de huertos pozo de aguas vivas que corren del",
+      "x": 0.0186,
+      "y": 0.0981,
+      "z": -0.0184
+    },
+    {
+      "id": 253,
+      "texto": "biblia",
+      "vista": "ella aceite y pondrás sobre ella incienso es ofrenda y el sacerdote hará arder",
+      "x": 0.0501,
+      "y": -0.0982,
+      "z": -0.0889
+    },
+    {
+      "id": 254,
+      "texto": "biblia",
+      "vista": "vuestras mujeres y tus extranjeros que habitan en medio de tu campamento desde el",
+      "x": 0.0735,
+      "y": 0.1138,
+      "z": -0.0046
+    },
+    {
+      "id": 255,
+      "texto": "biblia",
+      "vista": "acción de gracias participasen de ellos los creyentes y los que han conocido la",
+      "x": -0.1494,
+      "y": 0.0478,
+      "z": 0.0873
+    },
+    {
+      "id": 256,
+      "texto": "coran",
+      "vista": "inventado porque dios no les dio autoridad alguna para ello los idólatras solo siguen",
+      "x": -0.2883,
+      "y": -0.0299,
+      "z": -0.0747
+    },
+    {
+      "id": 257,
+      "texto": "biblia",
+      "vista": "miré y he aquí otra semejante a un leopardo con cuatro alas de ave",
+      "x": 0.0365,
+      "y": -0.0649,
+      "z": -0.0027
+    },
+    {
+      "id": 258,
+      "texto": "biblia",
+      "vista": "revocada que a mí se doblará toda rodilla y jurará toda lengua y se",
+      "x": 0.0267,
+      "y": 0.0342,
+      "z": 0.0101
+    },
+    {
+      "id": 259,
+      "texto": "biblia",
+      "vista": "de áspides chupará lo matará lengua de víbora no verá los arroyos los ríos",
+      "x": -0.0152,
+      "y": -0.017,
+      "z": -0.0475
+    },
+    {
+      "id": 260,
+      "texto": "biblia",
+      "vista": "mis manos sadrac mesac y abed nego respondieron al rey nabucodonosor diciendo no es",
+      "x": 0.0317,
+      "y": -0.0296,
+      "z": -0.0761
+    },
+    {
+      "id": 261,
+      "texto": "biblia",
+      "vista": "las razones de sabiduría el testigo perverso se burlará del juicio y la boca",
+      "x": -0.0276,
+      "y": 0.0361,
+      "z": 0.0139
+    },
+    {
+      "id": 262,
+      "texto": "biblia",
+      "vista": "de él su santo espíritu el que los guió por la diestra de moisés",
+      "x": -0.001,
+      "y": 0.1554,
+      "z": -0.1134
+    },
+    {
+      "id": 263,
+      "texto": "biblia",
+      "vista": "aquellos lugares había propiedades del hombre principal de la isla llamado publio quien nos",
+      "x": -0.0069,
+      "y": -0.1454,
+      "z": 0.0901
+    },
+    {
+      "id": 264,
+      "texto": "biblia",
+      "vista": "hablar diciendo antiguamente solían decir quien preguntare pregunte en abel y así concluían cualquier",
+      "x": 0.1189,
+      "y": -0.0504,
+      "z": -0.0226
+    },
+    {
+      "id": 265,
+      "texto": "biblia",
+      "vista": "volveré a su vaina en el lugar donde te criaste en la tierra donde",
+      "x": 0.1183,
+      "y": 0.2401,
+      "z": -0.0824
+    },
+    {
+      "id": 266,
+      "texto": "coran",
+      "vista": "recto a dios regresarán y él les informará el resultado de sus obras oh",
+      "x": -0.1963,
+      "y": -0.0659,
+      "z": -0.0421
+    },
+    {
+      "id": 267,
+      "texto": "biblia",
+      "vista": "y libra y hace señales y maravillas en el cielo y en la tierra",
+      "x": 0.0497,
+      "y": -0.0705,
+      "z": -0.0108
+    },
+    {
+      "id": 268,
+      "texto": "biblia",
+      "vista": "a tus hijos y hablarás de ellas estando en tu casa y andando por",
+      "x": 0.0727,
+      "y": 0.1538,
+      "z": -0.1516
+    },
+    {
+      "id": 269,
+      "texto": "biblia",
+      "vista": "ismael y estos sus nombres por sus villas y por sus campamentos doce príncipes",
+      "x": 0.1011,
+      "y": -0.1074,
+      "z": -0.0536
+    },
+    {
+      "id": 270,
+      "texto": "coran",
+      "vista": "y disfrute pasajero pero la otra vida es mejor para los piadosos acaso no",
+      "x": -0.2672,
+      "y": 0.0415,
+      "z": -0.0795
+    },
+    {
+      "id": 271,
+      "texto": "biblia",
+      "vista": "a la fortaleza de modo que todos los de la torre de siquem murieron",
+      "x": 0.0596,
+      "y": -0.1217,
+      "z": -0.0144
+    },
+    {
+      "id": 272,
+      "texto": "biblia",
+      "vista": "por donde te ha traído jehová tu dios estos cuarenta años en el desierto",
+      "x": 0.0439,
+      "y": 0.1117,
+      "z": -0.1128
+    },
+    {
+      "id": 273,
+      "texto": "coran",
+      "vista": "sura el tiempo juro por el tiempo que los seres humanos están en la",
+      "x": -0.1167,
+      "y": -0.0769,
+      "z": -0.0523
+    },
+    {
+      "id": 274,
+      "texto": "biblia",
+      "vista": "amor de tu nombre oh jehová perdonarás también mi pecado que es grande quién",
+      "x": 0.017,
+      "y": 0.2892,
+      "z": -0.0923
+    },
+    {
+      "id": 275,
+      "texto": "coran",
+      "vista": "ciudades que había bendecido otras aldeas e hice que transitaran tranquilos por ellas les",
+      "x": -0.2113,
+      "y": -0.0475,
+      "z": -0.0642
+    },
+    {
+      "id": 276,
+      "texto": "biblia",
+      "vista": "y de judá y dijo el rey a joab general del ejército que estaba",
+      "x": 0.1386,
+      "y": -0.087,
+      "z": -0.0223
+    },
+    {
+      "id": 277,
+      "texto": "biblia",
+      "vista": "pedro mt lc al salir de la sinagoga vinieron a casa de simón y",
+      "x": 0.0086,
+      "y": -0.1391,
+      "z": 0.1246
+    },
+    {
+      "id": 278,
+      "texto": "biblia",
+      "vista": "que tiene poco tomaréis poco cada uno dará de sus ciudades a los levitas",
+      "x": 0.0512,
+      "y": -0.1134,
+      "z": 0.0035
+    },
+    {
+      "id": 279,
+      "texto": "biblia",
+      "vista": "rectitud esto también es vanidad por cuanto no se ejecuta luego sentencia sobre la",
+      "x": -0.1358,
+      "y": 0.0639,
+      "z": 0.0146
+    },
+    {
+      "id": 280,
+      "texto": "biblia",
+      "vista": "esta generación hasta que todo esto acontezca el cielo y la tierra pasarán pero",
+      "x": 0.0359,
+      "y": -0.0617,
+      "z": 0.1406
+    },
+    {
+      "id": 281,
+      "texto": "biblia",
+      "vista": "de los reyes de judá de las maldades de sus mujeres de vuestras maldades",
+      "x": 0.1314,
+      "y": 0.0812,
+      "z": -0.0117
+    },
+    {
+      "id": 282,
+      "texto": "biblia",
+      "vista": "casa y en jerusalén a la cual escogí de todas las tribus de israel",
+      "x": 0.1491,
+      "y": -0.001,
+      "z": -0.022
+    },
+    {
+      "id": 283,
+      "texto": "biblia",
+      "vista": "los siete ángeles que tenían las siete copas llenas de las siete plagas postreras",
+      "x": 0.0428,
+      "y": -0.1163,
+      "z": -0.0522
+    },
+    {
+      "id": 284,
+      "texto": "biblia",
+      "vista": "en estas cosas fueron tus mercaderes los mercaderes de sabá y de raama fueron",
+      "x": 0.0507,
+      "y": 0.0191,
+      "z": -0.109
+    },
+    {
+      "id": 285,
+      "texto": "coran",
+      "vista": "casos de la mujer de noé y la de lot ambas estaban casadas con",
+      "x": -0.0894,
+      "y": -0.0669,
+      "z": -0.0725
+    },
+    {
+      "id": 286,
+      "texto": "biblia",
+      "vista": "a luz también a teba a gaham a tahas y a maaca muerte y",
+      "x": 0.0352,
+      "y": 0.0074,
+      "z": 0.0138
+    },
+    {
+      "id": 287,
+      "texto": "biblia",
+      "vista": "de entre los pueblos y os haya congregado de entre las tierras en que",
+      "x": 0.1141,
+      "y": 0.1661,
+      "z": 0.0527
+    },
+    {
+      "id": 288,
+      "texto": "biblia",
+      "vista": "a reconocer la tierra de lais dijeron a sus hermanos no sabéis que en",
+      "x": 0.0386,
+      "y": -0.1134,
+      "z": 0.0152
+    },
+    {
+      "id": 289,
+      "texto": "biblia",
+      "vista": "y vino la noticia a joab porque también joab se había adherido a adonías",
+      "x": 0.1621,
+      "y": -0.0469,
+      "z": 0.0249
+    },
+    {
+      "id": 290,
+      "texto": "biblia",
+      "vista": "por lazo y para que la mano de los filisteos sea contra él dijo",
+      "x": 0.0512,
+      "y": -0.003,
+      "z": 0.028
+    },
+    {
+      "id": 291,
+      "texto": "biblia",
+      "vista": "del pueblo que estaban a la puerta con los ancianos testigos somos jehová haga",
+      "x": 0.0933,
+      "y": -0.0111,
+      "z": -0.047
+    },
+    {
+      "id": 292,
+      "texto": "biblia",
+      "vista": "espada y si entro en la ciudad he aquí enfermos de hambre porque tanto",
+      "x": 0.0475,
+      "y": 0.2109,
+      "z": -0.0408
+    },
+    {
+      "id": 293,
+      "texto": "biblia",
+      "vista": "de judá a jerusalén y baruc leyó en el libro las palabras de jeremías",
+      "x": 0.1098,
+      "y": -0.1232,
+      "z": 0.0126
+    },
+    {
+      "id": 294,
+      "texto": "biblia",
+      "vista": "de los cielos y los peces del mar todo cuanto pasa por los senderos",
+      "x": 0.0269,
+      "y": 0.2512,
+      "z": -0.1703
+    },
+    {
+      "id": 295,
+      "texto": "biblia",
+      "vista": "colgase al cuello una piedra de molino de asno y que se le hundiese",
+      "x": -0.0885,
+      "y": 0.029,
+      "z": 0.0304
+    },
+    {
+      "id": 296,
+      "texto": "biblia",
+      "vista": "dios derramaré mis lágrimas ojalá pudiese disputar el hombre con dios como con su",
+      "x": -0.0165,
+      "y": 0.1653,
+      "z": 0.0164
+    },
+    {
+      "id": 297,
+      "texto": "biblia",
+      "vista": "le sanaré y le pastorearé y le daré consuelo a él y a sus",
+      "x": -0.0126,
+      "y": 0.1325,
+      "z": 0.0105
+    },
+    {
+      "id": 298,
+      "texto": "coran",
+      "vista": "con la verdad si lo hacen él hará virtuosas sus obras y perdonará sus",
+      "x": -0.1998,
+      "y": -0.085,
+      "z": -0.0719
+    },
+    {
+      "id": 299,
+      "texto": "biblia",
+      "vista": "tú echado eres de tu sepulcro como vástago abominable como vestido de muertos pasados",
+      "x": 0.0888,
+      "y": 0.134,
+      "z": -0.0636
+    },
+    {
+      "id": 300,
+      "texto": "biblia",
+      "vista": "mucho tiempo y pondréis fuera lo añejo para guardar lo nuevo y pondré mi",
+      "x": 0.0466,
+      "y": 0.1814,
+      "z": 0.1298
+    },
+    {
+      "id": 301,
+      "texto": "biblia",
+      "vista": "heredad de los hijos de zabulón conforme a sus familias estas ciudades con sus",
+      "x": 0.1028,
+      "y": -0.1898,
+      "z": -0.0753
+    },
+    {
+      "id": 302,
+      "texto": "biblia",
+      "vista": "hacer mal y vosotros seréis absueltos no seréis absueltos porque espada traigo sobre todos",
+      "x": 0.0663,
+      "y": 0.0724,
+      "z": 0.008
+    },
+    {
+      "id": 303,
+      "texto": "biblia",
+      "vista": "inmundo es inmunda la carne viva es lepra mas cuando la carne viva cambiare",
+      "x": -0.0541,
+      "y": -0.0798,
+      "z": 0.0202
+    },
+    {
+      "id": 304,
+      "texto": "biblia",
+      "vista": "lugar de piedra y el asfalto en lugar de mezcla y dijeron vamos edifiquémonos",
+      "x": 0.059,
+      "y": -0.1008,
+      "z": -0.0311
+    },
+    {
+      "id": 305,
+      "texto": "biblia",
+      "vista": "se engrandezca sobre judá en aquel día jehová defenderá al morador de jerusalén el",
+      "x": 0.0549,
+      "y": -0.044,
+      "z": -0.0268
+    },
+    {
+      "id": 306,
+      "texto": "biblia",
+      "vista": "hombres de joab se paró junto a él diciendo cualquiera que ame a joab",
+      "x": 0.1036,
+      "y": -0.0745,
+      "z": 0.0284
+    },
+    {
+      "id": 307,
+      "texto": "biblia",
+      "vista": "yo había sido privada de hijos y estaba sola peregrina y desterrada quién pues",
+      "x": 0.073,
+      "y": 0.1089,
+      "z": -0.0683
+    },
+    {
+      "id": 308,
+      "texto": "coran",
+      "vista": "entre los injustos aquellos a quienes concedí el libro judíos y cristianos lo reconocen",
+      "x": -0.2175,
+      "y": -0.0347,
+      "z": -0.1113
+    },
+    {
+      "id": 309,
+      "texto": "biblia",
+      "vista": "ahora sois pueblo de dios que en otro tiempo no habíais alcanzado misericordia pero",
+      "x": -0.0825,
+      "y": 0.0332,
+      "z": 0.1477
+    },
+    {
+      "id": 310,
+      "texto": "biblia",
+      "vista": "que acariciaba a rebeca su mujer y llamó abimelec a isaac y dijo he",
+      "x": 0.0756,
+      "y": -0.0353,
+      "z": 0.0681
+    },
+    {
+      "id": 311,
+      "texto": "biblia",
+      "vista": "la obra de tus manos ten cuidado de no desamparar al levita en todos",
+      "x": 0.0231,
+      "y": 0.1309,
+      "z": -0.0974
+    },
+    {
+      "id": 312,
+      "texto": "biblia",
+      "vista": "un hombre de su lepra considerad ahora y ved cómo busca ocasión contra mí",
+      "x": 0.0653,
+      "y": 0.0152,
+      "z": 0.0013
+    },
+    {
+      "id": 313,
+      "texto": "biblia",
+      "vista": "mando hoy he aquí que yo echo de delante de tu presencia al amorreo",
+      "x": 0.0707,
+      "y": 0.0545,
+      "z": -0.0837
+    },
+    {
+      "id": 314,
+      "texto": "biblia",
+      "vista": "echaban sus ofrendas en el arca de las ofrendas vio también a una viuda",
+      "x": -0.0196,
+      "y": -0.0403,
+      "z": 0.1954
+    },
+    {
+      "id": 315,
+      "texto": "biblia",
+      "vista": "su compañero ahora pues moab al botín pero cuando llegaron al campamento de israel",
+      "x": 0.1496,
+      "y": -0.0858,
+      "z": -0.0575
+    },
+    {
+      "id": 316,
+      "texto": "biblia",
+      "vista": "el amor de dios se ha perfeccionado por esto sabemos que estamos en él",
+      "x": -0.037,
+      "y": 0.0538,
+      "z": 0.2304
+    },
+    {
+      "id": 317,
+      "texto": "biblia",
+      "vista": "ahora el rostro del rey y si hay en mí pecado máteme vino pues",
+      "x": 0.048,
+      "y": -0.0169,
+      "z": 0.0053
+    },
+    {
+      "id": 318,
+      "texto": "biblia",
+      "vista": "recibirá la espaldilla derecha como porción suya porque he tomado de los sacrificios de",
+      "x": 0.1131,
+      "y": -0.0989,
+      "z": -0.0773
+    },
+    {
+      "id": 319,
+      "texto": "biblia",
+      "vista": "de ancho y entre las cámaras había cinco codos de ancho y cada poste",
+      "x": 0.0366,
+      "y": -0.1884,
+      "z": -0.0376
+    },
+    {
+      "id": 320,
+      "texto": "biblia",
+      "vista": "no haya de saberse por tanto todo lo que habéis dicho en tinieblas a",
+      "x": -0.0336,
+      "y": 0.04,
+      "z": 0.2213
+    },
+    {
+      "id": 321,
+      "texto": "biblia",
+      "vista": "sin defecto si ofreciere cordero por su ofrenda lo ofrecerá delante de jehová pondrá",
+      "x": 0.075,
+      "y": -0.1013,
+      "z": -0.0902
+    },
+    {
+      "id": 322,
+      "texto": "biblia",
+      "vista": "el bautista cuando a elisabet se le cumplió el tiempo de su alumbramiento dio",
+      "x": -0.0117,
+      "y": -0.0413,
+      "z": 0.0519
+    },
+    {
+      "id": 323,
+      "texto": "biblia",
+      "vista": "heriste a todos mis enemigos en la mejilla los dientes de los perversos quebrantaste",
+      "x": -0.0025,
+      "y": 0.237,
+      "z": -0.1118
+    },
+    {
+      "id": 324,
+      "texto": "biblia",
+      "vista": "dios fuerte padre eterno príncipe de paz lo dilatado de su imperio y la",
+      "x": 0.0378,
+      "y": 0.0394,
+      "z": -0.0474
+    },
+    {
+      "id": 325,
+      "texto": "biblia",
+      "vista": "en su mano el dinero y ella hizo que él se durmiese sobre sus",
+      "x": 0.0274,
+      "y": -0.0587,
+      "z": -0.0008
+    },
+    {
+      "id": 326,
+      "texto": "biblia",
+      "vista": "sus palabras pero jesús respondiendo volvió a decirles hijos cuán difícil les es entrar",
+      "x": -0.0614,
+      "y": -0.0385,
+      "z": 0.1907
+    },
+    {
+      "id": 327,
+      "texto": "biblia",
+      "vista": "samaria dos años e hizo lo malo ante los ojos de jehová no se",
+      "x": 0.1493,
+      "y": -0.1464,
+      "z": -0.0724
+    },
+    {
+      "id": 328,
+      "texto": "biblia",
+      "vista": "camino de la justicia está la vida y en sus caminos no hay muerte",
+      "x": -0.1062,
+      "y": 0.0652,
+      "z": -0.0353
+    },
+    {
+      "id": 329,
+      "texto": "biblia",
+      "vista": "fueron puestos sobre todo el ministerio del tabernáculo de la casa de dios descendientes",
+      "x": 0.115,
+      "y": -0.211,
+      "z": -0.1192
+    },
+    {
+      "id": 330,
+      "texto": "biblia",
+      "vista": "envió a ben adad rey de siria que estaba en damasco diciendo haya alianza",
+      "x": 0.1265,
+      "y": -0.0098,
+      "z": -0.0411
+    },
+    {
+      "id": 331,
+      "texto": "biblia",
+      "vista": "cosas no hay ley pero los que son de cristo han crucificado la carne",
+      "x": -0.1323,
+      "y": 0.0254,
+      "z": 0.1883
+    },
+    {
+      "id": 332,
+      "texto": "biblia",
+      "vista": "tu presencia rogaré a jehová que las diversas clases de moscas se vayan de",
+      "x": 0.1065,
+      "y": 0.0045,
+      "z": -0.0447
+    },
+    {
+      "id": 333,
+      "texto": "biblia",
+      "vista": "armada que había venido con los árabes al campamento había matado a todos los",
+      "x": 0.118,
+      "y": -0.1488,
+      "z": -0.0015
+    },
+    {
+      "id": 334,
+      "texto": "biblia",
+      "vista": "contra su hermano pero no quisieron escuchar antes volvieron la espalda y taparon sus",
+      "x": 0.0927,
+      "y": 0.0742,
+      "z": 0.0309
+    },
+    {
+      "id": 335,
+      "texto": "biblia",
+      "vista": "también digo entre tanto que el heredero es niño en nada difiere del esclavo",
+      "x": -0.0421,
+      "y": -0.0071,
+      "z": 0.2205
+    },
+    {
+      "id": 336,
+      "texto": "biblia",
+      "vista": "el cantar de mi amado a su viña tenía mi amado una viña en",
+      "x": 0.0689,
+      "y": 0.0383,
+      "z": 0.0481
+    },
+    {
+      "id": 337,
+      "texto": "biblia",
+      "vista": "jeremías de libna y él hizo lo malo ante los ojos de jehová conforme",
+      "x": 0.1515,
+      "y": -0.1511,
+      "z": -0.0423
+    },
+    {
+      "id": 338,
+      "texto": "biblia",
+      "vista": "casa verás tu casa humillada mientras dios colma de bienes a israel y en",
+      "x": 0.0683,
+      "y": 0.0698,
+      "z": -0.0635
+    },
+    {
+      "id": 339,
+      "texto": "biblia",
+      "vista": "señor quién es el que te ha de entregar cuando pedro le vio dijo",
+      "x": -0.072,
+      "y": -0.0215,
+      "z": 0.1713
+    },
+    {
+      "id": 340,
+      "texto": "biblia",
+      "vista": "sus utensilios el aceite para el alumbrado el altar de oro el aceite de",
+      "x": 0.1206,
+      "y": -0.1561,
+      "z": -0.0873
+    },
+    {
+      "id": 341,
+      "texto": "coran",
+      "vista": "hacían la vida mundanal es como el agua que hago descender del cielo con",
+      "x": -0.2238,
+      "y": -0.0898,
+      "z": -0.1039
+    },
+    {
+      "id": 342,
+      "texto": "biblia",
+      "vista": "sus viñas destruyó con granizo y sus higuerales con escarcha entregó al pedrisco sus",
+      "x": 0.037,
+      "y": -0.0559,
+      "z": -0.0571
+    },
+    {
+      "id": 343,
+      "texto": "biblia",
+      "vista": "se les cambió en alegría y de luto en día bueno que los hiciesen",
+      "x": 0.0198,
+      "y": -0.1366,
+      "z": 0.0083
+    },
+    {
+      "id": 344,
+      "texto": "coran",
+      "vista": "que discutan con ustedes pero si los siguen se contarán entre quienes les atribuyen",
+      "x": -0.2783,
+      "y": -0.0762,
+      "z": -0.0443
+    },
+    {
+      "id": 345,
+      "texto": "biblia",
+      "vista": "seca mt lc otra vez entró jesús en la sinagoga y había allí un",
+      "x": -0.0159,
+      "y": -0.1028,
+      "z": 0.1234
+    },
+    {
+      "id": 346,
+      "texto": "biblia",
+      "vista": "boca y ya no más estuve callado y vino a mí palabra de jehová",
+      "x": 0.0785,
+      "y": 0.0574,
+      "z": 0.032
+    },
+    {
+      "id": 347,
+      "texto": "biblia",
+      "vista": "en su angustia los libró de sus aflicciones los sacó de las tinieblas y",
+      "x": 0.0438,
+      "y": -0.0032,
+      "z": -0.0871
+    },
+    {
+      "id": 348,
+      "texto": "biblia",
+      "vista": "los cedros de dios extendió sus vástagos hasta el mar y hasta el río",
+      "x": 0.0179,
+      "y": 0.0908,
+      "z": -0.1122
+    },
+    {
+      "id": 349,
+      "texto": "biblia",
+      "vista": "y me he acordado de mi pacto por tanto dirás a los hijos de",
+      "x": 0.1788,
+      "y": 0.0677,
+      "z": 0.061
+    },
+    {
+      "id": 350,
+      "texto": "biblia",
+      "vista": "de rezín los hijos de necoda los hijos de gazam los hijos de uza",
+      "x": 0.0891,
+      "y": -0.1764,
+      "z": -0.1004
+    },
+    {
+      "id": 351,
+      "texto": "biblia",
+      "vista": "soy yo quien hace aquello sino el pecado que mora en mí y yo",
+      "x": -0.1108,
+      "y": 0.122,
+      "z": 0.1565
+    },
+    {
+      "id": 352,
+      "texto": "biblia",
+      "vista": "a las naciones tu desnudez y a los reinos tu vergüenza y echaré sobre",
+      "x": 0.058,
+      "y": 0.0971,
+      "z": -0.1472
+    },
+    {
+      "id": 353,
+      "texto": "biblia",
+      "vista": "israel porque he aquí que yo soy el que te salvo de lejos a",
+      "x": 0.0092,
+      "y": 0.2208,
+      "z": -0.0722
+    },
+    {
+      "id": 354,
+      "texto": "biblia",
+      "vista": "la heredad de ellas quedó en la tribu de la familia de su padre",
+      "x": 0.1732,
+      "y": -0.1573,
+      "z": -0.0119
+    },
+    {
+      "id": 355,
+      "texto": "biblia",
+      "vista": "llanto y lloro amargo raquel que lamenta por sus hijos y no quiso ser",
+      "x": 0.0511,
+      "y": 0.168,
+      "z": -0.0525
+    },
+    {
+      "id": 356,
+      "texto": "biblia",
+      "vista": "carpintero hijo de maría hermano de jacobo de josé de judas y de simón",
+      "x": -0.0344,
+      "y": -0.1028,
+      "z": 0.1575
+    },
+    {
+      "id": 357,
+      "texto": "coran",
+      "vista": "ella misma junto a los condenados luego aniquilé a los demás ustedes oh incrédulos",
+      "x": -0.1375,
+      "y": -0.0984,
+      "z": -0.091
+    },
+    {
+      "id": 358,
+      "texto": "biblia",
+      "vista": "y cómo oirán sin haber quien les predique y cómo predicarán si no fueren",
+      "x": -0.0388,
+      "y": 0.0727,
+      "z": 0.1249
+    },
+    {
+      "id": 359,
+      "texto": "biblia",
+      "vista": "yo dije qué vienen éstos a hacer y me respondió diciendo aquéllos son los",
+      "x": 0.1046,
+      "y": 0.068,
+      "z": 0.0467
+    },
+    {
+      "id": 360,
+      "texto": "biblia",
+      "vista": "y sobre su caballería entonces moisés extendió su mano sobre el mar y cuando",
+      "x": 0.1575,
+      "y": -0.0405,
+      "z": -0.0704
+    },
+    {
+      "id": 361,
+      "texto": "biblia",
+      "vista": "se había apartado de saúl por lo cual saúl lo alejó de sí y",
+      "x": 0.111,
+      "y": 0.0083,
+      "z": 0.0399
+    },
+    {
+      "id": 362,
+      "texto": "biblia",
+      "vista": "y destrucción que no sepas vendrá de repente sobre ti estate ahora en tus",
+      "x": 0.0216,
+      "y": 0.1294,
+      "z": -0.0885
+    },
+    {
+      "id": 363,
+      "texto": "biblia",
+      "vista": "de la heredad que tú nos diste en posesión oh dios nuestro no los",
+      "x": 0.1294,
+      "y": 0.0603,
+      "z": 0.0526
+    },
+    {
+      "id": 364,
+      "texto": "biblia",
+      "vista": "quien ayudara y me maravillé que no hubiera quien sustentase y me salvó mi",
+      "x": 0.0907,
+      "y": 0.0211,
+      "z": -0.0329
+    },
+    {
+      "id": 365,
+      "texto": "biblia",
+      "vista": "la puerta del atrio y todas las estacas del tabernáculo y todas las estacas",
+      "x": 0.0954,
+      "y": -0.157,
+      "z": -0.0915
+    },
+    {
+      "id": 366,
+      "texto": "biblia",
+      "vista": "jehová estaba con él y no dejó caer a tierra ninguna de sus palabras",
+      "x": 0.1458,
+      "y": -0.0951,
+      "z": -0.0195
+    },
+    {
+      "id": 367,
+      "texto": "biblia",
+      "vista": "tercera parte de los hombres y el número de los ejércitos de los jinetes",
+      "x": 0.0208,
+      "y": -0.0604,
+      "z": -0.0509
+    },
+    {
+      "id": 368,
+      "texto": "biblia",
+      "vista": "como la gallina junta sus polluelos debajo de las alas y no quisiste he",
+      "x": -0.0179,
+      "y": 0.0132,
+      "z": 0.2512
+    },
+    {
+      "id": 369,
+      "texto": "biblia",
+      "vista": "imagen el segundo ángel derramó su copa sobre el mar y éste se convirtió",
+      "x": 0.0024,
+      "y": 0.0128,
+      "z": -0.0437
+    },
+    {
+      "id": 370,
+      "texto": "coran",
+      "vista": "puede comparar a aquel a quien dios abrió su corazón al islam y está",
+      "x": -0.2942,
+      "y": -0.0918,
+      "z": -0.0887
+    },
+    {
+      "id": 371,
+      "texto": "biblia",
+      "vista": "porque sus obras han sido muy buenas para contigo pues él tomó su vida",
+      "x": 0.1074,
+      "y": -0.0309,
+      "z": -0.0075
+    },
+    {
+      "id": 372,
+      "texto": "biblia",
+      "vista": "tu parentela y ven a la tierra que yo te mostraré entonces salió de",
+      "x": 0.0762,
+      "y": -0.0389,
+      "z": 0.0444
+    },
+    {
+      "id": 373,
+      "texto": "biblia",
+      "vista": "causa de esto expulsión de las mujeres extranjeras mientras oraba esdras y hacía confesión",
+      "x": 0.0705,
+      "y": -0.0508,
+      "z": 0.0042
+    },
+    {
+      "id": 374,
+      "texto": "biblia",
+      "vista": "ahora pues no os burléis para que no se aprieten más vuestras ataduras porque",
+      "x": 0.0052,
+      "y": 0.061,
+      "z": 0.0225
+    },
+    {
+      "id": 375,
+      "texto": "biblia",
+      "vista": "barba mas cuando el sacerdote hubiere mirado la llaga de la tiña y no",
+      "x": -0.0534,
+      "y": -0.0708,
+      "z": 0.0189
+    },
+    {
+      "id": 376,
+      "texto": "biblia",
+      "vista": "sobre el fuego y llamó a gran voz al que tenía la hoz aguda",
+      "x": 0.0257,
+      "y": -0.0265,
+      "z": -0.0836
+    },
+    {
+      "id": 377,
+      "texto": "biblia",
+      "vista": "de adán cr este es el libro de las generaciones de adán el día",
+      "x": 0.0507,
+      "y": -0.1759,
+      "z": -0.0695
+    },
+    {
+      "id": 378,
+      "texto": "coran",
+      "vista": "dejará de premiar sus obras la vida mundanal es juego y diversión pero si",
+      "x": -0.2631,
+      "y": -0.0622,
+      "z": -0.056
+    },
+    {
+      "id": 379,
+      "texto": "coran",
+      "vista": "sura los incrédulos di oh incrédulos no adoro lo que adoran ni adoran ustedes",
+      "x": -0.1308,
+      "y": -0.0268,
+      "z": -0.0935
+    },
+    {
+      "id": 380,
+      "texto": "biblia",
+      "vista": "doncellas especiales de la casa del rey y la llevó con sus doncellas a",
+      "x": 0.0482,
+      "y": -0.1169,
+      "z": 0.0216
+    },
+    {
+      "id": 381,
+      "texto": "biblia",
+      "vista": "que conmigo no recoge desparrama el espíritu inmundo que vuelve mt cuando el espíritu",
+      "x": -0.0303,
+      "y": -0.0425,
+      "z": 0.1262
+    },
+    {
+      "id": 382,
+      "texto": "biblia",
+      "vista": "diótrefes al cual le gusta tener el primer lugar entre ellos no nos recibe",
+      "x": -0.0801,
+      "y": 0.0279,
+      "z": 0.1607
+    },
+    {
+      "id": 383,
+      "texto": "biblia",
+      "vista": "vosotros volveos e id al desierto camino del mar rojo la derrota en horma",
+      "x": 0.0948,
+      "y": 0.0132,
+      "z": 0.1441
+    },
+    {
+      "id": 384,
+      "texto": "biblia",
+      "vista": "todos tus opresores y salvaré a la que cojea y recogeré la descarriada y",
+      "x": 0.1569,
+      "y": 0.0595,
+      "z": 0.1516
+    },
+    {
+      "id": 385,
+      "texto": "biblia",
+      "vista": "de las provincias a la dedicación de la estatua que el rey nabucodonosor había",
+      "x": 0.0521,
+      "y": -0.0464,
+      "z": -0.0076
+    },
+    {
+      "id": 386,
+      "texto": "biblia",
+      "vista": "de david s cr y reinó david sobre todo israel y david administraba justicia",
+      "x": 0.1431,
+      "y": -0.0665,
+      "z": -0.0269
+    },
+    {
+      "id": 387,
+      "texto": "biblia",
+      "vista": "hombre di a ella tú no eres tierra limpia ni rociada con lluvia en",
+      "x": 0.0428,
+      "y": 0.1045,
+      "z": -0.0417
+    },
+    {
+      "id": 388,
+      "texto": "coran",
+      "vista": "agua y que con ella hace brotar diversas clases de frutos y que algunas",
+      "x": -0.2599,
+      "y": -0.065,
+      "z": -0.1069
+    },
+    {
+      "id": 389,
+      "texto": "biblia",
+      "vista": "adentro y afuera de ella y por toda la pared en derredor por dentro",
+      "x": 0.0574,
+      "y": -0.1628,
+      "z": -0.0499
+    },
+    {
+      "id": 390,
+      "texto": "biblia",
+      "vista": "vez a vosotros sino os damos ocasión de gloriaros por nosotros para que tengáis",
+      "x": -0.0904,
+      "y": 0.0259,
+      "z": 0.231
+    },
+    {
+      "id": 391,
+      "texto": "biblia",
+      "vista": "palabra de jehová que vino a miqueas de moreset en días de jotam acaz",
+      "x": 0.0781,
+      "y": 0.0408,
+      "z": -0.034
+    },
+    {
+      "id": 392,
+      "texto": "biblia",
+      "vista": "quién le instruirá mas nosotros tenemos la mente de cristo colaboradores de dios corintios",
+      "x": -0.0737,
+      "y": 0.0353,
+      "z": 0.2102
+    },
+    {
+      "id": 393,
+      "texto": "biblia",
+      "vista": "por tanto he aquí yo estoy contra vosotros dice jehová el señor estará mi",
+      "x": 0.0806,
+      "y": 0.1052,
+      "z": 0.0222
+    },
+    {
+      "id": 394,
+      "texto": "biblia",
+      "vista": "y dijo vive tu alma rey señor mío que no hay que apartarse a",
+      "x": 0.0936,
+      "y": 0.0883,
+      "z": -0.0074
+    },
+    {
+      "id": 395,
+      "texto": "biblia",
+      "vista": "iniquidad ni su pecado sea borrado delante de ti porque se airaron contra los",
+      "x": 0.0095,
+      "y": -0.0406,
+      "z": 0.0079
+    },
+    {
+      "id": 396,
+      "texto": "biblia",
+      "vista": "instrumento para honra santificado útil al señor y dispuesto para toda buena obra huye",
+      "x": -0.1044,
+      "y": -0.0124,
+      "z": 0.0515
+    },
+    {
+      "id": 397,
+      "texto": "biblia",
+      "vista": "ahora mas me seguirás después le dijo pedro señor por qué no te puedo",
+      "x": -0.0458,
+      "y": 0.1537,
+      "z": 0.3046
+    },
+    {
+      "id": 398,
+      "texto": "biblia",
+      "vista": "acabó de orar descendió fuego de los cielos y consumió el holocausto y las",
+      "x": 0.1467,
+      "y": -0.0582,
+      "z": -0.0653
+    },
+    {
+      "id": 399,
+      "texto": "biblia",
+      "vista": "cáliz de tu hermana que es de gran capacidad de ti se mofarán las",
+      "x": 0.0765,
+      "y": 0.2114,
+      "z": -0.039
+    },
+    {
+      "id": 400,
+      "texto": "biblia",
+      "vista": "otros que diez mil palabras en lengua desconocida hermanos no seáis niños en el",
+      "x": -0.1355,
+      "y": 0.0011,
+      "z": 0.1197
+    },
+    {
+      "id": 401,
+      "texto": "biblia",
+      "vista": "y descendió a la fuente y sacó agua y le dije te ruego que",
+      "x": 0.0237,
+      "y": 0.0865,
+      "z": 0.0166
+    },
+    {
+      "id": 402,
+      "texto": "biblia",
+      "vista": "mano mas quebraré los brazos de faraón y delante de aquél gemirá con gemidos",
+      "x": 0.1438,
+      "y": 0.0069,
+      "z": -0.0597
+    },
+    {
+      "id": 403,
+      "texto": "biblia",
+      "vista": "beberán ciertamente y serás tú absuelto del todo no serás absuelto sino que ciertamente",
+      "x": 0.0666,
+      "y": 0.1117,
+      "z": -0.0231
+    },
+    {
+      "id": 404,
+      "texto": "biblia",
+      "vista": "de mi clamor rey mío y dios mío porque a ti oraré oh jehová",
+      "x": -0.0039,
+      "y": 0.2465,
+      "z": -0.1491
+    },
+    {
+      "id": 405,
+      "texto": "biblia",
+      "vista": "conocido al que es desde el principio os he escrito a vosotros jóvenes porque",
+      "x": -0.1029,
+      "y": 0.0721,
+      "z": 0.2583
+    },
+    {
+      "id": 406,
+      "texto": "biblia",
+      "vista": "carros saltarán sobre las cumbres de los montes como sonido de llama de fuego",
+      "x": 0.0493,
+      "y": 0.0507,
+      "z": -0.0125
+    },
+    {
+      "id": 407,
+      "texto": "coran",
+      "vista": "tendría abundantes bienes materiales y no me alcanzaría nunca un mal yo solo soy",
+      "x": -0.2747,
+      "y": -0.086,
+      "z": -0.0518
+    },
+    {
+      "id": 408,
+      "texto": "coran",
+      "vista": "a dios de lo que éstos aman a sus divinidades ya sabrán los injustos",
+      "x": -0.2324,
+      "y": -0.0434,
+      "z": -0.0689
+    },
+    {
+      "id": 409,
+      "texto": "biblia",
+      "vista": "y bendice a tu heredad y pastoréales y susténtales para siempre poder y gloria",
+      "x": 0.0885,
+      "y": 0.0756,
+      "z": -0.1138
+    },
+    {
+      "id": 410,
+      "texto": "coran",
+      "vista": "consagrándose en la noche está consciente de la otra vida y anhela la misericordia",
+      "x": -0.2744,
+      "y": -0.0103,
+      "z": -0.0859
+    },
+    {
+      "id": 411,
+      "texto": "coran",
+      "vista": "su fortaleza y multiplicará su poderío no den la espalda como los criminales dijeron",
+      "x": -0.188,
+      "y": 0.0895,
+      "z": -0.046
+    },
+    {
+      "id": 412,
+      "texto": "biblia",
+      "vista": "hijos y sus hermanos doce la vigésima para eliata con sus hijos y sus",
+      "x": 0.0731,
+      "y": -0.162,
+      "z": -0.0443
+    },
+    {
+      "id": 413,
+      "texto": "biblia",
+      "vista": "fuertes pasaréis armados delante de vuestros hermanos y les ayudaréis hasta tanto que jehová",
+      "x": 0.127,
+      "y": 0.0105,
+      "z": 0.0761
+    },
+    {
+      "id": 414,
+      "texto": "biblia",
+      "vista": "les creyó entonces johanán hijo de carea habló a gedalías en secreto en mizpa",
+      "x": 0.0538,
+      "y": -0.1031,
+      "z": 0.0238
+    },
+    {
+      "id": 415,
+      "texto": "coran",
+      "vista": "dios y recibirán un castigo severo dios es quien reveló el libro con la",
+      "x": -0.3293,
+      "y": -0.0695,
+      "z": -0.0919
+    },
+    {
+      "id": 416,
+      "texto": "biblia",
+      "vista": "justo y el malo entre el que sirve a dios y el que no",
+      "x": 0.0693,
+      "y": 0.1028,
+      "z": 0.0099
+    },
+    {
+      "id": 417,
+      "texto": "biblia",
+      "vista": "padres y ninguno de todos sus enemigos pudo hacerles frente porque jehová entregó en",
+      "x": 0.1343,
+      "y": 0.0038,
+      "z": 0.143
+    },
+    {
+      "id": 418,
+      "texto": "biblia",
+      "vista": "recoge en el tiempo de la siega su mantenimiento perezoso hasta cuándo has de",
+      "x": -0.0035,
+      "y": 0.0989,
+      "z": -0.0185
+    },
+    {
+      "id": 419,
+      "texto": "biblia",
+      "vista": "guardas de las ordenanzas en mi santuario así ha dicho jehová el señor ningún",
+      "x": 0.0792,
+      "y": 0.0327,
+      "z": -0.0522
+    },
+    {
+      "id": 420,
+      "texto": "biblia",
+      "vista": "pueblos de la tierra se hacían judíos porque el temor de los judíos había",
+      "x": 0.0407,
+      "y": -0.1042,
+      "z": -0.0357
+    },
+    {
+      "id": 421,
+      "texto": "biblia",
+      "vista": "y se acercaron a eliseo los hijos de los profetas que estaban en jericó",
+      "x": 0.0491,
+      "y": 0.0417,
+      "z": -0.0278
+    },
+    {
+      "id": 422,
+      "texto": "biblia",
+      "vista": "las ranas de mí y de mi pueblo y dejaré ir a tu pueblo",
+      "x": 0.1209,
+      "y": 0.0414,
+      "z": -0.0876
+    },
+    {
+      "id": 423,
+      "texto": "biblia",
+      "vista": "semen viniendo a ser inmundo a causa de ello y para la que padece",
+      "x": 0.0588,
+      "y": -0.0911,
+      "z": -0.0687
+    },
+    {
+      "id": 424,
+      "texto": "coran",
+      "vista": "y cometeré una estupidez pero su señor respondió a su súplica y apartó de",
+      "x": -0.146,
+      "y": -0.0266,
+      "z": 0.0267
+    },
+    {
+      "id": 425,
+      "texto": "biblia",
+      "vista": "jehová nuestro dios como él nos ha mandado advertencias contra la idolatría de canaán",
+      "x": 0.0726,
+      "y": 0.1344,
+      "z": -0.1056
+    },
+    {
+      "id": 426,
+      "texto": "coran",
+      "vista": "doble para ofrecerlo como rescate y salvarse del castigo del día de la resurrección",
+      "x": -0.2729,
+      "y": -0.0506,
+      "z": -0.0958
+    },
+    {
+      "id": 427,
+      "texto": "biblia",
+      "vista": "que son por medio de jesucristo para gloria y alabanza de dios para mí",
+      "x": -0.1191,
+      "y": 0.1154,
+      "z": 0.1732
+    },
+    {
+      "id": 428,
+      "texto": "biblia",
+      "vista": "los cuales si el hombre hiciere en ellos vivirá se rebelaron endurecieron su cerviz",
+      "x": 0.0153,
+      "y": 0.1121,
+      "z": -0.0516
+    },
+    {
+      "id": 429,
+      "texto": "biblia",
+      "vista": "o en qué nombre habéis hecho vosotros esto entonces pedro lleno del espíritu santo",
+      "x": -0.0354,
+      "y": -0.0365,
+      "z": 0.1928
+    },
+    {
+      "id": 430,
+      "texto": "coran",
+      "vista": "pide perdón a dios por ellos dios es absolvedor misericordioso no llamen al mensajero",
+      "x": -0.2682,
+      "y": -0.0728,
+      "z": -0.0559
+    },
+    {
+      "id": 431,
+      "texto": "biblia",
+      "vista": "que cree porque de la justicia que es por la ley moisés escribe así",
+      "x": -0.1075,
+      "y": 0.1309,
+      "z": 0.1194
+    },
+    {
+      "id": 432,
+      "texto": "biblia",
+      "vista": "escudo es la ciencia y escudo es el dinero mas la sabiduría excede en",
+      "x": -0.0905,
+      "y": 0.1157,
+      "z": 0.0025
+    },
+    {
+      "id": 433,
+      "texto": "biblia",
+      "vista": "los dos y elías subió al cielo en un torbellino viéndolo eliseo clamaba padre",
+      "x": 0.0648,
+      "y": -0.0856,
+      "z": -0.0031
+    },
+    {
+      "id": 434,
+      "texto": "biblia",
+      "vista": "se rió y dijo en su corazón a hombre de cien años ha de",
+      "x": 0.0766,
+      "y": -0.0072,
+      "z": 0.0339
+    },
+    {
+      "id": 435,
+      "texto": "biblia",
+      "vista": "por cuanto eres pariente cercano y él dijo bendita seas tú de jehová hija",
+      "x": -0.0149,
+      "y": 0.0415,
+      "z": 0.0057
+    },
+    {
+      "id": 436,
+      "texto": "biblia",
+      "vista": "fe no recibieron lo prometido proveyendo dios alguna cosa mejor para nosotros para que",
+      "x": -0.0645,
+      "y": 0.0117,
+      "z": 0.1688
+    },
+    {
+      "id": 437,
+      "texto": "biblia",
+      "vista": "como perros y rodearán la ciudad he aquí proferirán con su boca espadas hay",
+      "x": -0.0156,
+      "y": 0.2688,
+      "z": -0.147
+    },
+    {
+      "id": 438,
+      "texto": "biblia",
+      "vista": "judá crónicas r cuando roboam había consolidado el reino dejó la ley de jehová",
+      "x": 0.1444,
+      "y": -0.0328,
+      "z": 0.0533
+    },
+    {
+      "id": 439,
+      "texto": "coran",
+      "vista": "pero quienes se nieguen a creer en los versículos de su señor tendrán un",
+      "x": -0.2637,
+      "y": -0.0468,
+      "z": -0.1524
+    },
+    {
+      "id": 440,
+      "texto": "coran",
+      "vista": "preguntaron a quienes exhortaban al bien por qué exhortan a un pueblo al que",
+      "x": -0.2728,
+      "y": -0.0715,
+      "z": -0.0499
+    },
+    {
+      "id": 441,
+      "texto": "biblia",
+      "vista": "tierra no se venderá a perpetuidad porque la tierra mía es pues vosotros forasteros",
+      "x": -0.0007,
+      "y": -0.0364,
+      "z": 0.0097
+    },
+    {
+      "id": 442,
+      "texto": "biblia",
+      "vista": "niño sepa decir padre mío y madre mía será quitada la riqueza de damasco",
+      "x": 0.0644,
+      "y": 0.0434,
+      "z": -0.0039
+    },
+    {
+      "id": 443,
+      "texto": "biblia",
+      "vista": "traía en su brazo y las he traído acá a mi señor entonces david",
+      "x": 0.1586,
+      "y": 0.0397,
+      "z": -0.0389
+    },
+    {
+      "id": 444,
+      "texto": "coran",
+      "vista": "todo lo oye todo lo sabe di oh gente del libro no se excedan",
+      "x": -0.1913,
+      "y": -0.0778,
+      "z": -0.031
+    },
+    {
+      "id": 445,
+      "texto": "biblia",
+      "vista": "animales gordos y muchas ovejas y ha convidado a todos los hijos del rey",
+      "x": 0.142,
+      "y": 0.083,
+      "z": -0.0584
+    },
+    {
+      "id": 446,
+      "texto": "coran",
+      "vista": "no se comprometieron a cumplir con la tora y no decir acerca de dios",
+      "x": -0.2045,
+      "y": -0.0517,
+      "z": -0.0295
+    },
+    {
+      "id": 447,
+      "texto": "coran",
+      "vista": "sura los genios oh mujámmad di me ha sido revelado que un grupo de",
+      "x": -0.2286,
+      "y": -0.0558,
+      "z": -0.0288
+    },
+    {
+      "id": 448,
+      "texto": "biblia",
+      "vista": "hice confesión diciendo ahora señor dios grande digno de ser temido que guardas el",
+      "x": 0.0569,
+      "y": 0.1356,
+      "z": -0.1031
+    },
+    {
+      "id": 449,
+      "texto": "coran",
+      "vista": "que alcancen la piedad se ha establecido que cuando sientan la muerte acercarse y",
+      "x": -0.2425,
+      "y": -0.09,
+      "z": -0.0583
+    },
+    {
+      "id": 450,
+      "texto": "coran",
+      "vista": "que los creyentes sepan que no hay ningún impedimento en casarse con las exesposas",
+      "x": -0.2383,
+      "y": -0.0715,
+      "z": -0.0807
+    },
+    {
+      "id": 451,
+      "texto": "biblia",
+      "vista": "paz para aquellos que hacen la paz la amistad con el mundo de dónde",
+      "x": -0.074,
+      "y": 0.0452,
+      "z": 0.1764
+    },
+    {
+      "id": 452,
+      "texto": "coran",
+      "vista": "niegue a prestar testimonio cuando sea convocado porque quien lo oculta tiene un corazón",
+      "x": -0.2677,
+      "y": -0.0053,
+      "z": -0.0784
+    },
+    {
+      "id": 453,
+      "texto": "biblia",
+      "vista": "del ardor con que su gran ira se había encendido contra judá por todas",
+      "x": 0.1695,
+      "y": -0.127,
+      "z": -0.0102
+    },
+    {
+      "id": 454,
+      "texto": "coran",
+      "vista": "maten a josé o destiérrenlo para que la atención de nuestro padre sea para",
+      "x": -0.1397,
+      "y": -0.0598,
+      "z": 0.034
+    },
+    {
+      "id": 455,
+      "texto": "coran",
+      "vista": "sura las mujeres oh seres humanos tengan temor de su señor quien los ha",
+      "x": -0.2273,
+      "y": -0.0823,
+      "z": -0.0999
+    },
+    {
+      "id": 456,
+      "texto": "biblia",
+      "vista": "aquí mi siervo yo le sostendré mi escogido en quien mi alma tiene contentamiento",
+      "x": 0.0438,
+      "y": 0.1697,
+      "z": -0.0049
+    },
+    {
+      "id": 457,
+      "texto": "biblia",
+      "vista": "tu vino está mezclado con agua tus príncipes prevaricadores y compañeros de ladrones todos",
+      "x": 0.0399,
+      "y": 0.1145,
+      "z": -0.0503
+    },
+    {
+      "id": 458,
+      "texto": "biblia",
+      "vista": "ha dicho así hazte coyundas y yugos y ponlos sobre tu cuello y los",
+      "x": 0.1664,
+      "y": 0.0287,
+      "z": -0.0061
+    },
+    {
+      "id": 459,
+      "texto": "coran",
+      "vista": "sura qaf qaf juro por el glorioso corán pero los que se niegan a",
+      "x": -0.1454,
+      "y": -0.0461,
+      "z": -0.0263
+    },
+    {
+      "id": 460,
+      "texto": "coran",
+      "vista": "ellos sea absorbida por la tierra y no puedas alcanzarla y en efecto sus",
+      "x": -0.1877,
+      "y": -0.0751,
+      "z": -0.0417
+    },
+    {
+      "id": 461,
+      "texto": "biblia",
+      "vista": "sabio mas el hombre insensato todo lo disipa el que sigue la justicia y",
+      "x": -0.0286,
+      "y": 0.0714,
+      "z": -0.0642
+    },
+    {
+      "id": 462,
+      "texto": "biblia",
+      "vista": "y sea el tal hombre como las ciudades que asoló jehová y no se",
+      "x": 0.1213,
+      "y": 0.0622,
+      "z": 0.0688
+    },
+    {
+      "id": 463,
+      "texto": "coran",
+      "vista": "injustos cambiaron por otras las palabras que se les había ordenado decir y por",
+      "x": -0.1198,
+      "y": -0.0912,
+      "z": -0.0604
+    },
+    {
+      "id": 464,
+      "texto": "biblia",
+      "vista": "jehová tu dios dios promete un profeta como moisés profeta de en medio de",
+      "x": 0.0111,
+      "y": 0.1958,
+      "z": -0.0003
+    },
+    {
+      "id": 465,
+      "texto": "biblia",
+      "vista": "será para jehová dios de los ejércitos en tierra del norte junto al río",
+      "x": 0.1074,
+      "y": 0.0464,
+      "z": -0.0516
+    },
+    {
+      "id": 466,
+      "texto": "biblia",
+      "vista": "mi madre y él me enseñaba y me decía retenga tu corazón mis razones",
+      "x": -0.0262,
+      "y": 0.16,
+      "z": -0.061
+    },
+    {
+      "id": 467,
+      "texto": "biblia",
+      "vista": "a su heredad y cada cual a su tierra y si cuidadosamente aprendieren los",
+      "x": 0.085,
+      "y": 0.0545,
+      "z": 0.0078
+    },
+    {
+      "id": 468,
+      "texto": "biblia",
+      "vista": "a la región de galilea y vino y habitó en la ciudad que se",
+      "x": -0.0045,
+      "y": -0.0859,
+      "z": 0.1342
+    },
+    {
+      "id": 469,
+      "texto": "biblia",
+      "vista": "de jehová hijos de israel porque jehová contiende con los moradores de la tierra",
+      "x": 0.0459,
+      "y": 0.1232,
+      "z": -0.0429
+    },
+    {
+      "id": 470,
+      "texto": "biblia",
+      "vista": "maldito el que deshonrare a su padre o a su madre y dirá todo",
+      "x": 0.0048,
+      "y": -0.0621,
+      "z": -0.0016
+    },
+    {
+      "id": 471,
+      "texto": "biblia",
+      "vista": "tan grandes cosas y respondió eliseo jehová me ha mostrado que tú serás rey",
+      "x": 0.1663,
+      "y": -0.1096,
+      "z": -0.0508
+    },
+    {
+      "id": 472,
+      "texto": "biblia",
+      "vista": "jehová de david y de toda su aflicción de cómo juró a jehová y",
+      "x": 0.0583,
+      "y": 0.165,
+      "z": -0.1183
+    },
+    {
+      "id": 473,
+      "texto": "biblia",
+      "vista": "de ellos y fueron todos llenos del espíritu santo y comenzaron a hablar en",
+      "x": 0.0037,
+      "y": -0.0804,
+      "z": 0.1092
+    },
+    {
+      "id": 474,
+      "texto": "biblia",
+      "vista": "entran los de a caballo a la casa del rey allí la mataron entonces",
+      "x": 0.1787,
+      "y": -0.1519,
+      "z": -0.0565
+    },
+    {
+      "id": 475,
+      "texto": "biblia",
+      "vista": "a mí tu oído líbrame pronto sé tú mi roca fuerte y fortaleza para",
+      "x": 0.0141,
+      "y": 0.3098,
+      "z": -0.0537
+    },
+    {
+      "id": 476,
+      "texto": "biblia",
+      "vista": "a los madianitas y heridlos por cuanto ellos os afligieron a vosotros con sus",
+      "x": 0.1654,
+      "y": -0.1742,
+      "z": -0.039
+    },
+    {
+      "id": 477,
+      "texto": "biblia",
+      "vista": "los cielos y en la tierra y debajo de la tierra y toda lengua",
+      "x": -0.0567,
+      "y": 0.1007,
+      "z": 0.2067
+    },
+    {
+      "id": 478,
+      "texto": "biblia",
+      "vista": "prueba de si vosotros sois obedientes en todo y al que vosotros perdonáis yo",
+      "x": -0.0819,
+      "y": 0.0732,
+      "z": 0.2168
+    },
+    {
+      "id": 479,
+      "texto": "biblia",
+      "vista": "para siempre pero mis palabras y mis ordenanzas que mandé a mis siervos los",
+      "x": 0.0798,
+      "y": 0.0038,
+      "z": -0.0008
+    },
+    {
+      "id": 480,
+      "texto": "coran",
+      "vista": "concederá el criterio perdonará sus faltas y aceptará su arrepentimiento dios es el dueño",
+      "x": -0.2648,
+      "y": -0.0009,
+      "z": -0.1228
+    },
+    {
+      "id": 481,
+      "texto": "biblia",
+      "vista": "de la potestad de las tinieblas y trasladado al reino de su amado hijo",
+      "x": -0.0326,
+      "y": -0.0023,
+      "z": 0.1078
+    },
+    {
+      "id": 482,
+      "texto": "biblia",
+      "vista": "y partiendo de obot acamparon en ije abarim en el desierto que está enfrente",
+      "x": 0.0829,
+      "y": -0.0921,
+      "z": -0.0356
+    },
+    {
+      "id": 483,
+      "texto": "biblia",
+      "vista": "forme proceso ciertamente yo lo llevaría sobre mi hombro y me lo ceñiría como",
+      "x": 0.0067,
+      "y": 0.0078,
+      "z": 0.0424
+    },
+    {
+      "id": 484,
+      "texto": "biblia",
+      "vista": "participa de las aflicciones por el evangelio según el poder de dios quien nos",
+      "x": -0.1021,
+      "y": 0.0866,
+      "z": 0.1778
+    },
+    {
+      "id": 485,
+      "texto": "biblia",
+      "vista": "abierto la puerta de la fe a los gentiles y se quedaron allí mucho",
+      "x": -0.0211,
+      "y": -0.1087,
+      "z": 0.1898
+    },
+    {
+      "id": 486,
+      "texto": "biblia",
+      "vista": "nombres de los hijos de israel que entraron en egipto jacob y sus hijos",
+      "x": 0.1182,
+      "y": -0.1882,
+      "z": -0.1074
+    },
+    {
+      "id": 487,
+      "texto": "biblia",
+      "vista": "yo los guardaba en tu nombre a los que me diste yo los guardé",
+      "x": -0.094,
+      "y": 0.1964,
+      "z": 0.1144
+    },
+    {
+      "id": 488,
+      "texto": "coran",
+      "vista": "que ellos no cambien lo que hay en sí mismos pero si dios decreta",
+      "x": -0.2419,
+      "y": -0.0363,
+      "z": -0.0524
+    },
+    {
+      "id": 489,
+      "texto": "biblia",
+      "vista": "vida sara tendrá un hijo entonces sara negó diciendo no me reí porque tuvo",
+      "x": 0.0315,
+      "y": 0.0326,
+      "z": 0.0651
+    },
+    {
+      "id": 490,
+      "texto": "biblia",
+      "vista": "y quería adelantárseles viéndole ellos andar sobre el mar pensaron que era un fantasma",
+      "x": -0.0055,
+      "y": -0.1348,
+      "z": 0.1033
+    },
+    {
+      "id": 491,
+      "texto": "biblia",
+      "vista": "esta y de endecha servirá modo de proceder de dios con israel aconteció en",
+      "x": 0.1151,
+      "y": 0.0529,
+      "z": 0.034
+    },
+    {
+      "id": 492,
+      "texto": "biblia",
+      "vista": "ver cómo están y bernabé quería que llevasen consigo a juan el que tenía",
+      "x": -0.0116,
+      "y": -0.1399,
+      "z": 0.1292
+    },
+    {
+      "id": 493,
+      "texto": "biblia",
+      "vista": "toda sujeción porque no permito a la mujer enseñar ni ejercer dominio sobre el",
+      "x": -0.084,
+      "y": -0.0557,
+      "z": 0.078
+    },
+    {
+      "id": 494,
+      "texto": "coran",
+      "vista": "sura la abundancia oh mujámmad te he agraciado con la abundancia reza a tu",
+      "x": -0.0856,
+      "y": 0.077,
+      "z": -0.1301
+    },
+    {
+      "id": 495,
+      "texto": "biblia",
+      "vista": "mi sed me dieron a beber vinagre sea su convite delante de ellos por",
+      "x": -0.0078,
+      "y": 0.1523,
+      "z": -0.0972
+    },
+    {
+      "id": 496,
+      "texto": "coran",
+      "vista": "no te adelantes oh mujámmad a repetir lo que te es revelado del corán",
+      "x": -0.1546,
+      "y": 0.0297,
+      "z": -0.0938
+    },
+    {
+      "id": 497,
+      "texto": "biblia",
+      "vista": "que hacen iniquidad que afilan como espada su lengua lanzan cual saeta suya palabra",
+      "x": -0.0204,
+      "y": 0.1104,
+      "z": -0.1107
+    },
+    {
+      "id": 498,
+      "texto": "biblia",
+      "vista": "la faz de la tierra con espada y con hambre serán consumidos y sus",
+      "x": 0.1054,
+      "y": 0.1271,
+      "z": 0.0132
+    },
+    {
+      "id": 499,
+      "texto": "biblia",
+      "vista": "cordero y en sus bocas no fue hallada mentira pues son sin mancha delante",
+      "x": 0.0305,
+      "y": -0.038,
+      "z": -0.0143
+    }
+  ]
+}

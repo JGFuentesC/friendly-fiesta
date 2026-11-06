@@ -89,6 +89,21 @@ Luego abrir `http://localhost:8889` en el navegador local.
 
 ## LeNet-5 sobre MNIST
 
+La sección 5 de `spa/demo_nlp_comparador_biblia_coran.html` muestra un clasificador LSTM Biblia/Corán. `scripts/train_lstm_biblia_coran.py` lo entrena en la GPU de platypy y escribe `data/processed/lstm_resultados.json` y `figures/lstm/anatomy_data.json`; `scripts/anatomy_lstm/build.mjs` dibuja la celda con sus compuertas y empaqueta todo en `spa/lstm_datos.js`, que es lo que lee la página.
+
+```bash
+R=/home/jose/platypy/services/pytorch/notebooks/friendly-fiesta
+scp scripts/train_lstm_biblia_coran.py platypy:$R/scripts/
+scp data/processed/bow_nltk_biblia.json platypy:$R/data/processed/
+scp data/raw/textos_nlp/*.txt platypy:$R/data/raw/textos_nlp/
+ssh platypy 'docker exec -w /workspace/friendly-fiesta lab-pytorch python scripts/train_lstm_biblia_coran.py'
+scp platypy:$R/data/processed/lstm_resultados.json data/processed/
+scp platypy:$R/figures/lstm/anatomy_data.json figures/lstm/
+node scripts/anatomy_lstm/build.mjs
+uv run python scripts/verificar_redaccion_html.py --seccion seccion-lstm spa/demo_nlp_comparador_biblia_coran.html
+python3 -m http.server 8000   # abrir /spa/demo_nlp_comparador_biblia_coran.html
+```
+
 `notebooks/04_lenet_mnist.ipynb` entrena LeNet-5 en la GPU de platypy y explica la arquitectura, los kernels, la operación de convolución y las activaciones capa por capa, con ejemplos inferidos al final. Está generado por `scripts/build_lenet_notebook.py`. El diagrama isométrico de la red (`figures/lenet/lenet_anatomy.svg`, incrustado en el notebook) lo construye `scripts/anatomy_lenet/build.mjs` a partir de `figures/lenet/anatomy_data.json`, que exporta el propio notebook.
 
 ```bash
@@ -98,3 +113,11 @@ scp figures/lenet/lenet_anatomy.svg platypy:/home/jose/platypy/services/pytorch/
 ssh platypy 'docker exec lab-pytorch bash -lc "cd /workspace/friendly-fiesta && jupyter nbconvert --to notebook --execute --inplace notebooks/04_lenet_mnist.ipynb"'
 node scripts/anatomy_lenet/build.mjs   # tras traer anatomy_data.json, si cambió el modelo
 ```
+
+## Textos de la Biblia y el Corán
+
+Los textos originales no se incluyen en este repositorio, porque las traducciones pueden tener derechos de terceros. La SPA funciona sin ellos con los datos ya calculados de `data/processed/` (frecuencias, lemas y fragmentos breves). Para regenerar esos datos o reentrenar la LSTM, coloca tus propias copias en `data/raw/textos_nlp/biblia_es.txt` y `data/raw/textos_nlp/coran_es.txt`.
+
+## Licencia
+
+Este proyecto se distribuye bajo la licencia GNU GPL v3.0 (`GPL-3.0-only`). El texto completo está en [`LICENSE`](LICENSE).
