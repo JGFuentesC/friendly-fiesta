@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observatorio mañanero</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --fondo: #f7f7f5; --superficie: #fcfcfb; --borde: #e4e3de;
+    --texto: #1f1f1e; --texto-2: #5c5b55; --texto-3: #8a8981; --rejilla: #ecebe6;
+    --positivo: #2a78d6; --neutral: #eb6834; --negativo: #1baf7a; --acento: #2a78d6;
+    --calor-0: #f0f6fe; --calor-1: #86b6ef; --calor-2: #1c5cab;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fondo: #121211; --superficie: #1a1a19; --borde: #2e2e2c;
+      --texto: #f0efec; --texto-2: #c3c2b7; --texto-3: #8f8e86; --rejilla: #2a2a28;
+      --positivo: #3987e5; --neutral: #d95926; --negativo: #199e70; --acento: #3987e5;
+      --calor-0: #1d2633; --calor-1: #2a5d9c; --calor-2: #86b6ef;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--fondo); color: var(--texto);
+         font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  h2 { font-size: 17px; margin: 0 0 4px; }
+  .sub { color: var(--texto-2); margin: 0 0 20px; }
+  .nota { color: var(--texto-3); font-size: 13px; margin: 0 0 12px; }
+  .tarjeta { background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; padding: 18px; margin-bottom: 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--superficie); border: 1px solid var(--borde); border-radius: 12px; padding: 14px 16px; }
+  .kpi .etq { color: var(--texto-2); font-size: 13px; }
+  .kpi .val { font-size: 28px; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .kpi .det { color: var(--texto-3); font-size: 12px; }
+  .rejilla2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 860px) { .rejilla2 { grid-template-columns: 1fr; } }
+  .lienzo { position: relative; height: 320px; }
+  .lienzo.bajo { height: 240px; }
+  .leyenda { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--texto-2); margin-bottom: 8px; }
+  .leyenda span::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px;
+                          margin-right: 6px; background: var(--c); vertical-align: -1px; }
+  .desplazable { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--rejilla); white-space: nowrap; }
+  th { color: var(--texto-2); font-weight: 600; }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.titulo { white-space: normal; min-width: 260px; }
+  a { color: var(--acento); }
+  .mapa td, .mapa th { padding: 4px 3px; }
+  .mapa td.celda { text-align: center; min-width: 30px; font-size: 12px; border: 2px solid var(--superficie); border-radius: 4px;
+                   font-variant-numeric: tabular-nums; cursor: default; }
+  .mapa th.mes { writing-mode: vertical-rl; transform: rotate(180deg); font-weight: 500; padding: 4px 2px; }
+  .mapa td.cat { font-weight: 600; position: sticky; left: 0; background: var(--superficie); }
+  textarea { width: 100%; min-height: 80px; font: inherit; color: var(--texto); background: var(--fondo);
+             border: 1px solid var(--borde); border-radius: 8px; padding: 10px; }
+  button { font: inherit; background: var(--acento); color: #fff; border: 0; border-radius: 8px; padding: 8px 16px; cursor: pointer; margin-top: 8px; }
+  .barra { display: flex; align-items: center; gap: 8px; margin: 4px 0; font-size: 13px; }
+  .barra .pista { flex: 1; height: 10px; background: var(--rejilla); border-radius: 5px; overflow: hidden; }
+  .barra .relleno { height: 100%; background: var(--c); }
+  .barra .nom { width: 70px; color: var(--texto-2); }
+  .barra .pct { width: 48px; text-align: right; font-variant-numeric: tabular-nums; }
+  #resultado .etiqueta { font-weight: 650; }
+  #info-tema { min-height: 20px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Observatorio mañanero</h1>
+  <p class="sub" id="subtitulo">Sentimiento de los comentarios en YouTube a las conferencias matutinas de la presidenta, una mañanera al azar por mes desde la toma de posesión.</p>
+
+  <section class="kpis" id="kpis"></section>
+
+  <section class="tarjeta">
+    <h2>Sentimiento por mes</h2>
+    <p class="nota">Porcentaje de comentarios principales de la mañanera elegida en cada mes. Clasificador: embeddings de Gemma, PCA a 5 componentes y regresión logística (exactitud balanceada 0.78 en prueba).</p>
+    <div class="leyenda"><span style="--c: var(--positivo)">Positivo</span><span style="--c: var(--neutral)">Neutral</span><span style="--c: var(--negativo)">Negativo</span></div>
+    <div class="lienzo"><canvas id="g-sentimiento"></canvas></div>
+  </section>
+
+  <section class="rejilla2">
+    <div class="tarjeta">
+      <h2>Índice neto de sentimiento</h2>
+      <p class="nota">Puntos porcentuales: % positivo menos % negativo.</p>
+      <div class="lienzo bajo"><canvas id="g-indice"></canvas></div>
+    </div>
+    <div class="tarjeta">
+      <h2>Comentarios clasificados por mes</h2>
+      <p class="nota">Volumen de comentarios principales de cada mañanera.</p>
+      <div class="lienzo bajo"><canvas id="g-volumen"></canvas></div>
+    </div>
+  </section>
+
+  <section class="tarjeta">
+    <h2>Temas más comentados por mes</h2>
+    <p class="nota">Top 3 de temas que gemma4 identifica en cada mañanera, agrupados en categorías estables para seguirlas en el tiempo. La celda muestra el porcentaje aproximado de comentarios; pasa el cursor para ver el tema original.</p>
+    <p class="nota" id="info-tema"></p>
+    <div class="desplazable"><table class="mapa" id="mapa-temas"></table></div>
+  </section>
+
+  <section class="tarjeta">
+    <h2>Clasificar un comentario</h2>
+    <p class="nota">Usa la misma API del observatorio: <code>POST /api/clasificar</code>.</p>
+    <textarea id="texto" placeholder="Escribe o pega un comentario, con emojis incluidos"></textarea>
+    <button id="btn-clasificar">Clasificar</button>
+    <div id="resultado"></div>
+  </section>
+
+  <section class="tarjeta">
+    <h2>Mañaneras analizadas</h2>
+    <div class="desplazable"><table id="tabla-videos"></table></div>
+  </section>
+</main>
+
+<script>
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const CLASES = ["positivo", "neutral", "negativo"];
+const NOMBRE = {positivo: "Positivo", neutral: "Neutral", negativo: "Negativo"};
+const MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
+const etiquetaMes = m => { const [a, n] = m.split("-"); return `${MESES[+n - 1]} ${a.slice(2)}`; };
+const fmt = (x, d = 1) => x == null ? "n/d" : x.toLocaleString("es-MX", {maximumFractionDigits: d, minimumFractionDigits: d});
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+function baseOpciones() {
+  Chart.defaults.color = css("--texto-2");
+  Chart.defaults.font.family = "system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+  return {
+    responsive: true, maintainAspectRatio: false, interaction: {mode: "index", intersect: false},
+    plugins: {legend: {display: false}, tooltip: {padding: 10}},
+    scales: {x: {grid: {display: false}}, y: {grid: {color: css("--rejilla")}, border: {display: false}}},
+  };
+}
+
+async function cargar() {
+  const [tend, temas] = await Promise.all([fetch("/api/tendencia").then(r => r.json()), fetch("/api/temas").then(r => r.json())]);
+  const videos = await fetch("/api/videos").then(r => r.json());
+  kpis(tend);
+  graficas(tend);
+  mapaTemas(tend, temas);
+  tablaVideos(videos, temas);
+}
+
+function kpis(t) {
+  const tot = t.reduce((s, x) => s + x.clasificados, 0);
+  const suma = k => t.reduce((s, x) => s + x[k], 0);
+  const ult = t[t.length - 1], pri = t[0];
+  const caja = (etq, val, det) => `<div class="kpi"><div class="etq">${etq}</div><div class="val">${val}</div><div class="det">${det}</div></div>`;
+  document.getElementById("kpis").innerHTML = [
+    caja("Comentarios clasificados", tot.toLocaleString("es-MX"), `${t.length} mañaneras, ${etiquetaMes(pri.mes)} a ${etiquetaMes(ult.mes)}`),
+    caja("Positivos", fmt(100 * suma("positivos") / tot) + " %", "de todos los comentarios"),
+    caja("Negativos", fmt(100 * suma("negativos") / tot) + " %", "de todos los comentarios"),
+    caja("Índice neto del último mes", (ult.indice_neto > 0 ? "+" : "") + fmt(ult.indice_neto), `${etiquetaMes(ult.mes)}; en ${etiquetaMes(pri.mes)} fue ${fmt(pri.indice_neto)}`),
+  ].join("");
+}
+
+function graficas(t) {
+  const etiquetas = t.map(x => etiquetaMes(x.mes));
+  const op = baseOpciones();
+  new Chart(document.getElementById("g-sentimiento"), {
+    type: "bar",
+    data: {labels: etiquetas, datasets: CLASES.map(c => ({
+      label: NOMBRE[c], data: t.map(x => x[`pct_${c}`]), backgroundColor: css(`--${c}`),
+      borderColor: css("--superficie"), borderWidth: {top: 2}, borderRadius: 4, borderSkipped: false, barPercentage: 0.85,
+    }))},
+    options: {...op, scales: {x: {...op.scales.x, stacked: true}, y: {...op.scales.y, stacked: true, max: 100, ticks: {callback: v => v + " %"}}},
+      plugins: {...op.plugins, tooltip: {...op.plugins.tooltip, callbacks: {
+        title: i => `${t[i[0].dataIndex].fecha} · ${t[i[0].dataIndex].clasificados.toLocaleString("es-MX")} comentarios`,
+        label: i => ` ${i.dataset.label}: ${fmt(i.raw)} %`}}}},
+  });
+  new Chart(document.getElementById("g-indice"), {
+    type: "line",
+    data: {labels: etiquetas, datasets: [{label: "Índice neto", data: t.map(x => x.indice_neto), borderColor: css("--acento"),
+      backgroundColor: css("--acento"), borderWidth: 2, pointRadius: 4, pointHoverRadius: 6, tension: 0.25}]},
+    options: {...op, scales: {...op.scales, y: {...op.scales.y, grid: {color: c => c.tick.value === 0 ? css("--texto-3") : css("--rejilla")}}},
+      plugins: {...op.plugins, tooltip: {...op.plugins.tooltip, callbacks: {label: i => ` Índice neto: ${i.raw > 0 ? "+" : ""}${fmt(i.raw)} puntos`}}}},
+  });
+  new Chart(document.getElementById("g-volumen"), {
+    type: "bar",
+    data: {labels: etiquetas, datasets: [{label: "Comentarios", data: t.map(x => x.clasificados), backgroundColor: css("--texto-3"), borderRadius: 4}]},
+    options: {...op, plugins: {...op.plugins, tooltip: {...op.plugins.tooltip, callbacks: {label: i => ` ${i.raw.toLocaleString("es-MX")} comentarios`}}}},
+  });
+}
+
+function mapaTemas(t, temas) {
+  const meses = t.map(x => x.mes);
+  const porCat = {};
+  temas.forEach(r => {
+    const cat = r.tema_canonico || r.tema;
+    porCat[cat] ??= {};
+    const celda = porCat[cat][r.mes] ??= {pct: 0, temas: []};
+    celda.pct += r.porcentaje;
+    celda.temas.push(`${r.tema} (${fmt(r.porcentaje, 0)} %)`);
+  });
+  const cats = Object.keys(porCat).sort((a, b) => Object.keys(porCat[b]).length - Object.keys(porCat[a]).length);
+  const max = Math.max(1, ...cats.flatMap(c => Object.values(porCat[c]).map(v => v.pct)));
+  const color = p => {
+    const k = p / max;
+    return k < 0.5 ? `color-mix(in oklab, var(--calor-0), var(--calor-1) ${k * 200}%)` : `color-mix(in oklab, var(--calor-1), var(--calor-2) ${(k - 0.5) * 200}%)`;
+  };
+  let html = `<tr><th>Categoría</th>${meses.map(m => `<th class="mes">${etiquetaMes(m)}</th>`).join("")}</tr>`;
+  cats.forEach(c => {
+    html += `<tr><td class="cat">${esc(c)}</td>` + meses.map(m => {
+      const v = porCat[c][m];
+      if (!v) return `<td class="celda"></td>`;
+      const oscuro = v.pct / max > 0.55;
+      return `<td class="celda" data-info="${esc(etiquetaMes(m) + ": " + v.temas.join("; "))}" style="background:${color(v.pct)};color:${oscuro ? "#fff" : "var(--texto)"}">${fmt(v.pct, 0)}</td>`;
+    }).join("") + "</tr>";
+  });
+  const tabla = document.getElementById("mapa-temas");
+  tabla.innerHTML = cats.length ? html : `<tr><td>Los temas aún no se han calculado.</td></tr>`;
+  const info = document.getElementById("info-tema");
+  tabla.querySelectorAll("td.celda[data-info]").forEach(td => {
+    td.title = td.dataset.info;
+    td.addEventListener("mouseenter", () => info.textContent = td.dataset.info);
+  });
+}
+
+function tablaVideos(v, temas) {
+  const top = {};
+  temas.forEach(r => (top[r.video_id] ??= []).push(r.tema));
+  const filas = v.filter(x => x.clasificados).map(x => `<tr>
+      <td>${esc(x.fecha)}</td><td class="titulo"><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.titulo)}</a></td>
+      <td class="num">${x.clasificados.toLocaleString("es-MX")}</td><td class="num">${fmt(x.pct_positivo)} %</td>
+      <td class="num">${fmt(x.pct_neutral)} %</td><td class="num">${fmt(x.pct_negativo)} %</td>
+      <td class="titulo">${esc((top[x.video_id] || []).join(" · "))}</td><td>${esc(x.agente || "")}</td></tr>`).join("");
+  document.getElementById("tabla-videos").innerHTML =
+    `<tr><th>Fecha</th><th>Mañanera</th><th>Comentarios</th><th>Positivo</th><th>Neutral</th><th>Negativo</th><th>Temas</th><th>Agente</th></tr>` + filas;
+}
+
+document.getElementById("btn-clasificar").addEventListener("click", async () => {
+  const texto = document.getElementById("texto").value.trim();
+  const caja = document.getElementById("resultado");
+  if (!texto) return;
+  caja.textContent = "Clasificando…";
+  try {
+    const r = await fetch("/api/clasificar", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({texto})}).then(r => r.json());
+    const res = r.resultados[0];
+    caja.innerHTML = `<p>Sentimiento: <span class="etiqueta">${NOMBRE[res.sentimiento]}</span></p>` + CLASES.map(c =>
+      `<div class="barra"><span class="nom">${NOMBRE[c]}</span><span class="pista"><span class="relleno" style="display:block;width:${100 * res.probabilidades[c]}%;--c:var(--${c})"></span></span><span class="pct">${fmt(100 * res.probabilidades[c], 0)} %</span></div>`).join("");
+  } catch (e) {
+    caja.textContent = "No se pudo clasificar: " + e;
+  }
+});
+
+cargar();
+</script>
+</body>
+</html>

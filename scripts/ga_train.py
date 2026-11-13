@@ -1,6 +1,6 @@
 """Búsqueda de hiperparámetros de una red FF con algoritmo genético (GPU).
 
-Corre en servidor-gpu (lab-pytorch, RTX 3070). Usa AMP, datos precargados en VRAM y
+Corre en el servidor GPU (lab-pytorch, RTX 3070). Usa AMP, datos precargados en VRAM y
 checkpointing continuo en `results/` por si el proceso se interrumpe.
 
 Dos fases: (1) gruesa sobre todo el espacio, (2) fina alrededor del mejor de (1).

@@ -1,7 +1,7 @@
 """Genera notebooks/03_fraude_ff.ipynb a partir de celdas definidas aquí.
 
 Usa nbformat (mismo patrón que build_notebook.py). El cuaderno se ejecuta en
-servidor-gpu (lab-pytorch, RTX 3070) y se copia de vuelta con salidas.
+el servidor GPU (lab-pytorch, RTX 3070) y se copia de vuelta con salidas.
 """
 
 import nbformat as nbf

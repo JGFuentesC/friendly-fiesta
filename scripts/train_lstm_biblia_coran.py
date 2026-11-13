@@ -1,6 +1,6 @@
 """Clasificador LSTM Biblia/Corán en PyTorch con valores de Shapley por palabra.
 
-Corre en el contenedor lab-pytorch de servidor-gpu (GPU). Estima P(Corán | documento)
+Corre en el contenedor lab-pytorch del servidor GPU. Estima P(Corán | documento)
 sobre ventanas de hasta 200 palabras y escribe:
 
   data/processed/lstm_resultados.json   métricas, curvas y SHAP para la SPA

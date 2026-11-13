@@ -1,6 +1,6 @@
 """Genera notebooks/04_lenet_mnist.ipynb a partir de celdas definidas aquí.
 
-El notebook corre en el contenedor lab-pytorch de servidor-gpu (GPU). Al final
+El notebook corre en el contenedor lab-pytorch del servidor GPU (GPU). Al final
 exporta figures/lenet/anatomy_data.json, que alimenta el diagrama isométrico
 construido por scripts/anatomy_lenet/build.mjs.
 """
@@ -35,7 +35,7 @@ En este cuaderno vamos a:
 1. Leer la arquitectura capa por capa en un diagrama isométrico, donde los **pesos** (kernels y matrices) se distinguen de las **activaciones** (mapas de rasgos).
 2. Calcular a mano el tamaño de cada tensor y el número de parámetros.
 3. Entender la operación de convolución con un ejemplo numérico, compararla con PyTorch y ver qué hace un kernel sobre un dígito.
-4. Entrenar LeNet-5 en la GPU de servidor-gpu (RTX 3070) sobre MNIST.
+4. Entrenar LeNet-5 en la GPU del servidor remoto (RTX 3070) sobre MNIST.
 5. Mirar los kernels aprendidos y recorrer la red "capas adentro" con un dígito concreto.
 6. Inferir un conjunto de ejemplos de prueba, revisar la matriz de confusión y los errores.
 

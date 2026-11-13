@@ -27,3 +27,10 @@ spa/captura_*.png
 
 # Entornos auxiliares
 .venv-*/
+
+# Comentarios descargados de YouTube (datos de terceros)
+data/youtube_comments/
+data/diccionarios/
+
+# Observatorio mañanero: comentarios descargados, base de datos y modelo
+data/observatorio/

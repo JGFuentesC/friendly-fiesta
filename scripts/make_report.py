@@ -215,7 +215,7 @@ El enfoque propuesto cumple el objetivo de negocio de un FPR muy bajo sin depend
 Una limitaci\u00f3n es que el modelo final es una \u00fanica red (no se usa ensamble), por lo que su variabilidad entre semillas es notable; sin embargo, esto es una decisi\u00f3n de dise\u00f1o intencional para mantener el modelo interpretable y f\u00e1cil de desplegar en producci\u00f3n. Finalmente, el FPR se medir\u00fa en producci\u00f3n con datos reales; aunque el conjunto de test conserva la tasa base de fraude, el desplazamiento de distribuci\u00f3n (concept drift) podr\u00eda requerir reentrenamiento peri\u00f3dico.
 
 \section{Tiempo de computo}
-Toda la b\u00fasqueda, el reentreno y la evaluaci\u00f3n se ejecutaron de forma aut\u00f3noma en una sola GPU NVIDIA RTX 3070 (8 GB VRAM) sobre el servidor servidor-gpu. El tiempo aproximado de cada etapa:
+Toda la b\u00fasqueda, el reentreno y la evaluaci\u00f3n se ejecutaron de forma aut\u00f3noma en una sola GPU NVIDIA RTX 3070 (8 GB VRAM) sobre el servidor GPU. El tiempo aproximado de cada etapa:
 
 \begin{center}
 \begin{tabular}{lc}
