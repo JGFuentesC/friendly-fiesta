@@ -15,7 +15,7 @@ jobs:
   secretos:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
@@ -25,7 +25,7 @@ jobs:
   dependencias:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v6
       - name: Auditar dependencias bloqueadas en uv.lock
         # setuptools queda fijado en <81 (ver pyproject.toml); sus avisos se revisan a mano.
@@ -38,7 +38,7 @@ jobs:
   codigo:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v6
       - name: Análisis estático con bandit
         run: uvx bandit -q -r scripts agentes observatorio -ll -s B310
