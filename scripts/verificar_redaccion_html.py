@@ -1,5 +1,7 @@
 """Verifica las reglas de redacción en el texto visible de los archivos indicados.
 
+Acepta HTML, SVG, JS, LaTeX (.tex, .sty) y notebooks (.ipynb, solo celdas markdown).
+
 Comprueba guiones largos o medios, signos de interrogación sin abrir, títulos que
 empiezan con interrogativo acentuado sin ¿ y frases con patrón de antítesis.
 Sale con código 1 si encuentra algo.
@@ -12,6 +14,7 @@ Uso:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 from pathlib import Path
@@ -25,6 +28,27 @@ ANTITESIS = re.compile(r"\b(no es [^.,:;]{1,40}[,:] ?(es|sino)|no se trata de|no
 def texto_visible(contenido: str) -> str:
     sin_bloques = re.sub(r"<(style|script)\b.*?</\1>", " ", contenido, flags=re.DOTALL | re.IGNORECASE)
     return re.sub(r"\\\(.*?\\\)|\\\[.*?\\\]", " ", sin_bloques, flags=re.DOTALL)
+
+
+def texto_latex(contenido: str) -> str:
+    """Quita comentarios, matemáticas y bloques de código, y deja líneas alineadas."""
+    def blanco(m: re.Match) -> str:
+        return "\n" * m.group(0).count("\n")
+    sin_comentarios = re.sub(r"(?<!\\)%.*", "", contenido)
+    sin_codigo = re.sub(r"\\begin\{(lstlisting|verbatim|minted)\}.*?\\end\{\1\}", blanco, sin_comentarios, flags=re.DOTALL)
+    sin_entornos = re.sub(r"\\begin\{(equation|align|gather|multline)\*?\}.*?\\end\{\1\*?\}", blanco, sin_codigo, flags=re.DOTALL)
+    sin_display = re.sub(r"\\\[.*?\\\]|\$\$.*?\$\$", blanco, sin_entornos, flags=re.DOTALL)
+    sin_inline = re.sub(r"\$[^$]*\$|\\lstinline(.)(?:(?!\1).)*\1|\\texttt\{[^}]*\}|\\url\{[^}]*\}", " ", sin_display)
+    return sin_inline.replace("?`", "¿").replace("!`", "¡")
+
+
+def texto_notebook(contenido: str) -> str:
+    celdas = json.loads(contenido).get("cells", [])
+    markdown = ["".join(c["source"]) if isinstance(c["source"], list) else c["source"] for c in celdas if c.get("cell_type") == "markdown"]
+    texto = "\n".join(markdown)
+    texto = re.sub(r"```.*?```", " ", texto, flags=re.DOTALL)
+    texto = re.sub(r"`[^`]*`", " ", texto)
+    return re.sub(r"\$\$.*?\$\$|\$[^$\n]*\$", " ", texto, flags=re.DOTALL)
 
 
 def seccion(contenido: str, identificador: str) -> str:
@@ -43,7 +67,7 @@ def revisar(nombre: str, contenido: str) -> list[str]:
             fallos.append(f"{nombre}:{numero}: posible antítesis: {linea.strip()[:90]}")
         if TITULOS.search(linea):
             fallos.append(f"{nombre}:{numero}: título interrogativo sin ¿: {linea.strip()[:90]}")
-        if nombre.endswith((".html", ".svg")) and "?" in linea and "¿" not in linea and "://" not in linea:
+        if nombre.endswith((".html", ".svg", ".tex", ".ipynb")) and "?" in linea and "¿" not in linea and "://" not in linea:
             fallos.append(f"{nombre}:{numero}: signo ? sin ¿: {linea.strip()[:90]}")
     return fallos
 
@@ -60,6 +84,10 @@ def main() -> None:
             contenido = seccion(contenido, args.seccion)
         if ruta.suffix in {".html", ".svg"}:
             contenido = texto_visible(contenido)
+        elif ruta.suffix in {".tex", ".sty"}:
+            contenido = texto_latex(contenido)
+        elif ruta.suffix == ".ipynb":
+            contenido = texto_notebook(contenido)
         fallos += revisar(str(ruta), contenido)
     print("\n".join(fallos) if fallos else f"Redacción correcta en {len(args.archivos)} archivo(s).")
     sys.exit(1 if fallos else 0)

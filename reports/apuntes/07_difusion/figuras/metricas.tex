@@ -1,0 +1,16 @@
+% Generado por scripts/figuras_difusion.py
+\begin{table}[H]
+\centering\small
+\begin{tabular}{lllrrr}
+\toprule
+Modelo & Red & Datos & Entrenamiento & $L_{\text{simple}}$ final & Tiempo (s)\\
+\midrule
+Montañas 2D & MLP & 60\,000 puntos & 16\,000 pasos & 0.2292 & 73\\
+Letras UA 2D & MLP & 60\,000 puntos & 16\,000 pasos & 0.2208 & 73\\
+Paisajes $24\times24$ & U-Net condicional & 36\,000 imágenes & 14 épocas & 0.0202 & 252\\
+MNIST $28\times28$ & U-Net condicional & 60\,000 imágenes & 12 épocas & 0.0225 & 488\\
+\bottomrule
+\end{tabular}
+\caption{Corridas de \texttt{scripts/train\_ddpm.py} en una NVIDIA GeForce RTX 3070 Laptop GPU. Tiempo total con muestreo y exportación: 15.8 minutos; pico de memoria de GPU: 735 MB.}
+\label{tab:metricas}
+\end{table}

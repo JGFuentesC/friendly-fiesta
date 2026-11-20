@@ -1,0 +1,6 @@
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Entorno virtual local, nunca versionado"
+paths = ['''(^|/)\.venv/''']

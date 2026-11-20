@@ -34,3 +34,25 @@ data/diccionarios/
 
 # Observatorio mañanero: comentarios descargados, base de datos y modelo
 data/observatorio/
+
+# Sesiones 06 a 08: corpus de Teresa, video de referencia, checkpoints y auxiliares de LaTeX
+data/raw/teresa/
+data/raw/video_difusion/
+data/minigpt_run/
+data/difusion_run/
+reports/apuntes/**/*.png
+!reports/apuntes/**/figuras/*.png
+reports/apuntes/_plantilla/*.pdf
+agentes/**/.adk/
+data/agente_pruebas/
+
+# Auxiliares de LaTeX
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg

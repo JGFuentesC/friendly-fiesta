@@ -1,0 +1,183 @@
+% anahuac.sty
+% Estilo común de los apuntes del Posgrado en Tecnologías de la Información,
+% Universidad Anáhuac. Derivado de los apuntes de material-tecnico, con identidad
+% institucional (naranja Anáhuac y gris pizarra) y cajas pedagógicas.
+% Uso: \documentclass[11pt,letterpaper,oneside]{report} y \usepackage{../anahuac}
+% Compila con tectonic.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{anahuac}[2026/11/14 Apuntes Anahuac posgrado TI]
+
+% Codificación y fuentes
+\RequirePackage{iftex}
+\ifXeTeX
+  \RequirePackage{fontspec}
+  \setsansfont{texgyreheros}[Extension=.otf, UprightFont=*-regular, BoldFont=*-bold,
+    ItalicFont=*-italic, BoldItalicFont=*-bolditalic, Scale=0.92]
+\else\ifLuaTeX
+  \RequirePackage{fontspec}
+\else
+  \RequirePackage[T1]{fontenc}
+  \RequirePackage[utf8]{inputenc}
+  \RequirePackage{lmodern}
+  \RequirePackage[scaled=0.92]{helvet}
+\fi\fi
+\RequirePackage[spanish,es-noquoting,es-nodecimaldot]{babel}
+
+% Matemáticas
+\RequirePackage{mathtools}
+\RequirePackage{amssymb}
+\RequirePackage{amsthm}
+\RequirePackage{bm}
+
+% Color institucional
+\RequirePackage{xcolor}
+\definecolor{anahuac}{RGB}{255,89,0}        % naranja Anáhuac
+\definecolor{anahuacosc}{RGB}{200,70,0}
+\definecolor{pizarra}{RGB}{38,44,52}
+\definecolor{grisclaro}{RGB}{245,246,248}
+\definecolor{azuldef}{RGB}{20,70,130}
+\definecolor{azuldefbg}{RGB}{236,243,252}
+\definecolor{verdeej}{RGB}{0,115,70}
+\definecolor{verdeejbg}{RGB}{236,250,243}
+\definecolor{naranjabg}{RGB}{255,243,234}
+\definecolor{moradoint}{RGB}{95,60,160}
+\definecolor{moradointbg}{RGB}{244,239,252}
+
+% Página
+\RequirePackage{geometry}
+\geometry{letterpaper, margin=2.5cm, top=3cm, bottom=2.8cm, headheight=16pt}
+\RequirePackage{microtype}
+\RequirePackage{setspace}
+\setstretch{1.15}
+\setlength{\parskip}{0.45em}
+\setlength{\parindent}{0pt}
+
+% Tablas, figuras, diagramas
+\RequirePackage{booktabs}
+\RequirePackage{tabularx}
+\RequirePackage{multirow}
+\RequirePackage{graphicx}
+\RequirePackage{float}
+\RequirePackage{subcaption}
+\RequirePackage[font=small,labelfont={bf,color=anahuacosc}]{caption}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, fit, shapes.geometric, decorations.pathreplacing, matrix, backgrounds}
+\RequirePackage{pgfplots}
+\pgfplotsset{compat=1.18, /pgf/number format/1000 sep={\,}, /pgf/number format/use comma}
+\RequirePackage{enumitem}
+\setlist{itemsep=2pt, topsep=4pt}
+
+% Títulos
+\RequirePackage{titlesec}
+\titleformat{\chapter}[display]
+  {\sffamily\bfseries\color{pizarra}}
+  {\color{anahuac}\Large\MakeUppercase{Sesión}~\thechapter}
+  {4pt}
+  {\Huge}[{\color{anahuac}\titlerule[2pt]}]
+\titlespacing*{\chapter}{0pt}{-10pt}{28pt}
+\titleformat{\section}{\sffamily\Large\bfseries\color{pizarra}}{\color{anahuac}\thesection}{0.8em}{}
+\titleformat{\subsection}{\sffamily\large\bfseries\color{pizarra}}{\color{anahuac}\thesubsection}{0.7em}{}
+
+% Encabezado y pie
+\RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\sffamily\footnotesize\color{pizarra}Universidad Anáhuac $\cdot$ Posgrado en Tecnologías de la Información}
+\fancyhead[R]{\sffamily\footnotesize\color{anahuac}\nombresesion}
+\fancyfoot[C]{\sffamily\footnotesize\color{pizarra}\thepage}
+\renewcommand{\headrule}{{\color{anahuac}\hrule height 0.8pt}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\sffamily\footnotesize\color{pizarra}\thepage}\renewcommand{\headrule}{}}
+
+% Cajas pedagógicas
+\RequirePackage[most,breakable]{tcolorbox}
+\newcounter{cajadef}[chapter]
+\renewcommand{\thecajadef}{\thechapter.\arabic{cajadef}}
+\tcbset{cajabase/.style={enhanced, breakable, arc=2pt, outer arc=2pt, boxrule=0pt, leftrule=4pt,
+  left=9pt, right=8pt, top=6pt, bottom=6pt, fonttitle=\sffamily\bfseries, coltitle=#1,
+  colbacktitle=white!0, attach title to upper={\ }, before skip=10pt, after skip=10pt}}
+\newenvironment{definicion}[1][]{\refstepcounter{cajadef}\begin{tcolorbox}[cajabase=azuldef, colback=azuldefbg, colframe=azuldef,
+  title={Definición \thecajadef\ifx\relax#1\relax\else\ (#1)\fi.}]}{\end{tcolorbox}}
+\newenvironment{teorema}[1][]{\refstepcounter{cajadef}\begin{tcolorbox}[cajabase=azuldef, colback=azuldefbg, colframe=azuldef,
+  title={Resultado \thecajadef\ifx\relax#1\relax\else\ (#1)\fi.}]}{\end{tcolorbox}}
+\newenvironment{ejemplo}[1][]{\begin{tcolorbox}[cajabase=verdeej, colback=verdeejbg, colframe=verdeej,
+  title={Ejemplo\ifx\relax#1\relax\else\ (#1)\fi.}]}{\end{tcolorbox}}
+\newenvironment{nota}[1][]{\begin{tcolorbox}[cajabase=anahuacosc, colback=naranjabg, colframe=anahuac,
+  title={Nota\ifx\relax#1\relax\else\ (#1)\fi.}]}{\end{tcolorbox}}
+\newenvironment{intuicion}[1][]{\begin{tcolorbox}[cajabase=moradoint, colback=moradointbg, colframe=moradoint,
+  title={Intuición\ifx\relax#1\relax\else\ (#1)\fi.}]}{\end{tcolorbox}}
+\newenvironment{ejercicio}[1][]{\begin{tcolorbox}[cajabase=pizarra, colback=grisclaro, colframe=pizarra,
+  title={Ejercicio\ifx\relax#1\relax\else\ (#1)\fi.}]}{\end{tcolorbox}}
+
+% Código
+\RequirePackage{listings}
+\definecolor{codigobg}{RGB}{247,248,250}
+\lstdefinelanguage{bash}{morekeywords={ssh,scp,docker,uv,python,adk,yt-dlp,cd,export}, sensitive=true, morecomment=[l]\#}
+\lstset{
+  backgroundcolor=\color{codigobg}, basicstyle=\ttfamily\small,
+  keywordstyle=\color{azuldef}\bfseries, commentstyle=\color{verdeej}\itshape,
+  stringstyle=\color{anahuacosc}, numbers=left, numberstyle=\tiny\color{gray},
+  breaklines=true, frame=leftline, framerule=2pt, rulecolor=\color{anahuac},
+  xleftmargin=1.5em, captionpos=b, tabsize=4, showstringspaces=false, columns=fullflexible,
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {ñ}{{\~n}}1
+           {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {Ñ}{{\~N}}1
+           {¿}{{?`}}1 {¡}{{!`}}1 {ü}{{\"u}}1
+}
+\renewcommand{\lstlistingname}{Código}
+
+% Macros matemáticas
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\Normal}{\mathcal{N}}
+\newcommand{\norm}[1]{\left\lVert #1 \right\rVert}
+\newcommand{\abs}[1]{\left\lvert #1 \right\rvert}
+\newcommand{\inner}[2]{\left\langle #1,\, #2 \right\rangle}
+\newcommand{\grad}{\nabla}
+\newcommand{\vect}[1]{\bm{#1}}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator{\softmax}{softmax}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\KL}{KL}
+
+% Enlaces
+\RequirePackage[hidelinks]{hyperref}
+\hypersetup{colorlinks=true, linkcolor=anahuacosc, urlcolor=azuldef, citecolor=verdeej}
+
+% Datos de portada
+\newcommand{\nombresesion}{}
+\newcommand{\materia}[1]{\def\@materia{#1}}
+\newcommand{\sesion}[2]{\def\@numsesion{#1}\def\@titsesion{#2}\renewcommand{\nombresesion}{Sesión #1. #2}}
+\newcommand{\subtitulo}[1]{\def\@subtitulo{#1}}
+\def\@materia{Inteligencia Artificial Aplicada}
+\def\@subtitulo{}
+\newcommand{\logoanahuac}{}  % \renewcommand{\logoanahuac}{\includegraphics[height=1.6cm]{logo.png}} cuando haya logo
+
+\newcommand{\portada}{%
+  \begin{titlepage}
+  \thispagestyle{empty}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill[anahuac] (current page.north west) rectangle ([yshift=-5.2cm]current page.north east);
+    \fill[pizarra] ([yshift=-5.2cm]current page.north west) rectangle ([yshift=-5.5cm]current page.north east);
+    \node[anchor=north west, text=white, font=\sffamily\bfseries\LARGE, align=left]
+      at ([xshift=2.5cm,yshift=-1.6cm]current page.north west) {Universidad Anáhuac};
+    \node[anchor=north west, text=white, font=\sffamily\large, align=left]
+      at ([xshift=2.5cm,yshift=-2.6cm]current page.north west) {Posgrado en Tecnologías de la Información};
+    \node[anchor=north east] at ([xshift=-2.5cm,yshift=-1.4cm]current page.north east) {\logoanahuac};
+  \end{tikzpicture}
+  \vspace*{5.5cm}
+  \par\noindent{\sffamily\bfseries\large\textcolor{anahuac}{\@materia}\par}
+  \vspace{0.6cm}
+  {\sffamily\color{pizarra}\bfseries\Large Sesión \@numsesion\par}
+  \vspace{0.3cm}
+  {\raggedright\sffamily\bfseries\color{pizarra}\fontsize{30}{36}\selectfont \@titsesion\par}
+  \vspace{0.5cm}
+  {\color{anahuac}\rule{4cm}{3pt}\par}
+  \vspace{0.5cm}
+  {\raggedright\large\itshape\color{pizarra}\@subtitulo\par}
+  \vfill
+  {\sffamily\color{pizarra}\large Dr. José Gustavo Fuentes Cabrera\par}
+  {\sffamily\color{gray}\small Apuntes de clase $\cdot$ \the\year\par}
+  \end{titlepage}}
+\endinput

@@ -1,0 +1,14 @@
+{
+  "curso": "Inteligencia Artificial Aplicada, Posgrado en Tecnologías de la Información, Universidad Anáhuac",
+  "nota": "Calendario de ejemplo para la herramienta del agente; ajusta las fechas al calendario real del grupo.",
+  "sesiones": [
+    {"numero": 1, "fecha": "2026-10-03", "tema": "Mínimos cuadrados y descenso de gradiente estocástico"},
+    {"numero": 2, "fecha": "2026-10-10", "tema": "Perceptrón multicapa y retropropagación"},
+    {"numero": 3, "fecha": "2026-10-17", "tema": "Red feed-forward para detección de fraude"},
+    {"numero": 4, "fecha": "2026-10-24", "tema": "LeNet-5 sobre MNIST"},
+    {"numero": 5, "fecha": "2026-10-31", "tema": "Sentimiento en comentarios de YouTube"},
+    {"numero": 6, "fecha": "2026-11-07", "tema": "Mini GPT entrenado con diálogos de Teresa"},
+    {"numero": 7, "fecha": "2026-11-14", "tema": "Modelos de difusión"},
+    {"numero": 8, "fecha": "2026-11-21", "tema": "Creación de un agente simple con Google ADK"}
+  ]
+}

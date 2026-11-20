@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agente con ADK</title>
+<meta name="description" content="Sesión 08: un agente simple con Google ADK y un modelo local, visto a través de su traza real.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script>
+  window.MathJax = { tex: { inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]] }, svg: { fontCache: "global" } };
+  try { const t = localStorage.getItem("agente-tema"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+  :root {
+    --naranja: #FF5900;
+    --naranja-osc: #c84600;
+    --pizarra: #262C34;
+    --fondo: #f6f4f0;
+    --fondo-2: #efece6;
+    --tarjeta: #ffffff;
+    --borde: #e3ddd3;
+    --tinta: #1d2127;
+    --tinta-2: #4a515b;
+    --tenue: #808792;
+    --azul: #2459a8;
+    --azul-suave: #e9f0fb;
+    --verde: #0b7a52;
+    --verde-suave: #e6f6ee;
+    --morado: #6b46c1;
+    --morado-suave: #f1ecfc;
+    --naranja-suave: #fff0e6;
+    --codigo-fondo: #1f242b;
+    --codigo-tinta: #e6e8eb;
+    --sombra: 0 1px 2px rgba(38,44,52,.05), 0 6px 20px rgba(38,44,52,.06);
+    --sombra-alta: 0 14px 40px -10px rgba(38,44,52,.25);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --fondo: #15181d; --fondo-2: #1b1f25; --tarjeta: #1f242b; --borde: #323944;
+      --tinta: #eceef1; --tinta-2: #b9c0ca; --tenue: #8a93a0;
+      --azul: #7aa7ec; --azul-suave: #1d2a3d; --verde: #4cc797; --verde-suave: #163128;
+      --morado: #b49af0; --morado-suave: #2a2340; --naranja-suave: #3a2416;
+      --codigo-fondo: #12151a; --sombra: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --fondo: #15181d; --fondo-2: #1b1f25; --tarjeta: #1f242b; --borde: #323944;
+    --tinta: #eceef1; --tinta-2: #b9c0ca; --tenue: #8a93a0;
+    --azul: #7aa7ec; --azul-suave: #1d2a3d; --verde: #4cc797; --verde-suave: #163128;
+    --morado: #b49af0; --morado-suave: #2a2340; --naranja-suave: #3a2416;
+    --codigo-fondo: #12151a; --sombra: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--fondo); color: var(--tinta);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.6;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  code, pre, .mono { font-family: "JetBrains Mono", ui-monospace, Menlo, monospace; }
+  code { font-size: .85em; background: var(--fondo-2); border: 1px solid var(--borde); border-radius: 5px; padding: .05rem .35rem; word-break: break-word; }
+  a { color: var(--naranja-osc); }
+  :root[data-theme="dark"] a { color: var(--naranja); }
+
+  /* Barra */
+  .barra { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--fondo) 88%, transparent);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--borde); }
+  .barra .interno { max-width: 1200px; margin: 0 auto; padding: .6rem 1rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .marca { display: flex; align-items: center; gap: .6rem; font-weight: 700; font-size: .92rem; }
+  .emblema { width: 2rem; height: 2rem; border-radius: 8px; background: var(--naranja); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: .8rem; }
+  .marca small { display: block; font-weight: 500; color: var(--tenue); font-size: .75rem; }
+  .nav { display: flex; gap: .2rem; flex-wrap: wrap; }
+  .nav a { text-decoration: none; color: var(--tinta-2); font-size: .8rem; padding: .3rem .55rem; border-radius: 6px; }
+  .nav a:hover { background: var(--fondo-2); color: var(--tinta); }
+  .tema { border: 1px solid var(--borde); background: var(--tarjeta); color: var(--tinta); border-radius: 8px; padding: .35rem .6rem; cursor: pointer; font: inherit; font-size: .8rem; }
+  @media (max-width: 860px) { .nav { display: none; } }
+
+  /* Portada */
+  .portada { background: var(--pizarra); color: #fff; position: relative; overflow: hidden; }
+  .portada::before { content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 85% 20%, rgba(255,89,0,.35), transparent 45%), radial-gradient(circle at 10% 90%, rgba(255,89,0,.18), transparent 40%); }
+  .portada .interno { position: relative; max-width: 1200px; margin: 0 auto; padding: 3.5rem 1rem 3rem; display: grid; grid-template-columns: 1.15fr .85fr; gap: 2rem; align-items: center; }
+  .portada .etiqueta { display: inline-block; background: var(--naranja); color: #fff; font-size: .75rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: .25rem .6rem; border-radius: 4px; }
+  .portada h1 { font-size: clamp(2rem, 5vw, 3.3rem); line-height: 1.08; margin: .8rem 0 1rem; letter-spacing: -.02em; }
+  .portada h1 span { color: var(--naranja); }
+  .portada code { background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.22); color: #fff; }
+  .portada p { color: #cfd5dd; max-width: 38rem; font-size: 1.05rem; }
+  .cifras { display: grid; grid-template-columns: repeat(2, 1fr); gap: .8rem; }
+  .cifra { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 12px; padding: 1rem; }
+  .cifra b { display: block; font-size: 1.8rem; color: #fff; line-height: 1.1; }
+  .cifra span { color: #b8c0ca; font-size: .82rem; }
+  @media (max-width: 860px) { .portada .interno { grid-template-columns: 1fr; padding-top: 2.5rem; } }
+
+  /* Secciones */
+  main { max-width: 1200px; margin: 0 auto; padding: 0 1rem 4rem; }
+  section { padding-top: 3.5rem; scroll-margin-top: 3.5rem; }
+  .encabezado { display: flex; gap: 1rem; align-items: baseline; border-bottom: 2px solid var(--naranja); padding-bottom: .5rem; margin-bottom: 1.2rem; }
+  .encabezado .num { font-weight: 800; color: var(--naranja); font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+  .encabezado h2 { margin: 0; font-size: clamp(1.3rem, 3vw, 1.75rem); letter-spacing: -.01em; }
+  .bajada { color: var(--tinta-2); max-width: 52rem; margin-top: 0; }
+  .tarjeta { background: var(--tarjeta); border: 1px solid var(--borde); border-radius: 14px; box-shadow: var(--sombra); padding: 1.2rem; }
+  .rejilla-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 860px) { .rejilla-2 { grid-template-columns: 1fr; } }
+  .rejilla-2 > *, .anatomia > *, .escenario > *, .comparador > *, .cifras > * { min-width: 0; }
+
+  /* Ecuaciones ReAct */
+  .ecuaciones { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+  .ec { border-radius: 12px; padding: .9rem; border: 1px solid var(--borde); background: var(--tarjeta); transition: transform .3s, box-shadow .3s, border-color .3s; min-width: 0; }
+  .ec h3 { margin: 0 0 .3rem; font-size: .85rem; text-transform: uppercase; letter-spacing: .06em; }
+  .ec p { margin: .4rem 0 0; font-size: .85rem; color: var(--tinta-2); }
+  .ec .formula { overflow-x: auto; overflow-y: hidden; }
+  .ec.pensar h3 { color: var(--morado); } .ec.actuar h3 { color: var(--azul); } .ec.observar h3 { color: var(--verde); } .ec.actualizar h3 { color: var(--naranja-osc); }
+  :root[data-theme="dark"] .ec.actualizar h3 { color: var(--naranja); }
+  .ec.activa { transform: translateY(-3px); box-shadow: var(--sombra-alta); border-color: var(--naranja); }
+  @media (max-width: 860px) { .ecuaciones { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 520px) { .ecuaciones { grid-template-columns: 1fr; } }
+
+  /* Reproductor */
+  .turnos { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .9rem; }
+  .turnos button { border: 1px solid var(--borde); background: var(--tarjeta); color: var(--tinta-2); border-radius: 999px; padding: .4rem .85rem; cursor: pointer; font: inherit; font-size: .82rem; }
+  .turnos button.activo { background: var(--pizarra); color: #fff; border-color: var(--pizarra); }
+  :root[data-theme="dark"] .turnos button.activo { background: var(--naranja); border-color: var(--naranja); }
+  .pregunta { font-size: 1.05rem; font-weight: 600; margin: .2rem 0 .2rem; }
+  .objetivo { color: var(--tenue); font-size: .85rem; margin: 0 0 .8rem; }
+  .escenario { display: grid; grid-template-columns: 1.25fr .75fr; gap: 1rem; }
+  @media (max-width: 960px) { .escenario { grid-template-columns: 1fr; } }
+  .lienzo { background: var(--fondo-2); border-radius: 12px; border: 1px solid var(--borde); position: relative; }
+  #diagrama { width: 100%; height: auto; display: block; }
+  .nodo rect { fill: var(--tarjeta); stroke: var(--borde); stroke-width: 1.5; transition: all .35s; }
+  .nodo text { fill: var(--tinta); font-family: Inter, sans-serif; }
+  .nodo .sub { fill: var(--tenue); font-size: 11px; }
+  .nodo.encendido rect { stroke: var(--naranja); stroke-width: 3; filter: drop-shadow(0 0 10px rgba(255,89,0,.45)); }
+  .arista { stroke: var(--borde); stroke-width: 2.5; fill: none; transition: stroke .3s; }
+  .arista.encendida { stroke: var(--naranja); stroke-dasharray: 7 6; animation: fluir .7s linear infinite; }
+  @keyframes fluir { to { stroke-dashoffset: -13; } }
+  .chip-h rect { fill: var(--fondo-2); stroke: var(--borde); transition: all .3s; }
+  .chip-h text { fill: var(--tinta-2); font-family: "JetBrains Mono", monospace; font-size: 10.5px; }
+  .chip-h.encendido rect { fill: var(--verde-suave); stroke: var(--verde); }
+  .chip-h.encendido text { fill: var(--verde); font-weight: 700; }
+  .paquete { filter: drop-shadow(0 0 6px rgba(255,89,0,.7)); }
+  .controles { display: flex; gap: .4rem; align-items: center; flex-wrap: wrap; padding: .7rem; border-top: 1px solid var(--borde); }
+  .controles button { border: 1px solid var(--borde); background: var(--tarjeta); color: var(--tinta); border-radius: 8px; padding: .4rem .7rem; cursor: pointer; font: inherit; font-size: .85rem; min-width: 2.4rem; }
+  .controles button.primario { background: var(--naranja); color: #fff; border-color: var(--naranja); font-weight: 600; }
+  .controles .contador { margin-left: auto; font-size: .8rem; color: var(--tenue); font-variant-numeric: tabular-nums; }
+  .controles label { font-size: .8rem; color: var(--tenue); display: flex; align-items: center; gap: .3rem; }
+  .linea-tiempo { height: 6px; background: var(--borde); border-radius: 3px; margin: 0 .7rem .7rem; position: relative; overflow: hidden; }
+  .linea-tiempo div { position: absolute; inset: 0 auto 0 0; background: var(--naranja); width: 0; transition: width .4s; }
+  .burbuja { border-radius: 12px; padding: 1rem; border: 1px solid var(--borde); background: var(--tarjeta); min-height: 14rem; animation: aparece .35s ease; }
+  @keyframes aparece { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .burbuja .tipo { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; color: #fff; }
+  .burbuja h3 { margin: .5rem 0 .3rem; font-size: 1rem; }
+  .burbuja .meta { font-size: .78rem; color: var(--tenue); margin-bottom: .5rem; }
+  .burbuja .texto { white-space: pre-wrap; font-size: .9rem; color: var(--tinta-2); max-height: 15rem; overflow: auto; }
+  .burbuja pre { margin: 0; white-space: pre-wrap; word-break: break-word; max-height: 18rem; }
+  .t-usuario { background: var(--pizarra); } .t-peticion { background: var(--naranja-osc); } .t-pensamiento { background: var(--morado); }
+  .t-llamada { background: var(--azul); } .t-observacion { background: var(--verde); } .t-estado { background: #a16207; } .t-final { background: var(--naranja); }
+  .bitacora { list-style: none; padding: 0; margin: .8rem 0 0; display: grid; gap: .25rem; max-height: 17rem; overflow: auto; }
+  .bitacora li { font-size: .8rem; padding: .35rem .55rem; border-radius: 6px; cursor: pointer; color: var(--tinta-2); display: flex; gap: .5rem; align-items: baseline; }
+  .bitacora li:hover { background: var(--fondo-2); }
+  .bitacora li.actual { background: var(--naranja-suave); color: var(--tinta); font-weight: 600; }
+  .bitacora li .t { font-family: "JetBrains Mono", monospace; font-size: .72rem; color: var(--tenue); min-width: 3.4rem; }
+
+  /* Código y JSON */
+  pre.codigo { background: var(--codigo-fondo); color: var(--codigo-tinta); border-radius: 10px; padding: 1rem; overflow: auto; font-size: .8rem; line-height: 1.55; margin: 0; }
+  .j-clave { color: #f9a66b; } .j-cadena { color: #a5d6a7; } .j-num { color: #90caf9; } .j-lit { color: #ce93d8; } .j-punt { color: #8b95a3; }
+  .py-kw { color: #ff9e64; } .py-str { color: #a5d6a7; } .py-com { color: #7f8c99; font-style: italic; } .py-fn { color: #82aaff; }
+
+  /* Anatomía */
+  .anatomia { display: grid; grid-template-columns: 1.1fr .9fr; gap: 1rem; align-items: start; }
+  @media (max-width: 860px) { .anatomia { grid-template-columns: 1fr; } }
+  .zona { border-radius: 4px; padding: 0 .15rem; cursor: pointer; transition: background .2s, outline-color .2s; outline: 2px solid transparent; }
+  .zona:hover, .zona.activa { background: rgba(255,89,0,.22); outline-color: var(--naranja); }
+  .explica h3 { margin: 0 0 .4rem; color: var(--naranja-osc); font-family: "JetBrains Mono", monospace; }
+  :root[data-theme="dark"] .explica h3 { color: var(--naranja); }
+  .explica .detalle { font-size: .92rem; color: var(--tinta-2); }
+  .explica pre.codigo { margin-top: .7rem; max-height: 16rem; white-space: pre-wrap; }
+  .pistas { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .7rem; }
+  .pistas button { border: 1px dashed var(--naranja); color: var(--naranja-osc); background: transparent; border-radius: 6px; padding: .25rem .6rem; font: inherit; font-size: .78rem; cursor: pointer; font-family: "JetBrains Mono", monospace; }
+  :root[data-theme="dark"] .pistas button { color: var(--naranja); }
+
+  /* Esquemas */
+  .pestanas { display: flex; gap: .3rem; flex-wrap: wrap; margin-bottom: .8rem; }
+  .pestanas button { border: 1px solid var(--borde); background: var(--tarjeta); color: var(--tinta-2); padding: .4rem .8rem; border-radius: 8px; cursor: pointer; font-family: "JetBrains Mono", monospace; font-size: .8rem; }
+  .pestanas button.activo { border-color: var(--naranja); color: var(--naranja-osc); background: var(--naranja-suave); font-weight: 700; }
+  :root[data-theme="dark"] .pestanas button.activo { color: var(--naranja); }
+  .flecha-mapa { display: flex; align-items: center; justify-content: center; color: var(--naranja); font-size: .8rem; font-weight: 700; gap: .4rem; margin: .5rem 0; }
+  .medidor { margin-top: .8rem; font-size: .85rem; color: var(--tinta-2); }
+
+  /* Comparador */
+  .comparador { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 760px) { .comparador { grid-template-columns: 1fr; } }
+  .lado { border-radius: 14px; padding: 1.2rem; border: 2px solid var(--borde); background: var(--tarjeta); }
+  .lado.con { border-color: var(--verde); } .lado.sin { border-color: #b4232a; }
+  .lado h3 { margin: 0 0 .2rem; }
+  .lado .resp { font-size: 1.02rem; background: var(--fondo-2); border-radius: 10px; padding: .8rem; margin: .7rem 0; }
+  .lado ul { padding-left: 1.1rem; margin: .4rem 0 0; font-size: .86rem; color: var(--tinta-2); }
+  .metricas { display: flex; gap: 1rem; flex-wrap: wrap; font-size: .8rem; color: var(--tenue); }
+  .metricas b { color: var(--tinta); font-size: 1.1rem; display: block; }
+
+  /* Gráfica */
+  #grafica svg { width: 100%; height: auto; display: block; }
+  #grafica .eje text { fill: var(--tenue); font-size: 11px; }
+  #grafica .eje path, #grafica .eje line { stroke: var(--borde); }
+  .leyenda { display: flex; gap: 1rem; font-size: .8rem; color: var(--tinta-2); margin-bottom: .5rem; flex-wrap: wrap; }
+  .leyenda span::before { content: ""; display: inline-block; width: .8rem; height: .8rem; border-radius: 3px; margin-right: .35rem; vertical-align: -1px; background: var(--c); }
+  .info-flotante { position: fixed; pointer-events: none; background: var(--pizarra); color: #fff; font-size: .78rem; padding: .45rem .6rem; border-radius: 6px; opacity: 0; transition: opacity .15s; z-index: 80; max-width: 16rem; }
+
+  .comandos pre.codigo { font-size: .82rem; }
+  footer { border-top: 1px solid var(--borde); color: var(--tenue); font-size: .8rem; text-align: center; padding: 1.5rem 1rem 2.5rem; }
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <div class="interno">
+    <div class="marca"><div class="emblema">08</div><div>Agente con Google ADK<small>Universidad Anáhuac · Inteligencia Artificial Aplicada</small></div></div>
+    <nav class="nav">
+      <a href="#s1">1 ReAct</a><a href="#s2">2 Traza</a><a href="#s3">3 Anatomía</a><a href="#s4">4 Esquemas</a><a href="#s5">5 Comparador</a><a href="#s6">6 Tokens</a><a href="#s7">7 Ejecutar</a>
+    </nav>
+    <button class="tema" id="btn-tema" type="button" aria-label="Cambiar tema">Tema</button>
+  </div>
+</header>
+
+<div class="portada">
+  <div class="interno">
+    <div>
+      <span class="etiqueta">Sesión 08</span>
+      <h1>Un agente que <span>piensa</span>, <span>actúa</span> y <span>observa</span></h1>
+      <p>Un modelo de lenguaje pequeño (<code>qwen3:4b</code>, servido por Ollama en el servidor del laboratorio) envuelto en un <code>LlmAgent</code> de Google ADK con tres herramientas de Python. Todo lo que ves aquí sale de una ejecución real del agente <code>asistente_teresa</code>.</p>
+    </div>
+    <div class="cifras" id="cifras"></div>
+  </div>
+</div>
+
+<main>
+
+<section id="s1">
+  <div class="encabezado"><span class="num">01</span><h2>El bucle ReAct</h2></div>
+  <p class="bajada">El agente elige una acción \(a_t\) según una política inducida por el modelo, \(\pi_\theta(a \mid h_t) = p_\theta\big(c(a) \mid h_t\big)\), sobre un historial \(h_t\) que crece en cada vuelta. Cada vuelta tiene cuatro pasos; en el reproductor de la sección 2 se ilumina el que está ocurriendo.</p>
+  <div class="ecuaciones">
+    <div class="ec pensar" data-paso="pensamiento"><h3>Pensar</h3><div class="formula">\[ r_t \sim p_\theta(\cdot \mid h_t) \]</div><p>El modelo genera tokens de razonamiento. En <code>qwen3</code> llegan como partes con <code>thought=True</code>.</p></div>
+    <div class="ec actuar" data-paso="llamada"><h3>Actuar</h3><div class="formula">\[ a_t \sim p_\theta(\cdot \mid h_t, r_t) \]</div><p>Elige llamar a una herramienta \(f_k\) con argumentos \(\mathbf{u}_t\), o responder.</p></div>
+    <div class="ec observar" data-paso="observacion"><h3>Observar</h3><div class="formula">\[ o_t = f_k(\mathbf{u}_t) \]</div><p>Python ejecuta la función que el modelo pidió y devuelve el resultado.</p></div>
+    <div class="ec actualizar" data-paso="peticion"><h3>Actualizar</h3><div class="formula">\[ h_{t+1} = h_t \oplus (r_t, a_t, o_t) \]</div><p>La observación entra al historial y el modelo se consulta otra vez.</p></div>
+  </div>
+  <p class="bajada" style="margin-top:1rem">El bucle se detiene en \(\tau = \min\{t : a_t = \textsf{responder}(y)\}\). Si cada vuelta sale bien con probabilidad \(q\), una tarea de \(K\) vueltas sale bien con probabilidad \(\approx q^{K}\): pocas vueltas y herramientas claras ayudan mucho a un modelo pequeño.</p>
+</section>
+
+<section id="s2">
+  <div class="encabezado"><span class="num">02</span><h2>Reproductor de la traza real</h2></div>
+  <p class="bajada">Cinco turnos en una misma sesión. Elige uno y dale play: cada paso enciende el componente que actúa, viaja por la flecha correspondiente y muestra el contenido exacto del evento (argumentos JSON, respuesta de la función, cambio de estado, tokens).</p>
+  <div class="turnos" id="turnos"></div>
+  <div class="pregunta" id="pregunta"></div>
+  <p class="objetivo" id="objetivo"></p>
+  <div class="escenario">
+    <div class="lienzo">
+      <svg id="diagrama" viewBox="0 0 860 405" role="img" aria-label="Diagrama del flujo usuario, Runner, modelo, herramientas y sesión"></svg>
+      <div class="linea-tiempo"><div id="progreso"></div></div>
+      <div class="controles">
+        <button type="button" id="b-inicio" title="Reiniciar" aria-label="Reiniciar">⏮</button>
+        <button type="button" id="b-atras" title="Paso anterior" aria-label="Paso anterior">◀</button>
+        <button type="button" id="b-play" class="primario" aria-label="Reproducir">▶ Play</button>
+        <button type="button" id="b-adelante" title="Paso siguiente" aria-label="Paso siguiente">▶</button>
+        <label>Velocidad <select id="velocidad"><option value="2600">lenta</option><option value="1600" selected>normal</option><option value="800">rápida</option></select></label>
+        <span class="contador" id="contador"></span>
+      </div>
+    </div>
+    <div>
+      <div class="burbuja" id="burbuja"></div>
+      <ol class="bitacora" id="bitacora"></ol>
+    </div>
+  </div>
+</section>
+
+<section id="s3">
+  <div class="encabezado"><span class="num">03</span><h2>Anatomía del LlmAgent</h2></div>
+  <p class="bajada">Pasa el cursor (o toca) cada parte resaltada del código real de <code>agentes/asistente_teresa/agent.py</code> para ver qué hace.</p>
+  <div class="anatomia">
+    <pre class="codigo" id="codigo-agente"></pre>
+    <div class="tarjeta explica">
+      <div class="pistas" id="pistas"></div>
+      <div id="explica"></div>
+    </div>
+  </div>
+</section>
+
+<section id="s4">
+  <div class="encabezado"><span class="num">04</span><h2>El esquema JSON que recibe el modelo</h2></div>
+  <p class="bajada">ADK lee la firma y la docstring de cada función y arma una <code>FunctionDeclaration</code>; LiteLLM la traduce al formato de herramientas de OpenAI que acepta Ollama. El parámetro <code>tool_context</code> desaparece: lo inyecta ADK y el modelo nunca lo ve.</p>
+  <div class="pestanas" id="pestanas"></div>
+  <div class="rejilla-2">
+    <div>
+      <div class="flecha-mapa">Firma de Python</div>
+      <pre class="codigo" id="firma"></pre>
+    </div>
+    <div>
+      <div class="flecha-mapa">JSON enviado a Ollama</div>
+      <pre class="codigo" id="esquema"></pre>
+    </div>
+  </div>
+  <p class="medidor" id="medidor"></p>
+</section>
+
+<section id="s5">
+  <div class="encabezado"><span class="num">05</span><h2>Con herramientas y sin herramientas</h2></div>
+  <p class="bajada" id="comp-pregunta"></p>
+  <div class="comparador">
+    <div class="lado con" id="lado-con"></div>
+    <div class="lado sin" id="lado-sin"></div>
+  </div>
+</section>
+
+<section id="s6">
+  <div class="encabezado"><span class="num">06</span><h2>Tokens por consulta al modelo</h2></div>
+  <p class="bajada">Cada barra es una consulta al modelo. Los tokens de entrada crecen porque el historial y los esquemas viajan completos en cada petición: \(n_{\text{in}}(t) = n(s) + \sum_k n(S_k) + n(h_t)\). Los de salida incluyen el pensamiento.</p>
+  <div class="tarjeta">
+    <div class="leyenda"><span style="--c: var(--azul)">Entrada</span><span style="--c: var(--naranja)">Salida</span></div>
+    <div id="grafica"></div>
+  </div>
+</section>
+
+<section id="s7">
+  <div class="encabezado"><span class="num">07</span><h2>Ejecutarlo en tu máquina</h2></div>
+  <div class="rejilla-2 comandos">
+    <div class="tarjeta">
+      <h3 style="margin-top:0">Terminal</h3>
+      <pre class="codigo"># 1. Túnel al Ollama del laboratorio
+ssh -N -L 11434:localhost:11434 $GPU_HOST &amp;
+
+# 2. Conversar en la terminal
+uv run adk run agentes/asistente_teresa
+
+# 3. Interfaz web con eventos y estado
+uv run adk web agentes      # http://localhost:8000
+
+# 4. Regrabar la traza de esta página
+uv run python scripts/grabar_traza_agente.py
+uv run python scripts/build_spa_agente.py</pre>
+    </div>
+    <div class="tarjeta">
+      <h3 style="margin-top:0">Ejercicios</h3>
+      <ol style="margin:0; padding-left:1.2rem; color: var(--tinta-2)">
+        <li>Quita la docstring de <code>calcular</code> y regraba la traza. ¿El modelo sigue encadenando herramientas?</li>
+        <li>Cambia el modelo con <code>--modelo ollama_chat/qwen2.5:7b</code>. ¿En qué turno cambia la traza?</li>
+        <li>Agrega una herramienta <code>listar_sesiones()</code> y mide cuántos tokens de entrada agrega a cada consulta.</li>
+        <li>Guarda en el estado los resultados de <code>calcular</code> y agrégalos a la instrucción como una plantilla de estado, igual que los personajes consultados.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer id="pie"></footer>
+<div class="info-flotante" id="info"></div>
+
+<script id="traza" type="application/json">{"generado":"2026-11-15T03:52:11+00:00","hoy":"2026-11-14","modelo":"ollama_chat/qwen3:4b","adk_version":"2.14.1","agente":{"nombre":"asistente_teresa","descripcion":"Responde sobre la telenovela Teresa (2010) y el calendario del curso.","instruccion":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: {personajes_consultados?}\n- Última sesión consultada: {ultima_sesion_consultada?}\nSi te preguntan qué personajes han consultado, usa esa lista.","herramientas":["buscar_personaje","calcular","consultar_sesion"]},"esquemas":[{"nombre":"buscar_personaje","adk_function_declaration":{"description":"Busca un personaje de la telenovela Teresa (2010) en la ficha del curso.\n\nÚsala cuando el usuario pregunte quién es un personaje, qué actor o actriz\nlo interpreta o qué papel tiene en la historia.\n\nArgs:\n    nombre: Nombre o apellido del personaje, por ejemplo \"Teresa\" o \"Arturo\".\n\nReturns:\n    Un diccionario con status \"ok\" y los datos del personaje (nombre, actor,\n    rol, descripción), o status \"no_encontrado\" con la lista de personajes\n    disponibles en la ficha.","name":"buscar_personaje","parameters_json_schema":{"properties":{"nombre":{"title":"Nombre","type":"string"}},"required":["nombre"],"title":"buscar_personajeParams","type":"object"}},"litellm_tool":{"type":"function","function":{"name":"buscar_personaje","description":"Busca un personaje de la telenovela Teresa (2010) en la ficha del curso.\n\nÚsala cuando el usuario pregunte quién es un personaje, qué actor o actriz\nlo interpreta o qué papel tiene en la historia.\n\nArgs:\n    nombre: Nombre o apellido del personaje, por ejemplo \"Teresa\" o \"Arturo\".\n\nReturns:\n    Un diccionario con status \"ok\" y los datos del personaje (nombre, actor,\n    rol, descripción), o status \"no_encontrado\" con la lista de personajes\n    disponibles en la ficha.","parameters":{"properties":{"nombre":{"title":"Nombre","type":"string"}},"required":["nombre"],"title":"buscar_personajeParams","type":"object"}}}},{"nombre":"calcular","adk_function_declaration":{"description":"Evalúa una expresión aritmética y devuelve el resultado exacto.\n\nÚsala para cualquier operación numérica en lugar de calcular de memoria.\nAdmite números, paréntesis y los operadores + - * / // % **.\n\nArgs:\n    expresion: Expresión aritmética en notación de Python, por ejemplo \"7 * 24\".\n\nReturns:\n    Un diccionario con status \"ok\", la expresión y el resultado, o status\n    \"error\" con el motivo.","name":"calcular","parameters_json_schema":{"properties":{"expresion":{"title":"Expresion","type":"string"}},"required":["expresion"],"title":"calcularParams","type":"object"}},"litellm_tool":{"type":"function","function":{"name":"calcular","description":"Evalúa una expresión aritmética y devuelve el resultado exacto.\n\nÚsala para cualquier operación numérica en lugar de calcular de memoria.\nAdmite números, paréntesis y los operadores + - * / // % **.\n\nArgs:\n    expresion: Expresión aritmética en notación de Python, por ejemplo \"7 * 24\".\n\nReturns:\n    Un diccionario con status \"ok\", la expresión y el resultado, o status\n    \"error\" con el motivo.","parameters":{"properties":{"expresion":{"title":"Expresion","type":"string"}},"required":["expresion"],"title":"calcularParams","type":"object"}}}},{"nombre":"consultar_sesion","adk_function_declaration":{"description":"Consulta el calendario del curso de Inteligencia Artificial Aplicada.\n\nÚsala cuando el usuario pregunte por la fecha o el tema de una sesión, o\ncuántos días faltan para ella.\n\nArgs:\n    numero: Número de la sesión, de 1 a 8.\n\nReturns:\n    Un diccionario con status \"ok\", número, fecha (AAAA-MM-DD), tema y\n    dias_restantes (negativo si la sesión ya pasó), o status \"error\".","name":"consultar_sesion","parameters_json_schema":{"properties":{"numero":{"title":"Numero","type":"integer"}},"required":["numero"],"title":"consultar_sesionParams","type":"object"}},"litellm_tool":{"type":"function","function":{"name":"consultar_sesion","description":"Consulta el calendario del curso de Inteligencia Artificial Aplicada.\n\nÚsala cuando el usuario pregunte por la fecha o el tema de una sesión, o\ncuántos días faltan para ella.\n\nArgs:\n    numero: Número de la sesión, de 1 a 8.\n\nReturns:\n    Un diccionario con status \"ok\", número, fecha (AAAA-MM-DD), tema y\n    dias_restantes (negativo si la sesión ya pasó), o status \"error\".","parameters":{"properties":{"numero":{"title":"Numero","type":"integer"}},"required":["numero"],"title":"consultar_sesionParams","type":"object"}}}}],"turnos":[{"id":"sin_herramientas","objetivo":"Saludo: el modelo responde directo, sin herramientas.","texto":"Hola, ¿qué puedes hacer?","t0":1794714462.730276,"duracion_s":22.243,"eventos":[{"id":"585a0a29-3628-4472-a48d-4ec9af3d85a5","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, the user greeted me with \"Hola, ¿qué puedo hacer?\" which translates to \"Hello, what can you do?\" So I need to respond in Spanish with a brief and clear answer.\n\nLooking at the rules, rule 4 says that if the user just salutes or asks what I can do, I should respond without tools. The memory shows no previous interactions, so I don't need to use any functions here.\n\nThe response should be in Spanish, short, and clear. I should list the two topics I can handle: la telenovela Teresa (2010) and el calendario del curso. Also, mention the tools I can use, but since the user is asking what I can do, I shouldn't call any tools.\n\nSo the answer would be something like: \"¡Hola! Puedo ayudarte con información sobre la telenovela Teresa (2010) y el calendario del curso de Inteligencia Artificial Aplicada.\"\n\nNo tools are needed here because the user is just asking what I can do. Let me check the rules again to be sure. Rule 4 says exactly this case: \"Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\" So yes, no tool calls.\n\nI need to make sure the response is in Spanish, no emojis, concise. The user didn't ask for any specific data, so just a friendly response listing the two topics.\n"},{"tipo":"texto","texto":"¡Hola! Puedo ayudarte con información sobre la telenovela *Teresa* (2010) y el calendario del curso de Inteligencia Artificial Aplicada."}],"estado_delta":{},"final":true,"timestamp":1794714484.9698281,"t_rel_s":22.24,"tokens":{"entrada":864,"salida":343,"total":1207}}],"respuesta_final":"¡Hola! Puedo ayudarte con información sobre la telenovela *Teresa* (2010) y el calendario del curso de Inteligencia Artificial Aplicada.","estado_despues":{}},{"id":"una_herramienta","objetivo":"Exige una herramienta: buscar_personaje.","texto":"¿Quién interpreta a Teresa en la telenovela de 2010?","t0":1794714484.97329,"duracion_s":24.788,"eventos":[{"id":"4d440f4d-d77e-4c35-99a7-202a225f9c86","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, the user is asking who interprets Teresa in the 2010 telenovela. Let me check the tools available.\n\nThe first tool mentioned is buscar_personaje, which is for finding characters in the telenovela Teresa (2010). The function takes a name or last name as an argument. The user is asking about the character Teresa, so I need to call buscar_personaje with \"Teresa\" as the argument.\n\nWait, the rules say that if the user asks about a character, actor, or actress, I should call buscar_personaje. So I should generate a tool call for buscar_personaje with nombre \"Teresa\".\n\nLet me make sure. The user is specifically asking who plays Teresa in the 2010 telenovela. So the function will return the actor's name. The tool's description says it returns the character's name, actor, role, and description. So this is the right tool.\n\nI don't need to use any other tools here. Just call buscar_personaje with \"Teresa\".\n"},{"tipo":"function_call","id":"call_a84bl7at","nombre":"buscar_personaje","args":{"nombre":"Teresa"}}],"estado_delta":{},"final":false,"timestamp":1794714490.136776,"t_rel_s":5.163,"tokens":{"entrada":935,"salida":243,"total":1178}},{"id":"bdacbc94-bfd1-4097-a939-5b312b04c025","autor":"asistente_teresa","rol":"user","partes":[{"tipo":"function_response","id":"call_a84bl7at","nombre":"buscar_personaje","respuesta":{"status":"ok","nombre":"Teresa Chávez","actor":"Angelique Boyer","rol":"Protagonista","descripcion":"Joven brillante y ambiciosa de origen humilde que decide usar su belleza e inteligencia para escapar de la pobreza.","total_personajes_consultados":1}}],"estado_delta":{"personajes_consultados":["Teresa Chávez"]},"final":false,"timestamp":1794714490.141442,"t_rel_s":5.168,"tokens":null},{"id":"03bdc286-3297-497a-afa1-8738a053f96c","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, the user asked who interprets Teresa in the 2010 telenovela. I called the buscar_personaje function with \"Teresa\" as the name. The response came back with status \"ok\". The data shows that the actor for Teresa Chávez is Angelique Boyer, who plays the protagonist.\n\nI need to present this information clearly in Spanish. Let me check the response structure. The function returned the actor's name, role, and description. The user wants to know who interprets Teresa, so the answer is Angelique Boyer.\n\nI should state it concisely: \"En la telenovela *Teresa* (2010), el personaje Teresa Chávez es interpretado por Angelique Boyer como protagonista.\" That covers the name, role, and the fact it's the 2010 show.\n\nMake sure to use the correct terms and avoid any extra info. The user didn't ask for the description, but maybe including the role (protagonista) adds context. The example response from the tool has \"rol\": \"Protagonista\", so it's good to mention.\n\nDouble-check the spelling of names. The function response says \"Teresa Chávez\" with an accent on the 'á'. But in Spanish, sometimes accents are omitted in informal contexts. However, since the tool used the correct spelling, I'll include the accent for accuracy.\n\nWait, the user's question is in Spanish, so the answer should be in Spanish. The tool response has the name in Spanish, so the answer is correct.\n\nYes, the answer is correct. Let me write it as: \"En la telenovela *Teresa* (2010), el personaje Teresa Chávez es interpretado [...]"},{"tipo":"texto","texto":"En la telenovela *Teresa* (2010), el personaje Teresa Chávez es interpretado por Angelique Boyer como protagonista."}],"estado_delta":{},"final":true,"timestamp":1794714509.759259,"t_rel_s":24.786,"tokens":{"entrada":1275,"salida":415,"total":1690}}],"respuesta_final":"En la telenovela *Teresa* (2010), el personaje Teresa Chávez es interpretado por Angelique Boyer como protagonista.","estado_despues":{"personajes_consultados":["Teresa Chávez"]}},{"id":"encadenada","objetivo":"Encadena dos herramientas: consultar_sesion y después calcular.","texto":"¿Cuántos días faltan para la sesión 8 del curso? Convierte esos días a horas.","t0":1794714509.762005,"duracion_s":70.113,"eventos":[{"id":"b41fc189-b029-4644-9aff-fac634eb92ee","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let's see. The user is asking how many days are left for session 8 of the course and then wants to convert those days into hours.\n\nFirst, I need to check the calendar for session 8. So I should call the consultar_sesion function with numero=8. That will give me the days remaining. Once I have that number, I need to convert it to hours by multiplying by 24. But wait, the user says \"días faltan\", which is days left. So if the session is in the future, days_faltantes is positive, otherwise negative. But the user wants to convert to hours, so even if it's negative, we just multiply by 24.\n\nWait, the function consultar_sesion returns dias_restantes, which is negative if the session has passed. But the user is asking \"cuántos días faltan\", so maybe they want the absolute value? Hmm, but the problem says \"cuántos días faltan para la sesión 8\", so it's the days remaining until session 8. If the session has already passed, then days_faltantes would be negative, but the user might be expecting a positive number here. But the function's response includes dias_restantes as negative if it's already passed. Let me check the tool description.\n\nThe consultar_sesion function returns \"dias_restantes (negativo si la sesión ya pasó)\". So if the session is in the future, dias_restantes is positive, if it's already passed, negative. But the user is asking \"cuántos días faltan\", which implies the remaining days until the session. So if the session is in the future, it's positive, if it's alre [...]"},{"tipo":"function_call","id":"call_7wuc9oek","nombre":"consultar_sesion","args":{"numero":8}}],"estado_delta":{},"final":false,"timestamp":1794714560.216649,"t_rel_s":50.455,"tokens":{"entrada":1122,"salida":916,"total":2038}},{"id":"6aaffb2e-b2bf-4a9a-a1dc-283d205eaad4","autor":"asistente_teresa","rol":"user","partes":[{"tipo":"function_response","id":"call_7wuc9oek","nombre":"consultar_sesion","respuesta":{"status":"ok","numero":8,"fecha":"2026-11-21","tema":"Creación de un agente simple con Google ADK","hoy":"2026-11-14","dias_restantes":7}}],"estado_delta":{"ultima_sesion_consultada":8},"final":false,"timestamp":1794714560.218453,"t_rel_s":50.456,"tokens":null},{"id":"bc11e9ce-bdf5-446a-a3a2-d3a4b1859bbf","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let me break this down. The user asked how many days are left for session 8 and then convert those days to hours.\n\nFirst, I called the consultar_sesion function with numero=8. The response says dias_restantes is 7. That means there are 7 days left until session 8.\n\nNow, I need to convert 7 days into hours. Since 1 day = 24 hours, multiplying 7 by 24 gives 168 hours.\n\nI should use the calcular function here. The expression would be \"7 * 24\". Let me check if the tool allows that. The calcular function takes an arithmetic expression in Python notation. So \"7 * 24\" is valid.\n\nWait, but the dias_restantes is 7, which is from the previous tool response. So I need to make sure the calculation uses the correct number. The user wants to convert the days left (7) to hours.\n\nSo the next step is to call calcular with the expression \"7 * 24\".\n\nOnce that's done, the result should be 168 hours. Then I can present the answer to the user.\n\nLet me make sure there's no mistake here. The session 8 has 7 days remaining as of today (2026-11-14), so 7 days *24 hours/day = 168 hours.\n\nYes, that seems right. So the tool call for calcular is needed here.\n"},{"tipo":"function_call","id":"call_4dw0d07z","nombre":"calcular","args":{"expresion":"7 * 24"}}],"estado_delta":{},"final":false,"timestamp":1794714568.807873,"t_rel_s":59.046,"tokens":{"entrada":2122,"salida":336,"total":2458}},{"id":"26e20777-f91a-4390-8ada-f520aefe3bae","autor":"asistente_teresa","rol":"user","partes":[{"tipo":"function_response","id":"call_4dw0d07z","nombre":"calcular","respuesta":{"status":"ok","expresion":"7 * 24","resultado":168}}],"estado_delta":{},"final":false,"timestamp":1794714568.810356,"t_rel_s":59.048,"tokens":null},{"id":"18c03040-edbf-40e1-8b76-cadb59d4e8f9","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let's see. The user asked how many days are left for session 8 and then convert those days to hours.\n\nFirst, I called consultar_sesion with number 8. The response showed that there are 7 days remaining. Then, I used calcular to multiply 7 by 24, which gives 168 hours.\n\nSo the answer should be that there are 7 days left, which converts to 168 hours. I need to present this clearly in Spanish.\n\nWait, the user said \"cuántos días faltan para la sesión 8 del curso? Convierte esos días a horas.\" So they want the days left (7) converted to hours (168). \n\nI should check if the days_restantes is positive. In the tool response, dias_restantes is 7, which is positive, so session 8 is 7 days from today. So the answer is 7 días faltan, lo que equivale a 168 horas.\n\nI need to phrase it in Spanish, using the numbers from the tool responses. The final answer should state that there are 7 days left, converting to 168 hours.\n"},{"tipo":"texto","texto":"Para la sesión 8 del curso, faltan 7 días, lo que equivale a 168 horas."}],"estado_delta":{},"final":true,"timestamp":1794714579.872569,"t_rel_s":70.111,"tokens":{"entrada":2496,"salida":277,"total":2773}}],"respuesta_final":"Para la sesión 8 del curso, faltan 7 días, lo que equivale a 168 horas.","estado_despues":{"personajes_consultados":["Teresa Chávez"],"ultima_sesion_consultada":8}},{"id":"estado_escribe","objetivo":"Segunda búsqueda: agrega otro personaje al estado.","texto":"¿Y qué actor hace de Arturo de la Barrera?","t0":1794714579.875833,"duracion_s":46.46,"eventos":[{"id":"bf84f24c-f0a3-467e-b9d8-eaea52802f84","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, the user is asking who plays Arturo de la Barrera in the 2010 telenovela Teresa. Let me check the tools available.\n\nFirst, I remember that the user has already consulted the personajes with \"Teresa Chávez\" before. The memory shows that the personajes consultados list is ['Teresa Chávez']. Now they want to know about Arturo de la Barrera.\n\nThe tool to use here is buscar_personaje, which requires the name or last name of the character. The user mentioned \"Arturo de la Barrera\", so I should call the function with \"Arturo\" as the name. Wait, but the tool's description says it's for \"Nombre o apellido del personaje\". Maybe I should try \"Arturo de la Barrera\" but the function might expect a shorter name. However, the previous example used \"Teresa\" to get Teresa Chávez.\n\nWait, in the previous interaction, when the user asked about Teresa, the assistant called buscar_personaje with \"Teresa\" and got the result. So for Arturo de la Barrera, the user might need to specify the name as \"Arturo\". Let me check if the function can handle the full name. The tool's parameters say \"nombre: Nombre o apellido del personaje, por ejemplo 'Teresa' o 'Arturo'\".\n\nSo the correct approach is to call buscar_personaje with \"Arturo\" as the argument. Let me make sure. The user is asking for Arturo de la Barrera, so maybe the function will return the correct info if I use \"Arturo\". Let's proceed with that.\n\nSo the next step is to generate the tool call for buscar_personaje with arguments {\"nombre\": \"Ar [...]"},{"tipo":"function_call","id":"call_k4tq3ppk","nombre":"buscar_personaje","args":{"nombre":"Arturo"}}],"estado_delta":{},"final":false,"timestamp":1794714599.611765,"t_rel_s":19.736,"tokens":{"entrada":1339,"salida":464,"total":1803}},{"id":"8cb1c565-385b-48de-a502-e374aa03ea1e","autor":"asistente_teresa","rol":"user","partes":[{"tipo":"function_response","id":"call_k4tq3ppk","nombre":"buscar_personaje","respuesta":{"status":"ok","nombre":"Arturo de la Barrera","actor":"Sebastián Rulli","rol":"Protagonista","descripcion":"Profesor universitario de buena posición que se enamora de Teresa.","total_personajes_consultados":2}}],"estado_delta":{"personajes_consultados":["Teresa Chávez","Arturo de la Barrera"]},"final":false,"timestamp":1794714599.61357,"t_rel_s":19.738,"tokens":null},{"id":"7d708d1d-2c29-421a-819a-05ab4fdd7507","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let's see. The user asked, \"¿Y qué actor hace de Arturo de la Barrera?\" which translates to \"And who is the actor for Arturo de la Barrera?\"\n\nFirst, I need to check the tools available. The previous steps show that when the user asked about Teresa, the assistant called buscar_personaje with \"Teresa\" and got the result. Now, the user is asking about Arturo de la Barrera.\n\nThe tool to use here is buscar_personaje again, but this time with the name \"Arturo\". The function's description says it looks for a character's name or last name. In the example, using \"Teresa\" worked, so using \"Arturo\" should be the right approach.\n\nThe tool response came back with status \"ok\", showing that Arturo de la Barrera is played by Sebastián Rulli. The response includes the actor's name, role, and description.\n\nSo the answer is straightforward: Sebastián Rulli interprets Arturo de la Barrera in the 2010 telenovela Teresa.\n\nI need to phrase it in Spanish, keep it short and clear, no emojis. The previous answers used the structure like \"En la telenovela... es interpretado por...\". So the response should be similar.\n\nCheck if there's any need for further calculations or tools, but the user didn't ask for anything else, just the actor. So no need for other tools. The answer is directly from the tool response.\n"},{"tipo":"texto","texto":"En la telenovela *Teresa* (2010), el personaje Arturo de la Barrera es interpretado por Sebastián Rulli."}],"estado_delta":{},"final":true,"timestamp":1794714626.333369,"t_rel_s":46.458,"tokens":{"entrada":1891,"salida":353,"total":2244}}],"respuesta_final":"En la telenovela *Teresa* (2010), el personaje Arturo de la Barrera es interpretado por Sebastián Rulli.","estado_despues":{"personajes_consultados":["Teresa Chávez","Arturo de la Barrera"],"ultima_sesion_consultada":8}},{"id":"estado_lee","objetivo":"Usa el estado: la instrucción recibe la lista de personajes consultados.","texto":"¿Qué personajes te he preguntado hasta ahora en esta conversación?","t0":1794714626.3362849,"duracion_s":23.284,"eventos":[{"id":"607cb7c7-4bad-4046-aa85-53b77b207de3","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, the user is asking which characters they've asked about so far in this conversation. Let me check the conversation history.\n\nLooking back, the user first asked about who plays Teresa in the 2010 telenovela. The assistant used the buscar_personaje function with \"Teresa\" and got the response with Teresa Chávez. Then the user asked about Arturo de la Barrera, so the assistant called buscar_personaje with \"Arturo\" and got Arturo de la Barrera. \n\nIn the memory section provided, it says: \"Personajes consultados hasta ahora: ['Teresa Chávez', 'Arturo de la Barrera']\". So the list of characters the user has asked about is those two. The user is asking for the list, so I should just return that list as per the memory.\n\nWait, the memory says \"Personajes consultados hasta ahora: ['Teresa Chávez', 'Arturo de la Barrera']\". So the answer is those two names. The user is asking \"qué personajes te he preguntado hasta ahora\", so the answer is the list from the memory. I don't need to call any tools here because the memory already has that info. The rules say: \"Si te preguntan qué personajes han consultado, usa esa lista.\" So I should just state the list as per the memory.\n"},{"tipo":"texto","texto":"Hasta ahora has preguntado por los personajes: Teresa Chávez y Arturo de la Barrera."}],"estado_delta":{},"final":true,"timestamp":1794714649.619175,"t_rel_s":23.283,"tokens":{"entrada":1510,"salida":312,"total":1822}}],"respuesta_final":"Hasta ahora has preguntado por los personajes: Teresa Chávez y Arturo de la Barrera.","estado_despues":{"personajes_consultados":["Teresa Chávez","Arturo de la Barrera"],"ultima_sesion_consultada":8}}],"estado_final":{"personajes_consultados":["Teresa Chávez","Arturo de la Barrera"],"ultima_sesion_consultada":8},"peticiones_llm":[{"marca":"turno","pregunta":"sin_herramientas"},{"marca":"llm","t":1794714462.883592,"mensajes":1,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: \n- Última sesión consultada: \nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"turno","pregunta":"una_herramienta"},{"marca":"llm","t":1794714484.9760692,"mensajes":3,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: \n- Última sesión consultada: \nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"llm","t":1794714490.143855,"mensajes":5,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez']\n- Última sesión consultada: \nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"turno","pregunta":"encadenada"},{"marca":"llm","t":1794714509.7660968,"mensajes":7,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez']\n- Última sesión consultada: \nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"llm","t":1794714560.2199419,"mensajes":9,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez']\n- Última sesión consultada: 8\nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"llm","t":1794714568.812738,"mensajes":11,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez']\n- Última sesión consultada: 8\nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"turno","pregunta":"estado_escribe"},{"marca":"llm","t":1794714579.880425,"mensajes":13,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez']\n- Última sesión consultada: 8\nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"llm","t":1794714599.616058,"mensajes":15,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez', 'Arturo de la Barrera']\n- Última sesión consultada: 8\nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."},{"marca":"turno","pregunta":"estado_lee"},{"marca":"llm","t":1794714626.340411,"mensajes":17,"herramientas":["buscar_personaje","calcular","consultar_sesion"],"instruccion_sistema":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\n\nReglas:\n1. Si te preguntan por un personaje, un actor o una actriz de Teresa, llama a buscar_personaje. No respondas de memoria.\n2. Si te preguntan por la fecha, el tema o los días que faltan para una sesión, llama a consultar_sesion con el número de sesión.\n3. Para cualquier operación aritmética llama a calcular; nunca hagas cuentas de memoria. Si la operación depende de un dato que da otra herramienta, primero llama a esa herramienta y después a calcular con el dato.\n4. Si el usuario solo saluda o pregunta qué sabes hacer, responde sin herramientas.\n5. Basa tu respuesta final en los resultados de las herramientas y menciona los datos concretos.\n\nMemoria de esta conversación:\n- Personajes consultados hasta ahora: ['Teresa Chávez', 'Arturo de la Barrera']\n- Última sesión consultada: 8\nSi te preguntan qué personajes han consultado, usa esa lista.\n\nYou are an agent. Your internal name is \"asistente_teresa\". The description about you is \"Responde sobre la telenovela Teresa (2010) y el calendario del curso.\"."}],"duracion_total_s":268.594,"comparacion":{"pregunta":"¿Cuántos días faltan para la sesión 8 del curso? Convierte esos días a horas.","con_herramientas":{"respuesta":"Para la sesión 8 del curso, faltan 7 días, lo que equivale a 168 horas.","duracion_s":70.113,"eventos":[{"id":"b41fc189-b029-4644-9aff-fac634eb92ee","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let's see. The user is asking how many days are left for session 8 of the course and then wants to convert those days into hours.\n\nFirst, I need to check the calendar for session 8. So I should call the consultar_sesion function with numero=8. That will give me the days remaining. Once I have that number, I need to convert it to hours by multiplying by 24. But wait, the user says \"días faltan\", which is days left. So if the session is in the future, days_faltantes is positive, otherwise negative. But the user wants to convert to hours, so even if it's negative, we just multiply by 24.\n\nWait, the function consultar_sesion returns dias_restantes, which is negative if the session has passed. But the user is asking \"cuántos días faltan\", so maybe they want the absolute value? Hmm, but the problem says \"cuántos días faltan para la sesión 8\", so it's the days remaining until session 8. If the session has already passed, then days_faltantes would be negative, but the user might be expecting a positive number here. But the function's response includes dias_restantes as negative if it's already passed. Let me check the tool description.\n\nThe consultar_sesion function returns \"dias_restantes (negativo si la sesión ya pasó)\". So if the session is in the future, dias_restantes is positive, if it's already passed, negative. But the user is asking \"cuántos días faltan\", which implies the remaining days until the session. So if the session is in the future, it's positive, if it's alre [...]"},{"tipo":"function_call","id":"call_7wuc9oek","nombre":"consultar_sesion","args":{"numero":8}}],"estado_delta":{},"final":false,"timestamp":1794714560.216649,"t_rel_s":50.455,"tokens":{"entrada":1122,"salida":916,"total":2038}},{"id":"6aaffb2e-b2bf-4a9a-a1dc-283d205eaad4","autor":"asistente_teresa","rol":"user","partes":[{"tipo":"function_response","id":"call_7wuc9oek","nombre":"consultar_sesion","respuesta":{"status":"ok","numero":8,"fecha":"2026-11-21","tema":"Creación de un agente simple con Google ADK","hoy":"2026-11-14","dias_restantes":7}}],"estado_delta":{"ultima_sesion_consultada":8},"final":false,"timestamp":1794714560.218453,"t_rel_s":50.456,"tokens":null},{"id":"bc11e9ce-bdf5-446a-a3a2-d3a4b1859bbf","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let me break this down. The user asked how many days are left for session 8 and then convert those days to hours.\n\nFirst, I called the consultar_sesion function with numero=8. The response says dias_restantes is 7. That means there are 7 days left until session 8.\n\nNow, I need to convert 7 days into hours. Since 1 day = 24 hours, multiplying 7 by 24 gives 168 hours.\n\nI should use the calcular function here. The expression would be \"7 * 24\". Let me check if the tool allows that. The calcular function takes an arithmetic expression in Python notation. So \"7 * 24\" is valid.\n\nWait, but the dias_restantes is 7, which is from the previous tool response. So I need to make sure the calculation uses the correct number. The user wants to convert the days left (7) to hours.\n\nSo the next step is to call calcular with the expression \"7 * 24\".\n\nOnce that's done, the result should be 168 hours. Then I can present the answer to the user.\n\nLet me make sure there's no mistake here. The session 8 has 7 days remaining as of today (2026-11-14), so 7 days *24 hours/day = 168 hours.\n\nYes, that seems right. So the tool call for calcular is needed here.\n"},{"tipo":"function_call","id":"call_4dw0d07z","nombre":"calcular","args":{"expresion":"7 * 24"}}],"estado_delta":{},"final":false,"timestamp":1794714568.807873,"t_rel_s":59.046,"tokens":{"entrada":2122,"salida":336,"total":2458}},{"id":"26e20777-f91a-4390-8ada-f520aefe3bae","autor":"asistente_teresa","rol":"user","partes":[{"tipo":"function_response","id":"call_4dw0d07z","nombre":"calcular","respuesta":{"status":"ok","expresion":"7 * 24","resultado":168}}],"estado_delta":{},"final":false,"timestamp":1794714568.810356,"t_rel_s":59.048,"tokens":null},{"id":"18c03040-edbf-40e1-8b76-cadb59d4e8f9","autor":"asistente_teresa","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let's see. The user asked how many days are left for session 8 and then convert those days to hours.\n\nFirst, I called consultar_sesion with number 8. The response showed that there are 7 days remaining. Then, I used calcular to multiply 7 by 24, which gives 168 hours.\n\nSo the answer should be that there are 7 days left, which converts to 168 hours. I need to present this clearly in Spanish.\n\nWait, the user said \"cuántos días faltan para la sesión 8 del curso? Convierte esos días a horas.\" So they want the days left (7) converted to hours (168). \n\nI should check if the days_restantes is positive. In the tool response, dias_restantes is 7, which is positive, so session 8 is 7 days from today. So the answer is 7 días faltan, lo que equivale a 168 horas.\n\nI need to phrase it in Spanish, using the numbers from the tool responses. The final answer should state that there are 7 days left, converting to 168 hours.\n"},{"tipo":"texto","texto":"Para la sesión 8 del curso, faltan 7 días, lo que equivale a 168 horas."}],"estado_delta":{},"final":true,"timestamp":1794714579.872569,"t_rel_s":70.111,"tokens":{"entrada":2496,"salida":277,"total":2773}}]},"sin_herramientas":{"respuesta":"No tengo acceso al calendario actual para calcular los días faltantes para la sesión 8. La telenovela Teresa (2010) es una producción mexicana estrenada en 2010 centrada en temas de amor y conflictos familiares.","duracion_s":81.702,"eventos":[{"id":"104a00fd-bf98-46cb-8727-605580cf7c22","autor":"asistente_sin_herramientas","rol":"model","partes":[{"tipo":"pensamiento","texto":"Okay, let me try to figure out how to answer this question. The user is asking how many days are left until session 8 of the course and then convert that to hours.\n\nFirst, I need to check the course calendar. But wait, as an AI assistant for the Universidad Anáhuac, I don't have real-time access to the course schedule. The user mentioned that the course is \"Inteligencia Artificial Aplicada\" and they want to know the days left for session 8.\n\nHmm, in the problem statement, the user says: \"Respondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso.\" So I have to answer about both the telenovela and the course calendar. But the specific question here is about session 8.\n\nWait, the user is asking for the days left for session 8. Since I don't have access to the current date or the course calendar, I can't give an exact number. But maybe in the context of the course, there's a standard schedule? Or perhaps the user expects me to state that I don't have that information.\n\nWait, the problem says: \"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\" So I'm supposed to respond as if I'm part of that course. But the assistant's internal name is \"asistente_sin_herramientas\", which means no tools. So I can't access external data.\n\nIn previous examples, maybe the assistant is supposed to say that they don't have the information. But the user is asking for a specific number. L [...]"},{"tipo":"texto","texto":"No tengo acceso al calendario actual para calcular los días faltantes para la sesión 8. La telenovela Teresa (2010) es una producción mexicana estrenada en 2010 centrada en temas de amor y conflictos familiares."}],"estado_delta":{},"final":true,"timestamp":1794714731.320606,"t_rel_s":81.7,"tokens":{"entrada":151,"salida":1935,"total":2086}}],"instruccion":"Eres el asistente del curso de Inteligencia Artificial Aplicada de la Universidad Anáhuac.\nRespondes en español, con frases breves y claras y sin emojis, sobre dos temas: la telenovela Teresa (2010) y el calendario del curso."}}}</script>
+
+<script>
+"use strict";
+const T = JSON.parse(document.getElementById("traza").textContent);
+
+/* ---------------- Utilidades ---------------- */
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+function jsonColor(obj) {
+  const txt = esc(JSON.stringify(obj, null, 2));
+  return txt.replace(/(&quot;|")((?:\\.|[^"\\])*)"(\s*:)?|\b(-?\d+(?:\.\d+)?)\b|\b(true|false|null)\b|([{}\[\],])/g,
+    (m, q, cad, dosp, num, lit, punt) => {
+      if (cad !== undefined) return dosp ? `<span class="j-clave">"${cad}"</span>${dosp}` : `<span class="j-cadena">"${cad}"</span>`;
+      if (num !== undefined) return `<span class="j-num">${num}</span>`;
+      if (lit !== undefined) return `<span class="j-lit">${lit}</span>`;
+      return `<span class="j-punt">${punt}</span>`;
+    });
+}
+function pyColor(code) {
+  let h = esc(code);
+  h = h.replace(/("""[\s\S]*?"""|"[^"\n]*")/g, '<span class="py-str">$1</span>');
+  h = h.replace(/(^|\n)(\s*#[^\n]*)/g, '$1<span class="py-com">$2</span>');
+  h = h.replace(/\b(def|return|if|else|for|in|import|from|not|True|False)\b(?![^<]*<\/span>)/g, '<span class="py-kw">$1</span>');
+  return h;
+}
+const turnoNombre = { sin_herramientas: "1 · Saludo", una_herramienta: "2 · Una herramienta", encadenada: "3 · Dos encadenadas", estado_escribe: "4 · Escribe estado", estado_lee: "5 · Lee estado" };
+
+/* ---------------- Tema ---------------- */
+$("#btn-tema").addEventListener("click", () => {
+  const raiz = document.documentElement;
+  const actual = raiz.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const nuevo = actual === "dark" ? "light" : "dark";
+  raiz.setAttribute("data-theme", nuevo);
+  try { localStorage.setItem("agente-tema", nuevo); } catch (e) {}
+  dibujarGrafica();
+});
+
+/* ---------------- Cifras de portada ---------------- */
+(function cifras() {
+  const llamadas = T.turnos.flatMap(t => t.eventos.flatMap(e => e.partes.filter(p => p.tipo === "function_call"))).length;
+  const consultas = T.turnos.flatMap(t => t.eventos.filter(e => e.tokens)).length;
+  const tokens = T.turnos.flatMap(t => t.eventos.filter(e => e.tokens)).reduce((a, e) => a + e.tokens.total, 0);
+  const datos = [[T.turnos.length, "turnos en una sesión"], [llamadas, "llamadas a herramientas"], [consultas, "consultas al modelo"], [tokens.toLocaleString("es-MX"), "tokens procesados"]];
+  $("#cifras").innerHTML = datos.map(([v, l]) => `<div class="cifra"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("#pie").innerHTML = `Traza grabada el ${T.generado.slice(0, 10)} con <code>${esc(T.modelo)}</code> y google-adk ${esc(T.adk_version)} · Universidad Anáhuac, Posgrado en Tecnologías de la Información · GPL-3.0`;
+})();
+
+/* ---------------- Diagrama ---------------- */
+const NODOS = {
+  usuario: { x: 20, y: 160, w: 130, h: 70, titulo: "Usuario", sub: "mensaje" },
+  runner: { x: 250, y: 160, w: 160, h: 70, titulo: "Runner", sub: "LlmAgent · bucle ReAct" },
+  llm: { x: 560, y: 20, w: 200, h: 70, titulo: "LLM", sub: T.modelo.replace("ollama_chat/", "") + " · Ollama" },
+  herramientas: { x: 530, y: 175, w: 260, h: 120, titulo: "Herramientas", sub: "funciones de Python" },
+  sesion: { x: 230, y: 310, w: 200, h: 80, titulo: "Sesión", sub: "eventos y estado" },
+};
+const ARISTAS = {
+  "usuario-runner": ["usuario", "runner"], "runner-llm": ["runner", "llm"], "runner-herramientas": ["runner", "herramientas"], "runner-sesion": ["runner", "sesion"],
+};
+const centro = (n) => [NODOS[n].x + NODOS[n].w / 2, NODOS[n].y + NODOS[n].h / 2];
+function caminoArista(a, b) {
+  const [x1, y1] = centro(a), [x2, y2] = centro(b);
+  const mx = (x1 + x2) / 2;
+  return `M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+}
+const svg = d3.select("#diagrama");
+const defs = svg.append("defs");
+const grad = defs.append("radialGradient").attr("id", "brillo");
+grad.append("stop").attr("offset", "0%").attr("stop-color", "#fff");
+grad.append("stop").attr("offset", "45%").attr("stop-color", "#FF5900");
+grad.append("stop").attr("offset", "100%").attr("stop-color", "#FF5900").attr("stop-opacity", 0);
+const capaAristas = svg.append("g");
+for (const [id, [a, b]] of Object.entries(ARISTAS)) {
+  capaAristas.append("path").attr("class", "arista").attr("id", "a-" + id).attr("d", caminoArista(a, b));
+}
+const capaNodos = svg.append("g");
+for (const [id, n] of Object.entries(NODOS)) {
+  const g = capaNodos.append("g").attr("class", "nodo").attr("id", "n-" + id);
+  g.append("rect").attr("x", n.x).attr("y", n.y).attr("width", n.w).attr("height", n.h).attr("rx", 12);
+  g.append("text").attr("x", n.x + 14).attr("y", n.y + 27).attr("font-weight", 700).attr("font-size", 15).text(n.titulo);
+  g.append("text").attr("class", "sub").attr("x", n.x + 14).attr("y", n.y + 46).text(n.sub);
+}
+const nombresH = T.esquemas.map(e => e.nombre);
+nombresH.forEach((nombre, i) => {
+  const n = NODOS.herramientas;
+  const g = capaNodos.append("g").attr("class", "chip-h").attr("id", "h-" + nombre);
+  const x = n.x + 12 + (i % 2) * 122, y = n.y + 58 + Math.floor(i / 2) * 28;
+  g.append("rect").attr("x", x).attr("y", y).attr("width", 116).attr("height", 22).attr("rx", 5);
+  g.append("text").attr("x", x + 6).attr("y", y + 15).text(nombre + "()");
+});
+const estadoTxt = capaNodos.append("text").attr("class", "sub mono").attr("x", NODOS.sesion.x + 14).attr("y", NODOS.sesion.y + 66).attr("font-size", 10).attr("fill", "var(--tenue)");
+const paquete = svg.append("circle").attr("class", "paquete").attr("r", 9).attr("fill", "url(#brillo)").attr("opacity", 0);
+
+/* ---------------- Pasos a partir de los eventos ---------------- */
+function construirPasos(turno) {
+  const P = [];
+  const evs = turno.eventos;
+  P.push({ tipo: "usuario", de: "usuario", a: "runner", titulo: "Mensaje del usuario", t: 0, texto: turno.texto });
+  let consulta = 1;
+  const primera = evs.find(e => e.tokens);
+  P.push({ tipo: "peticion", de: "runner", a: "llm", titulo: `Consulta ${consulta} al modelo`, t: 0,
+    meta: primera ? `${primera.tokens.entrada} tokens de entrada (instrucción, esquemas e historial)` : "", texto: "El Runner arma la petición: instrucción de sistema con el estado, esquemas de las tres herramientas e historial de la sesión." });
+  evs.forEach((e, i) => {
+    if (e.rol === "model") {
+      const tok = e.tokens ? `${e.tokens.salida} tokens de salida` : "";
+      e.partes.filter(p => p.tipo === "pensamiento").forEach(p => P.push({ tipo: "pensamiento", nodo: "llm", titulo: "El modelo piensa", t: e.t_rel_s, meta: tok, texto: p.texto.trim() }));
+      e.partes.filter(p => p.tipo === "function_call").forEach(p => {
+        P.push({ tipo: "llamada", de: "llm", a: "runner", titulo: `Pide ${p.nombre}`, t: e.t_rel_s, meta: `function_call · id ${p.id}`, json: { name: p.nombre, args: p.args } });
+        P.push({ tipo: "llamada", de: "runner", a: "herramientas", herramienta: p.nombre, titulo: `Ejecuta ${p.nombre}()`, t: e.t_rel_s, meta: "ADK llama a la función de Python con esos argumentos", json: p.args });
+      });
+      e.partes.filter(p => p.tipo === "texto").forEach(p => {
+        P.push({ tipo: "final", de: "llm", a: "runner", titulo: "Respuesta en texto", t: e.t_rel_s, meta: e.final ? "evento final: is_final_response() = true" : "", texto: p.texto });
+        P.push({ tipo: "final", de: "runner", a: "usuario", titulo: "Respuesta al usuario", t: e.t_rel_s, meta: `turno completo en ${turno.duracion_s.toFixed(1)} s`, texto: p.texto });
+      });
+    } else {
+      e.partes.filter(p => p.tipo === "function_response").forEach(p => {
+        P.push({ tipo: "observacion", de: "herramientas", a: "runner", herramienta: p.nombre, titulo: `Observación de ${p.nombre}`, t: e.t_rel_s, meta: `function_response · id ${p.id}`, json: p.respuesta });
+      });
+      if (Object.keys(e.estado_delta).length) {
+        P.push({ tipo: "estado", de: "runner", a: "sesion", titulo: "Cambio de estado", t: e.t_rel_s, meta: "actions.state_delta", json: e.estado_delta });
+      }
+      const sig = evs[i + 1];
+      if (sig && sig.rol === "model") {
+        consulta += 1;
+        P.push({ tipo: "peticion", de: "runner", a: "llm", titulo: `Consulta ${consulta} al modelo`, t: e.t_rel_s,
+          meta: sig.tokens ? `${sig.tokens.entrada} tokens de entrada` : "", texto: "La observación se agrega al historial y el modelo se consulta otra vez con todo el contexto." });
+      }
+    }
+  });
+  return P;
+}
+
+const etiquetas = { usuario: "usuario", peticion: "petición", pensamiento: "pensamiento", llamada: "function_call", observacion: "function_response", estado: "estado", final: "respuesta" };
+const pasoEc = { pensamiento: "pensamiento", llamada: "llamada", observacion: "observacion", peticion: "peticion" };
+let turnoActual = 0, pasos = [], idx = 0, temporizador = null;
+
+function estadoHasta(turnoI, pasoI) {
+  let est = {};
+  T.turnos.forEach((t, i) => { if (i < turnoI) est = { ...t.estado_despues }; });
+  pasos.slice(0, pasoI + 1).forEach(p => { if (p.tipo === "estado") est = { ...est, ...p.json }; });
+  return est;
+}
+
+function mostrar(i) {
+  idx = Math.max(0, Math.min(i, pasos.length - 1));
+  const p = pasos[idx];
+  d3.selectAll(".nodo").classed("encendido", false);
+  d3.selectAll(".arista").classed("encendida", false);
+  d3.selectAll(".chip-h").classed("encendido", false);
+  if (p.nodo) d3.select("#n-" + p.nodo).classed("encendido", true);
+  if (p.de) {
+    d3.select("#n-" + p.a).classed("encendido", true);
+    const id = ARISTAS[`${p.de}-${p.a}`] ? `${p.de}-${p.a}` : `${p.a}-${p.de}`;
+    const arista = d3.select("#a-" + id).classed("encendida", true).node();
+    const largo = arista.getTotalLength();
+    const inverso = !ARISTAS[`${p.de}-${p.a}`];
+    paquete.interrupt().attr("opacity", 1).transition().duration(650).ease(d3.easeCubicInOut)
+      .attrTween("transform", () => (u) => { const pt = arista.getPointAtLength((inverso ? 1 - u : u) * largo); return `translate(${pt.x},${pt.y})`; })
+      .transition().duration(200).attr("opacity", 0);
+  }
+  if (p.herramienta) d3.select("#h-" + p.herramienta).classed("encendido", true);
+  const est = estadoHasta(turnoActual, idx);
+  const personajes = (est.personajes_consultados || []).length;
+  estadoTxt.text(Object.keys(est).length ? `personajes: ${personajes} · sesión: ${est.ultima_sesion_consultada ?? "nada"}` : "estado vacío");
+
+  document.querySelectorAll(".ec").forEach(el => el.classList.toggle("activa", el.dataset.paso === pasoEc[p.tipo]));
+
+  const cuerpo = p.json !== undefined ? `<pre class="codigo">${jsonColor(p.json)}</pre>` : `<div class="texto">${esc(p.texto || "")}</div>`;
+  $("#burbuja").outerHTML = `<div class="burbuja" id="burbuja"><span class="tipo t-${p.tipo}">${etiquetas[p.tipo]}</span><h3>${esc(p.titulo)}</h3><div class="meta">t = ${p.t.toFixed(3)} s${p.meta ? " · " + esc(p.meta) : ""}</div>${cuerpo}</div>`;
+  document.querySelectorAll("#bitacora li").forEach((li, j) => li.classList.toggle("actual", j === idx));
+  const li = document.querySelectorAll("#bitacora li")[idx];
+  if (li) li.parentNode.scrollTop = li.offsetTop - li.parentNode.offsetTop - 60;
+  $("#contador").textContent = `paso ${idx + 1} de ${pasos.length}`;
+  $("#progreso").style.width = `${((idx + 1) / pasos.length) * 100}%`;
+}
+
+function cargarTurno(i) {
+  pausar();
+  turnoActual = i;
+  const t = T.turnos[i];
+  pasos = construirPasos(t);
+  document.querySelectorAll("#turnos button").forEach((b, j) => b.classList.toggle("activo", j === i));
+  $("#pregunta").textContent = "«" + t.texto + "»";
+  $("#objetivo").textContent = t.objetivo + ` Duración real: ${t.duracion_s.toFixed(1)} s.`;
+  $("#bitacora").innerHTML = pasos.map((p, j) => `<li data-i="${j}"><span class="t">${p.t.toFixed(1)} s</span><span>${esc(p.titulo)}</span></li>`).join("");
+  document.querySelectorAll("#bitacora li").forEach(li => li.addEventListener("click", () => { pausar(); mostrar(+li.dataset.i); }));
+  mostrar(0);
+}
+function play() {
+  if (idx >= pasos.length - 1) mostrar(0);
+  $("#b-play").textContent = "❚❚ Pausa";
+  temporizador = setInterval(() => { if (idx >= pasos.length - 1) { pausar(); return; } mostrar(idx + 1); }, +$("#velocidad").value);
+}
+function pausar() { clearInterval(temporizador); temporizador = null; $("#b-play").textContent = "▶ Play"; }
+$("#b-play").addEventListener("click", () => temporizador ? pausar() : play());
+$("#b-adelante").addEventListener("click", () => { pausar(); mostrar(idx + 1); });
+$("#b-atras").addEventListener("click", () => { pausar(); mostrar(idx - 1); });
+$("#b-inicio").addEventListener("click", () => { pausar(); mostrar(0); });
+$("#velocidad").addEventListener("change", () => { if (temporizador) { pausar(); play(); } });
+$("#turnos").innerHTML = T.turnos.map(t => `<button type="button">${turnoNombre[t.id] || t.id}</button>`).join("");
+document.querySelectorAll("#turnos button").forEach((b, i) => b.addEventListener("click", () => cargarTurno(i)));
+cargarTurno(2);
+
+/* ---------------- Anatomía ---------------- */
+const ultimaInstr = [...T.peticiones_llm].reverse().find(p => p.marca === "llm");
+const ZONAS = {
+  name: { titulo: "name", detalle: "Identifica al agente. Aparece como autor de cada evento de la traza y sirve para delegar cuando hay varios agentes." },
+  model: { titulo: "model", detalle: "El LLM. LiteLlm traduce las peticiones de ADK al formato de OpenAI; el prefijo ollama_chat/ usa el punto /api/chat de Ollama, que acepta herramientas. La dirección sale de OLLAMA_API_BASE (el túnel SSH).", codigo: `LiteLlm(model="${T.modelo}")` },
+  description: { titulo: "description", detalle: "Descripción corta. ADK la agrega a la instrucción y otros agentes la leen para decidir si delegan en este." },
+  instruction: { titulo: "instruction", detalle: "El mensaje de sistema. Las plantillas {personajes_consultados?} se sustituyen con el estado antes de cada consulta. Abajo, la instrucción real que recibió el modelo en la última consulta, ya con la memoria rellena.", codigo: ultimaInstr ? ultimaInstr.instruccion_sistema : T.agente.instruccion },
+  tools: { titulo: "tools", detalle: "Funciones de Python comunes. ADK las envuelve en FunctionTool y arma el esquema JSON con la firma y la docstring (sección 4).", codigo: T.agente.herramientas.map(h => h + "()").join("\n") },
+  state: { titulo: "tool_context.state", detalle: "Estado de la sesión: un diccionario que las herramientas leen y escriben. Cada cambio queda en event.actions.state_delta. Estado final de la traza:", codigo: JSON.stringify(T.estado_final, null, 2) },
+};
+const codigoAgente = `def buscar_personaje(nombre: str, tool_context: ToolContext) -> dict:
+    ...
+    consultados.append(p["nombre"])
+    @@state:tool_context.state["personajes_consultados"]@@ = consultados
+
+
+def construir_agente(modelo: str = MODELO) -> LlmAgent:
+    return LlmAgent(
+        @@name:name="asistente_teresa"@@,
+        @@model:model=LiteLlm(model=modelo)@@,
+        @@description:description="Responde sobre la telenovela Teresa (2010) y el calendario del curso."@@,
+        @@instruction:instruction=INSTRUCCION@@,
+        @@tools:tools=[buscar_personaje, calcular, consultar_sesion]@@,
+    )
+
+
+root_agent = construir_agente()   # nombre que buscan adk run y adk web`;
+$("#codigo-agente").innerHTML = pyColor(codigoAgente).replace(/@@(\w+):([\s\S]*?)@@/g, (m, z, t) => `<span class="zona" data-zona="${z}" tabindex="0">${t}</span>`);
+$("#pistas").innerHTML = Object.keys(ZONAS).map(z => `<button type="button" data-zona="${z}">${ZONAS[z].titulo}</button>`).join("");
+function explicar(z) {
+  const d = ZONAS[z];
+  document.querySelectorAll(".zona").forEach(el => el.classList.toggle("activa", el.dataset.zona === z));
+  $("#explica").innerHTML = `<h3>${esc(d.titulo)}</h3><div class="detalle">${esc(d.detalle)}</div>${d.codigo ? `<pre class="codigo">${esc(d.codigo)}</pre>` : ""}`;
+}
+document.querySelectorAll("[data-zona]").forEach(el => {
+  el.addEventListener("mouseenter", () => explicar(el.dataset.zona));
+  el.addEventListener("focus", () => explicar(el.dataset.zona));
+  el.addEventListener("click", () => explicar(el.dataset.zona));
+});
+explicar("model");
+
+/* ---------------- Esquemas ---------------- */
+const FIRMAS = {
+  buscar_personaje: "def buscar_personaje(nombre: str, tool_context: ToolContext) -> dict:",
+  calcular: "def calcular(expresion: str) -> dict:",
+  consultar_sesion: "def consultar_sesion(numero: int, tool_context: ToolContext) -> dict:",
+};
+$("#pestanas").innerHTML = T.esquemas.map(e => `<button type="button">${e.nombre}</button>`).join("");
+function verEsquema(i) {
+  const e = T.esquemas[i];
+  document.querySelectorAll("#pestanas button").forEach((b, j) => b.classList.toggle("activo", j === i));
+  const decl = e.adk_function_declaration;
+  const firma = (FIRMAS[e.nombre] || `def ${e.nombre}(...)`) + "\n    \"\"\"" + decl.description.replace(/\n/g, "\n    ") + "\n    \"\"\"";
+  $("#firma").innerHTML = pyColor(firma);
+  $("#esquema").innerHTML = jsonColor(e.litellm_tool);
+  const total = T.esquemas.reduce((a, s) => a + JSON.stringify(s.litellm_tool).length, 0);
+  $("#medidor").innerHTML = `Este esquema ocupa <b>${JSON.stringify(e.litellm_tool).length}</b> caracteres; los tres juntos, <b>${total}</b>. Viajan en cada una de las consultas al modelo.`;
+}
+document.querySelectorAll("#pestanas button").forEach((b, i) => b.addEventListener("click", () => verEsquema(i)));
+verEsquema(1);
+
+/* ---------------- Comparador ---------------- */
+(function comparar() {
+  const c = T.comparacion;
+  $("#comp-pregunta").innerHTML = `Misma pregunta, mismo modelo: «${esc(c.pregunta)}». A la izquierda el agente con sus tres herramientas; a la derecha un agente idéntico sin herramientas y con la instrucción recortada.`;
+  const resumen = (lado) => {
+    const llamadas = lado.eventos.flatMap(e => e.partes.filter(p => p.tipo === "function_call"));
+    const tokens = lado.eventos.filter(e => e.tokens).reduce((a, e) => a + e.tokens.total, 0);
+    return { llamadas, tokens, consultas: lado.eventos.filter(e => e.tokens).length };
+  };
+  const con = resumen(c.con_herramientas), sin = resumen(c.sin_herramientas);
+  const met = (r, d) => `<div class="metricas"><div><b>${d.toFixed(1)} s</b>duración</div><div><b>${r.consultas}</b>consultas al modelo</div><div><b>${r.llamadas.length}</b>herramientas</div><div><b>${r.tokens.toLocaleString("es-MX")}</b>tokens</div></div>`;
+  $("#lado-con").innerHTML = `<h3 style="color:var(--verde)">Con herramientas</h3>${met(con, c.con_herramientas.duracion_s)}<div class="resp">${esc(c.con_herramientas.respuesta)}</div>
+    <ul>${con.llamadas.map(l => `<li><code>${esc(l.nombre)}(${esc(JSON.stringify(l.args))})</code></li>`).join("")}<li>El 7 viene del calendario y el 168 de <code>calcular</code>: ningún número salió de la memoria del modelo.</li></ul>`;
+  $("#lado-sin").innerHTML = `<h3 style="color:#b4232a">Sin herramientas</h3>${met(sin, c.sin_herramientas.duracion_s)}<div class="resp">${esc(c.sin_herramientas.respuesta)}</div>
+    <ul><li>El modelo no conoce la fecha de hoy ni el calendario del grupo.</li><li>Gastó sus tokens en pensar sin poder consultar nada.</li></ul>`;
+})();
+
+/* ---------------- Gráfica de tokens ---------------- */
+function dibujarGrafica() {
+  const datos = [];
+  T.turnos.forEach((t, ti) => {
+    let k = 0;
+    t.eventos.filter(e => e.tokens).forEach(e => { k += 1; datos.push({ turno: ti, etiqueta: `T${ti + 1}·${k}`, entrada: e.tokens.entrada, salida: e.tokens.salida, nombre: turnoNombre[t.id], acciones: e.partes.filter(p => p.tipo !== "pensamiento").map(p => p.tipo === "function_call" ? p.nombre + "()" : "respuesta").join(", ") }); });
+  });
+  const cont = d3.select("#grafica"); cont.selectAll("*").remove();
+  const W = 860, H = 300, m = { t: 10, r: 10, b: 46, l: 50 };
+  const s = cont.append("svg").attr("viewBox", `0 0 ${W} ${H}`).attr("role", "img").attr("aria-label", "Tokens de entrada y salida por consulta al modelo");
+  const x = d3.scaleBand().domain(datos.map(d => d.etiqueta)).range([m.l, W - m.r]).padding(.25);
+  const y = d3.scaleLinear().domain([0, d3.max(datos, d => d.entrada + d.salida) * 1.08]).nice().range([H - m.b, m.t]);
+  s.append("g").attr("class", "eje").attr("transform", `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickSizeOuter(0));
+  s.append("g").attr("class", "eje").attr("transform", `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(5).tickFormat(d3.format("~s")));
+  const cs = getComputedStyle(document.documentElement);
+  const cEnt = cs.getPropertyValue("--azul").trim(), cSal = cs.getPropertyValue("--naranja").trim();
+  const info = $("#info");
+  const g = s.append("g").selectAll("g").data(datos).join("g")
+    .on("mousemove", (ev, d) => { info.style.opacity = 1; info.style.left = Math.min(ev.clientX + 12, innerWidth - 270) + "px"; info.style.top = ev.clientY + 12 + "px";
+      info.innerHTML = `<b>${esc(d.nombre)}</b><br>consulta ${d.etiqueta.split("·")[1]}: ${esc(d.acciones)}<br>entrada ${d.entrada} · salida ${d.salida}`; })
+    .on("mouseleave", () => { info.style.opacity = 0; });
+  g.append("rect").attr("x", d => x(d.etiqueta)).attr("width", x.bandwidth()).attr("y", H - m.b).attr("height", 0).attr("rx", 3).attr("fill", cEnt)
+    .transition().duration(700).delay((d, i) => i * 50).attr("y", d => y(d.entrada)).attr("height", d => y(0) - y(d.entrada));
+  g.append("rect").attr("x", d => x(d.etiqueta)).attr("width", x.bandwidth()).attr("y", d => y(d.entrada)).attr("height", 0).attr("rx", 3).attr("fill", cSal)
+    .transition().duration(700).delay((d, i) => 300 + i * 50).attr("y", d => y(d.entrada + d.salida)).attr("height", d => y(d.entrada) - y(d.entrada + d.salida));
+  s.append("text").attr("x", m.l).attr("y", H - 8).attr("fill", "var(--tenue)").attr("font-size", 11).text("turno · consulta dentro del turno");
+}
+dibujarGrafica();
+</script>
+</body>
+</html>

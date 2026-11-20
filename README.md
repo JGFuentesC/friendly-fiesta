@@ -5,16 +5,22 @@ Notebooks didácticos para posgrado: regresión lineal, descenso de gradiente es
 ## Estructura
 
 ```
-data/
-  raw/file.csv              dataset crudo (999 registros: x1, x2, x3, y)
-  processed/train.csv       split 70% (seed 42)
-  processed/validation.csv  split 30% (seed 42)
+agentes/asistente_teresa/   agente de Google ADK (sesión 08)
+data/raw/                   datos crudos (los de terceros están gitignored)
+data/processed/             JSON y CSV derivados que leen las SPA y los apuntes
 notebooks/
   01_minimos_cuadrados_sgd.ipynb  mínimos cuadrados matriciales y SGD
   02_mlp_backprop.ipynb           forward, backpropagation y tres implementaciones
-figures/                    gráficos del repo
-reports/                    salidas HTML
-scripts/make_split.py       regenera train/validation de forma determinista
+  03_fraude_ff.ipynb              red FF para fraude (gitignored, se genera)
+  04_lenet_mnist.ipynb            LeNet-5 sobre MNIST
+  05_youtube_comentarios.ipynb    sentimiento en comentarios de YouTube
+  06_minigpt_teresa.ipynb         mini GPT entrenado con diálogos de Teresa
+  07_difusion.ipynb               modelos de difusión (DDPM)
+  08_agente_adk.ipynb             agente simple con Google ADK y Ollama
+reports/apuntes/            apuntes en LaTeX con estilo Anáhuac (anahuac.sty)
+spa/                        páginas interactivas autocontenidas
+scripts/                    generadores, entrenamientos y verificadores
+observatorio/               API Flask del observatorio mañanero
 ```
 
 ## Entorno
@@ -126,6 +132,58 @@ uv run python -m observatorio.app                    # http://127.0.0.1:5055
 ```
 
 Los comentarios descargados, la base del observatorio y el modelo exportado se guardan en `data/youtube_comments/` y `data/observatorio/`, que no se publican porque contienen textos de terceros. El modelo se regenera con la última celda del notebook 05.
+
+## Apuntes en LaTeX
+
+Los apuntes de las sesiones 06 a 08 comparten `reports/apuntes/anahuac.sty` (portada, encabezados y cajas de definición, intuición, ejemplo, nota y ejercicio). `reports/apuntes/_plantilla/main.tex` es un ejemplo mínimo. Compilan con [tectonic](https://tectonic-typesetting.github.io):
+
+```bash
+tectonic -X compile reports/apuntes/06_llm/main.tex
+tectonic -X compile reports/apuntes/07_difusion/main.tex
+tectonic -X compile reports/apuntes/08_agentes/main.tex
+uv run python scripts/verificar_redaccion_html.py reports/apuntes/0*/*.tex spa/*.html notebooks/0[678]_*.ipynb
+```
+
+## Sesión 06: mini GPT con diálogos de *Teresa*
+
+`scripts/descargar_teresa.py` baja con yt-dlp solo los subtítulos en español de capítulos y escenas de *Teresa* (Televisa, 2010) y los limpia a diálogo plano en `data/raw/teresa/` (gitignored, son textos de terceros). `scripts/train_minigpt_teresa.py` entrena en la GPU un GPT decoder-only de 12 M de parámetros (6 capas, 384 dimensiones, 6 cabezas, contexto 256, SentencePiece BPE de 4000 piezas) con parada temprana, y exporta `data/processed/minigpt_teresa.json` (curvas, muestras por paso, mapas de atención, embeddings y distribuciones de siguiente token). Requiere `sentencepiece` dentro de `lab-pytorch`.
+
+```bash
+uv run python scripts/descargar_teresa.py
+scp scripts/train_minigpt_teresa.py $GPU_HOST:$RUTA_REMOTA/scripts/
+scp data/raw/teresa/teresa.txt $GPU_HOST:$RUTA_REMOTA/data/raw/teresa/
+ssh $GPU_HOST 'docker exec -w /workspace/friendly-fiesta lab-pytorch python scripts/train_minigpt_teresa.py --pasos 6000 --minutos 40'
+scp $GPU_HOST:$RUTA_REMOTA/data/processed/minigpt_teresa.json data/processed/
+uv run python scripts/figuras_minigpt.py        # figuras y métricas del apunte
+uv run python scripts/embeber_minigpt_spa.py    # incrusta el JSON en spa/minigpt_teresa.html
+uv run python scripts/build_minigpt_notebook.py # notebook 06; se ejecuta en lab-pytorch con MINIGPT_RAPIDO=1
+```
+
+## Sesión 07: modelos de difusión
+
+Inspirada en un reel que construye la difusión como una escalera: un píxel más ruido, ruido puro, una red que revierte el ruido, condicionarla con un texto y aplicarla en bucle. `scripts/train_ddpm.py` entrena cuatro DDPM (T = 1000, horario lineal): dos MLP sobre nubes de puntos 2D, una U-Net condicional sobre paisajes de pixel art de 24×24 con tres prompts y guía sin clasificador, y una U-Net condicional sobre MNIST. Escribe `data/processed/difusion.json`. MNIST se lee de los archivos idx, sin torchvision.
+
+```bash
+scp scripts/train_ddpm.py $GPU_HOST:$RUTA_REMOTA/scripts/
+ssh $GPU_HOST 'docker exec -w /workspace/friendly-fiesta lab-pytorch python scripts/train_ddpm.py'
+scp $GPU_HOST:$RUTA_REMOTA/data/processed/difusion.json data/processed/
+uv run python scripts/figuras_difusion.py       # figuras y métricas del apunte
+uv run python scripts/build_difusion_spa.py     # incrusta el JSON en spa/difusion.html
+uv run python scripts/build_difusion_notebook.py
+```
+
+## Sesión 08: agente simple con Google ADK
+
+`agentes/asistente_teresa/` es un `LlmAgent` de Google ADK 2.x que usa un modelo local de Ollama (`qwen3:4b` por defecto) a través de LiteLLM. Tiene tres herramientas deterministas (`buscar_personaje`, `calcular`, `consultar_sesion`) y guarda memoria en el estado de la sesión. Las fechas de `data/processed/curso_sesiones.json` son el calendario del curso. `scripts/grabar_traza_agente.py` corre preguntas fijas y guarda la traza de eventos que reproduce `spa/agente_adk.html`.
+
+```bash
+ssh -N -L 11434:localhost:11434 $GPU_HOST &      # túnel a Ollama
+export OLLAMA_API_BASE=http://localhost:11434   # opcional: AGENTE_MODELO=ollama_chat/qwen2.5:7b
+uv run adk run agentes/asistente_teresa         # o: uv run adk web agentes
+uv run python scripts/grabar_traza_agente.py
+uv run python scripts/build_spa_agente.py
+uv run python scripts/build_agente_notebook.py
+```
 
 ## Textos de la Biblia y el Corán
 

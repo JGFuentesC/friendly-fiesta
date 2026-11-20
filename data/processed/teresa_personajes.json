@@ -1,0 +1,41 @@
+{
+  "telenovela": {
+    "titulo": "Teresa",
+    "anio": 2010,
+    "pais": "México",
+    "cadena": "Televisa (Canal de las Estrellas)",
+    "productor": "José Alberto Castro",
+    "basada_en": "Teresa, telenovela de 1959 escrita por Mimí Bechelani",
+    "nota": "Ficha simplificada con fines didácticos, armada con información pública general."
+  },
+  "personajes": [
+    {
+      "nombre": "Teresa Chávez",
+      "alias": ["teresa", "teresa chavez", "teresa chávez"],
+      "actor": "Angelique Boyer",
+      "rol": "Protagonista",
+      "descripcion": "Joven brillante y ambiciosa de origen humilde que decide usar su belleza e inteligencia para escapar de la pobreza."
+    },
+    {
+      "nombre": "Arturo de la Barrera",
+      "alias": ["arturo", "arturo de la barrera"],
+      "actor": "Sebastián Rulli",
+      "rol": "Protagonista",
+      "descripcion": "Profesor universitario de buena posición que se enamora de Teresa."
+    },
+    {
+      "nombre": "Mariano Sánchez",
+      "alias": ["mariano", "mariano sanchez", "mariano sánchez"],
+      "actor": "Aarón Díaz",
+      "rol": "Coprotagonista",
+      "descripcion": "Novio de Teresa desde la juventud, de su mismo barrio, que estudia para salir adelante."
+    },
+    {
+      "nombre": "Aída Cervantes",
+      "alias": ["aida", "aída", "aida cervantes", "aída cervantes"],
+      "actor": "Ana Brenda Contreras",
+      "rol": "Antagonista",
+      "descripcion": "Joven de familia acomodada, rival de Teresa en el amor y en lo social."
+    }
+  ]
+}

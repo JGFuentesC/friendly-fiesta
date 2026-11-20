@@ -1,0 +1,494 @@
+%!TEX program = tectonic
+\documentclass[11pt,letterpaper,oneside]{report}
+\usepackage{../anahuac}
+\materia{Inteligencia Artificial Aplicada}
+\sesion{8}{Agentes con Google ADK}
+\subtitulo{Del modelo de lenguaje al agente: herramientas, estado y el bucle ReAct con un modelo local}
+\newcommand{\codigoagente}{../../../agentes/asistente_teresa/agent.py}
+\lstdefinelanguage{json}{morestring=[b]", sensitive=true}
+\begin{document}
+\portada
+\tableofcontents
+\setcounter{chapter}{7}
+\chapter{Agentes con Google ADK}
+
+Hasta ahora el curso ha tratado modelos que reciben una entrada y devuelven una salida: una regresión, una red que clasifica dígitos, un modelo que predice el siguiente token. En esta sesión envolvemos un modelo de lenguaje en un programa que lo consulta varias veces, ejecuta funciones de Python cuando el modelo lo pide y guarda memoria entre turnos. A ese programa lo llamamos \emph{agente}.
+
+El hilo de la sesión es un agente pequeño y completo, \texttt{asistente\_teresa}, que responde sobre la telenovela \emph{Teresa} (2010) y el calendario del curso. Tiene tres herramientas, usa el estado de la sesión y corre sobre \texttt{qwen3:4b}, un modelo de 2.4~GB servido por Ollama en el servidor del laboratorio. Todos los números y fragmentos de traza de este apunte salen de una ejecución real grabada con \texttt{scripts/grabar\_traza\_agente.py}.
+
+\begin{nota}[Materiales de la sesión]
+\begin{itemize}
+  \item Agente: \texttt{agentes/asistente\_teresa/agent.py}.
+  \item Traza grabada: \texttt{data/processed/traza\_agente.json}.
+  \item Cuaderno: \texttt{notebooks/08\_agente\_adk.ipynb}.
+  \item Página interactiva: \texttt{spa/agente\_adk.html}, con el reproductor de la traza.
+\end{itemize}
+\end{nota}
+
+% =====================================================================
+\section{Del modelo de lenguaje al agente}
+% =====================================================================
+
+\subsection{El LLM como modelo condicional}
+
+Un modelo de lenguaje autorregresivo trabaja sobre un vocabulario $V$ de tokens. Dada una entrada $x$ (una secuencia de tokens), estima la probabilidad de una continuación $y=(y_1,\dots,y_m)$ factorizándola token por token.
+
+\begin{definicion}[Modelo de lenguaje condicional]
+Un LLM con parámetros $\theta$ define
+\begin{equation}
+p_\theta(y \mid x) \;=\; \prod_{j=1}^{m} p_\theta\!\left(y_j \mid x,\, y_{<j}\right),
+\qquad
+p_\theta\!\left(y_j = v \mid x, y_{<j}\right) \;=\; \frac{\exp(z_v/T)}{\sum_{w\in V}\exp(z_w/T)},
+\label{eq:lm}
+\end{equation}
+donde $\mathbf{z}=\mathbf{W}_o\,\mathbf{h}_j\in\R^{\abs{V}}$ son los \emph{logits} que la última capa produce a partir del estado oculto $\mathbf{h}_j$, y $T>0$ es la temperatura.
+\end{definicion}
+
+Es la misma estructura que vimos con el mini GPT: una red que lee el contexto y termina en una capa lineal con softmax, como un clasificador multiclase cuyas clases son los tokens. Con $T\to 0$ la distribución se concentra en el token más probable (decodificación \emph{greedy}); con $T$ grande se vuelve más uniforme y el texto se vuelve más variado y menos confiable.
+
+\begin{intuicion}
+El \emph{prompt} es la condición $x$. Escribir un buen prompt equivale a elegir una condición que concentre la masa de $p_\theta(\cdot\mid x)$ en las respuestas que queremos. Dar ejemplos dentro del prompt (\emph{few-shot}) o pedir que razone paso a paso (\emph{chain of thought}) son formas de cambiar esa condición sin tocar $\theta$.
+\end{intuicion}
+
+En un modelo de chat la entrada $x$ es la serialización de una lista de mensajes con rol: un mensaje de \emph{sistema} con las reglas, mensajes del \emph{usuario} y respuestas del \emph{asistente}. La plantilla de chat de cada modelo convierte esa lista en tokens con marcadores especiales. Para nosotros basta pensar en
+\[
+x \;=\; \operatorname{serial}\bigl(s,\; m_1,\; m_2,\; \dots\bigr),
+\]
+con $s$ la instrucción de sistema y $m_i$ los mensajes.
+
+\subsection{Lo que le falta a un modelo solo}
+
+Un modelo aislado tiene tres limitaciones que importan en la práctica:
+\begin{enumerate}
+  \item \textbf{Conocimiento congelado.} Sabe lo que había en sus datos de entrenamiento. No conoce la fecha de hoy ni el calendario de este grupo.
+  \item \textbf{Cálculo poco fiable.} Produce los dígitos de un resultado como tokens probables. Para $7\times 24$ suele acertar; para operaciones largas se equivoca con frecuencia.
+  \item \textbf{Sin efectos.} No puede consultar una base de datos, leer un archivo o enviar un mensaje.
+\end{enumerate}
+Las tres se resuelven igual: dejar que el modelo \emph{pida} que el programa ejecute una función, y devolverle el resultado como texto nuevo en el contexto.
+
+\subsection{El agente como política sobre un historial}
+
+\begin{definicion}[Agente basado en LLM]
+Sea $\mathcal{F}=\{f_1,\dots,f_K\}$ un conjunto de herramientas. En el paso $t$ el agente tiene un \emph{historial}
+\[
+h_t \;=\; \bigl(s,\; \mathcal{S},\; u,\; a_1, o_1,\; \dots,\; a_{t-1}, o_{t-1}\bigr),
+\]
+formado por la instrucción $s$, los esquemas $\mathcal{S}$ de las herramientas, el mensaje del usuario $u$ y los pares acción y observación anteriores. El agente elige la siguiente acción con una \emph{política}
+\begin{equation}
+a_t \;\sim\; \pi_\theta(a \mid h_t),
+\qquad
+a_t \in \mathcal{A} \;=\; \{\textsf{responder}(y)\} \;\cup\; \{\textsf{llamar}(f_k, \mathbf{u}) : f_k\in\mathcal{F}\}.
+\label{eq:politica}
+\end{equation}
+\end{definicion}
+
+La política la induce el propio LLM. Si $c(a)$ es la cadena de tokens que representa la acción $a$, entonces
+\begin{equation}
+\pi_\theta(a \mid h_t) \;=\; p_\theta\bigl(c(a) \mid \operatorname{serial}(h_t)\bigr).
+\label{eq:inducida}
+\end{equation}
+El vocabulario del aprendizaje por refuerzo (política, acción, observación) sirve como lenguaje para describir el sistema. Aquí la política se queda fija: se usa el modelo tal como viene y lo que diseñamos es el historial (instrucción, esquemas, memoria).
+
+\begin{ejemplo}[Acciones del asistente]
+Para la pregunta «¿Quién interpreta a Teresa?» el modelo puede responder de memoria, $a_1=\textsf{responder}(\dots)$, o pedir $a_1=\textsf{llamar}(\texttt{buscar\_personaje}, \{\texttt{nombre}: \texttt{Teresa}\})$. La instrucción de sistema dice que use la herramienta; en la traza real eso fue lo que eligió.
+\end{ejemplo}
+
+\begin{ejercicio}
+Escribe el historial $h_1$ y $h_2$ del turno «¿Quién interpreta a Teresa?» si el modelo llama a \texttt{buscar\_personaje} y después responde. ¿Cuántas veces se consulta el modelo en ese turno?
+\end{ejercicio}
+
+\begin{ejercicio}
+Con la ecuación~\eqref{eq:lm}, explica por qué con $T=0$ dos ejecuciones del mismo agente sobre la misma pregunta deberían producir la misma traza. ¿Qué fuentes de variación quedan aunque $T=0$? (Piensa en la fecha de hoy y en el hardware.)
+\end{ejercicio}
+
+% =====================================================================
+\section{El bucle ReAct}
+% =====================================================================
+
+ReAct (Yao et al., 2023) propone intercalar tres tipos de paso: el modelo \emph{razona} sobre lo que sabe, \emph{actúa} pidiendo una herramienta y \emph{observa} el resultado. El ciclo se repite hasta que el modelo decide responder.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.95, transform shape,
+  caja/.style={rectangle, rounded corners=4pt, draw=#1, fill=#1!10, line width=0.9pt,
+               minimum width=3.0cm, minimum height=1.0cm, font=\sffamily\small, align=center},
+  flecha/.style={-{Stealth[length=3mm]}, line width=0.9pt, draw=pizarra}]
+  \node[caja=pizarra] (u) at (0,0) {Usuario\\$u$};
+  \node[caja=moradoint] (r) at (4,0) {Pensar\\$r_t \sim p_\theta(\cdot\mid h_t)$};
+  \node[caja=azuldef] (a) at (8.6,0) {Actuar\\$a_t \sim p_\theta(\cdot\mid h_t, r_t)$};
+  \node[caja=verdeej] (o) at (8.6,-2.6) {Observar\\$o_t = f_k(\mathbf{u}_t)$};
+  \node[caja=anahuac] (h) at (4,-2.6) {Actualizar\\$h_{t+1}=h_t\oplus(r_t,a_t,o_t)$};
+  \node[caja=anahuac, fill=anahuac!25] (y) at (8.6,2.0) {Respuesta final $y$};
+  \draw[flecha] (u) -- node[above, font=\scriptsize]{$h_1$} (r);
+  \draw[flecha] (r) -- (a);
+  \draw[flecha] (a) -- node[right, font=\scriptsize]{\textsf{llamar}$(f_k,\mathbf{u}_t)$} (o);
+  \draw[flecha] (o) -- (h);
+  \draw[flecha] (h) -- node[left, font=\scriptsize]{$t\leftarrow t+1$} (r);
+  \draw[flecha, draw=anahuac] (a) -- node[right, font=\scriptsize]{\textsf{responder}$(y)$} (y);
+\end{tikzpicture}
+\caption{Bucle ReAct. El modelo se consulta una vez por vuelta; las herramientas se ejecutan en Python fuera del modelo. El bucle termina cuando la acción es una respuesta en texto.}
+\label{fig:react}
+\end{figure}
+
+\begin{definicion}[Bucle ReAct]
+Con $h_1=(s,\mathcal{S},u)$, para $t=1,2,\dots$
+\begin{align}
+r_t &\sim p_\theta(\cdot \mid h_t) && \text{(pensamiento, opcional)} \label{eq:react1}\\
+a_t &\sim p_\theta(\cdot \mid h_t, r_t) && \text{(acción)} \label{eq:react2}\\
+o_t &= \begin{cases} f_k(\mathbf{u}_t) & \text{si } a_t=\textsf{llamar}(f_k,\mathbf{u}_t)\\ \varnothing & \text{si } a_t=\textsf{responder}(y) \end{cases} && \text{(observación)} \label{eq:react3}\\
+h_{t+1} &= h_t \oplus (r_t, a_t, o_t) && \text{(actualización)} \label{eq:react4}
+\end{align}
+El bucle se detiene en $\tau=\min\{t : a_t=\textsf{responder}(y)\}$, o en un límite $T_{\max}$ de vueltas para evitar ciclos infinitos.
+\end{definicion}
+
+El operador $\oplus$ es concatenación: el historial solo crece. Por eso cada vuelta es más cara que la anterior, como veremos con los tokens.
+
+\begin{intuicion}
+Cada observación ancla al modelo a un dato externo. Sin herramientas, el modelo responde con lo más probable según su entrenamiento; con herramientas, el dato correcto aparece escrito en el contexto y el modelo solo tiene que copiarlo y redactar alrededor.
+\end{intuicion}
+
+\subsection{¿Cuántas vueltas conviene dar?}
+
+Supón que cada vuelta sale bien (herramienta correcta, argumentos correctos) con probabilidad $q$, de forma independiente. Una tarea que exige $K$ vueltas tiene probabilidad de éxito
+\begin{equation}
+\Prob(\text{éxito}) \;=\; \prod_{t=1}^{K} q_t \;\approx\; q^{K}.
+\label{eq:exito}
+\end{equation}
+Con $q=0.95$: dos vueltas dan $0.90$ y cinco vueltas dan $0.77$. Con un modelo pequeño $q$ es menor, así que conviene diseñar herramientas que resuelvan cada subtarea en una sola llamada y pedirle al modelo pocas vueltas.
+
+\begin{ejemplo}[Dos vueltas en la traza real]
+Para «¿Cuántos días faltan para la sesión 8 del curso? Convierte esos días a horas», \texttt{qwen3:4b} hizo tres consultas al modelo y dos llamadas a herramientas:
+\begin{center}\small
+\begin{tabular}{@{}rlll@{}}
+\toprule
+$t$ & Acción $a_t$ & Observación $o_t$ & Tokens de entrada \\
+\midrule
+1 & \texttt{consultar\_sesion(numero=8)} & \texttt{dias\_restantes: 7} & 1\,122 \\
+2 & \texttt{calcular(expresion=\textquotedbl{}7 * 24\textquotedbl{})} & \texttt{resultado: 168} & 2\,122 \\
+3 & \textsf{responder}: «faltan 7 días, lo que equivale a 168 horas» & & 2\,496 \\
+\bottomrule
+\end{tabular}
+\end{center}
+En la segunda vuelta el modelo tomó el 7 de la observación anterior y lo escribió en el argumento de \texttt{calcular}. Ese traspaso de un dato de una herramienta a otra es lo que llamamos \emph{encadenar}.
+\end{ejemplo}
+
+\subsection{El pensamiento como tokens}
+
+\texttt{qwen3} es un modelo con razonamiento explícito: antes de cada acción genera un bloque de pensamiento, el $r_t$ de~\eqref{eq:react1}. En la traza, el primer pensamiento del turno encadenado empieza así (el modelo razona en inglés aunque responde en español):
+
+\begin{lstlisting}[language={}, caption={Inicio del pensamiento $r_1$ del turno encadenado.}]
+Okay, let's see. The user is asking how many days are left for session 8 of
+the course and then wants to convert those days to hours. ...
+\end{lstlisting}
+
+Ese pensamiento costó 916 tokens de salida y la mayor parte de los 50 segundos de la primera vuelta. Pensar mejora la elección de la acción a cambio de latencia: en un modelo local la generación de tokens de salida es el cuello de botella.
+
+\begin{ejercicio}
+Con~\eqref{eq:exito}, si un modelo grande tiene $q=0.98$ y uno pequeño $q=0.90$, ¿cuántas vueltas puede dar cada uno antes de que su probabilidad de éxito baje de $0.8$?
+\end{ejercicio}
+
+\begin{ejercicio}
+Rediseña las herramientas para que la pregunta de los días y las horas se resuelva en una sola llamada. ¿Qué pierde el agente en flexibilidad?
+\end{ejercicio}
+
+% =====================================================================
+\section{Herramientas como funciones con esquema}
+% =====================================================================
+
+\begin{definicion}[Herramienta]
+Una herramienta es una función $f:\mathcal{U}_f\to\mathcal{O}$ junto con un \emph{esquema} $S_f$ que describe en JSON Schema su nombre, su propósito y el tipo de cada argumento. El modelo solo ve $S_f$; el código de $f$ se ejecuta en el programa.
+\end{definicion}
+
+En ADK una herramienta es una función de Python común. El esquema se construye a partir de tres fuentes: el nombre de la función, sus \emph{type hints} y su docstring. La calculadora del asistente es un buen ejemplo.
+
+\lstinputlisting[language=Python, firstline=117, lastline=137, caption={Herramienta \texttt{calcular} (extracto real de \texttt{agent.py}). La docstring y el type hint \texttt{str} se vuelven el esquema.}]{\codigoagente}
+
+ADK la convierte en una \texttt{FunctionDeclaration} y LiteLLM la traduce al formato de herramientas de OpenAI, que es el que acepta Ollama. Esto es exactamente lo que recibe el modelo, tomado de la traza:
+
+\begin{lstlisting}[language=json, caption={Esquema de \texttt{calcular} tal como viaja en cada petición (descripción abreviada).}]
+{"type": "function",
+ "function": {
+   "name": "calcular",
+   "description": "Evalúa una expresión aritmética y devuelve el resultado exacto. ...",
+   "parameters": {
+     "type": "object",
+     "title": "calcularParams",
+     "properties": {"expresion": {"title": "Expresion", "type": "string"}},
+     "required": ["expresion"]}}}
+\end{lstlisting}
+
+\begin{nota}[El parámetro oculto]
+\texttt{buscar\_personaje} y \texttt{consultar\_sesion} tienen un parámetro \texttt{tool\_context: ToolContext}. ADK lo reconoce por su tipo, lo inyecta al ejecutar y lo quita del esquema. El modelo nunca lo ve ni puede falsificarlo.
+\end{nota}
+
+\subsection{Decodificación de la llamada}
+
+El modelo solo genera texto. Con herramientas declaradas, la plantilla de chat le enseña un formato especial para pedirlas. Si el modelo produce la cadena $c=(c_1,\dots,c_n)$, el programa intenta decodificarla:
+\begin{equation}
+\operatorname{dec}(c) \;=\;
+\begin{cases}
+(f, \mathbf{u}) & \text{si } c \text{ codifica una llamada con nombre } f \text{ y argumentos } \mathbf{u},\\
+\textsf{texto}(c) & \text{en otro caso.}
+\end{cases}
+\label{eq:dec}
+\end{equation}
+La llamada es \emph{válida} si $f\in\mathcal{F}$ y $\mathbf{u}\models S_f$ (los argumentos cumplen el esquema). La probabilidad de que el modelo elija la herramienta $f$ suma todas las cadenas que decodifican a ella:
+\begin{equation}
+\Prob(f \mid h_t) \;=\; \sum_{c\,:\,\operatorname{dec}(c)=(f,\cdot)} \;\prod_{j=1}^{n} p_\theta\!\left(c_j \mid h_t,\, c_{<j}\right).
+\label{eq:pfun}
+\end{equation}
+La descripción en $S_f$ es parte de $h_t$: una descripción clara sube $\Prob(f\mid h_t)$ en las preguntas donde $f$ es útil. Por eso la docstring forma parte del diseño del prompt.
+
+\begin{ejemplo}[Lo que devuelve Ollama]
+En el turno encadenado, Ollama devolvió una llamada estructurada con nombre \texttt{calcular} y argumentos \texttt{\{\textquotedbl{}expresion\textquotedbl{}: \textquotedbl{}7 * 24\textquotedbl{}\}}, con identificador \texttt{call\_4dw0d07z}. ADK la convirtió en un evento con una parte \texttt{function\_call}, ejecutó la función y produjo otro evento con una parte \texttt{function\_response} con el mismo identificador, para que el modelo empareje pregunta y respuesta.
+\end{ejemplo}
+
+\subsection{El costo de declarar herramientas}
+
+Los esquemas viajan en \emph{todas} las peticiones. Si $n(\cdot)$ cuenta tokens, la entrada de la vuelta $t$ es
+\begin{equation}
+n_{\text{in}}(t) \;=\; n(s) \;+\; \sum_{k=1}^{K} n(S_k) \;+\; n(h_t \setminus \{s,\mathcal{S}\}),
+\label{eq:tokens}
+\end{equation}
+y un turno con $L$ consultas al modelo consume $N_{\text{in}}=\sum_{t=1}^{L} n_{\text{in}}(t)$. Como $h_t$ crece en cada vuelta, $N_{\text{in}}$ crece más rápido que $L$. En el turno encadenado, $N_{\text{in}} = 1\,122 + 2\,122 + 2\,496 = 5\,740$ tokens para una respuesta de una línea.
+
+\subsection{Herramientas seguras}
+
+El texto de los argumentos lo escribe el modelo, y el modelo puede equivocarse o ser manipulado por el contenido que lee. Una herramienta debe tratar sus argumentos como entrada no confiable. \texttt{calcular} recorre el árbol sintáctico de la expresión y solo acepta números y operadores aritméticos; con \texttt{eval} una cadena como \texttt{\_\_import\_\_('os').system(...)} ejecutaría código.
+
+\lstinputlisting[language=Python, firstline=88, lastline=114, caption={Evaluador con \texttt{ast}: lista blanca de nodos y límite al exponente.}]{\codigoagente}
+
+\begin{ejercicio}
+Escribe a mano el esquema JSON que ADK generaría para \texttt{def convertir(dias: int, unidad: str = \textquotedbl{}horas\textquotedbl{}) -> dict}. ¿Qué campos aparecen en \texttt{required}?
+\end{ejercicio}
+
+\begin{ejercicio}
+Usa~\eqref{eq:tokens} para estimar cuántos tokens extra cuesta un turno de tres vueltas si agregas diez herramientas de 150 tokens cada una.
+\end{ejercicio}
+
+\begin{ejercicio}
+Prueba \texttt{calcular(\textquotedbl{}2 ** 10000\textquotedbl{})} y \texttt{calcular(\textquotedbl{}1 / 0\textquotedbl{})}. ¿Qué devuelve cada una y por qué conviene devolver un diccionario con \texttt{status} en lugar de lanzar la excepción?
+\end{ejercicio}
+
+% =====================================================================
+\section{Estado y memoria}
+% =====================================================================
+
+El historial $h_t$ ya es una memoria, pero es una memoria desordenada: crece con cada turno y el modelo tiene que buscar en él. ADK agrega un \emph{estado} explícito.
+
+\begin{definicion}[Sesión y estado]
+Una sesión es un par $(E, \sigma)$: la lista de eventos $E$ y un diccionario de estado $\sigma$. Cada evento puede traer un cambio de estado $\Delta$, y el servicio de sesiones lo aplica como
+\begin{equation}
+\sigma \;\leftarrow\; \sigma \oplus \Delta, \qquad (\sigma\oplus\Delta)[k] = \begin{cases}\Delta[k] & k\in\operatorname{dom}\Delta\\ \sigma[k] & \text{en otro caso.}\end{cases}
+\end{equation}
+\end{definicion}
+
+Las herramientas escriben en el estado con \texttt{tool\_context.state[clave] = valor}; ADK registra el cambio en \texttt{event.actions.state\_delta}. La herramienta de personajes guarda la lista de personajes consultados.
+
+\lstinputlisting[language=Python, firstline=57, lastline=82, caption={\texttt{buscar\_personaje} lee y escribe el estado de la sesión.}]{\codigoagente}
+
+\subsection{El estado dentro de la instrucción}
+
+La instrucción del agente contiene plantillas \texttt{\{personajes\_consultados?\}}. Antes de cada consulta al modelo, ADK las sustituye por el valor actual del estado; el signo final evita un error si la clave aún no existe. Así la instrucción depende del estado, $s=s(\sigma)$, y el modelo recibe la memoria en un lugar fijo y corto.
+
+\begin{ejemplo}[Memoria en la traza]
+Tras el turno de Teresa, el evento de la herramienta trajo $\Delta=\{\texttt{personajes\_consultados}: [\text{Teresa Chávez}]\}$; tras el de Arturo, la lista tenía dos nombres. En el quinto turno («¿Qué personajes te he preguntado?») el modelo respondió sin llamar herramientas: «Hasta ahora has preguntado por los personajes: Teresa Chávez y Arturo de la Barrera.» El dato estaba en su instrucción. El estado final de la sesión fue
+\begin{center}\small
+\texttt{\{\textquotedbl{}personajes\_consultados\textquotedbl{}: [\textquotedbl{}Teresa Chávez\textquotedbl{}, \textquotedbl{}Arturo de la Barrera\textquotedbl{}],}\\ \texttt{\textquotedbl{}ultima\_sesion\_consultada\textquotedbl{}: 8\}}.
+\end{center}
+\end{ejemplo}
+
+\begin{nota}[Tres horizontes de memoria]
+\begin{itemize}
+  \item \textbf{Historial de la sesión}: los eventos del turno y de los anteriores. Lo guarda el \texttt{SessionService}.
+  \item \textbf{Estado}: claves explícitas. Con prefijos \texttt{user:} y \texttt{app:} ADK comparte claves entre sesiones del mismo usuario o de toda la aplicación; con \texttt{temp:} duran solo la invocación.
+  \item \textbf{Memoria de largo plazo}: un \texttt{MemoryService} que indexa sesiones pasadas para buscarlas después, por ejemplo con embeddings.
+\end{itemize}
+\texttt{InMemorySessionService} pierde todo al reiniciar el proceso; para conservar sesiones se usa \texttt{DatabaseSessionService} con SQLite o PostgreSQL.
+\end{nota}
+
+\begin{ejercicio}
+Modifica \texttt{calcular} para que guarde en el estado la lista de resultados y agrega a la instrucción una línea con \texttt{\{resultados?\}}. Pregunta «¿Cuánto me dio la última cuenta?» y revisa la traza.
+\end{ejercicio}
+
+\begin{ejercicio}
+¿Qué pasa si dos herramientas escriben la misma clave en la misma vuelta? Razónalo con la definición de $\sigma\oplus\Delta$.
+\end{ejercicio}
+
+% =====================================================================
+\section{Arquitectura de Google ADK}
+% =====================================================================
+
+Google ADK (Agent Development Kit) es una biblioteca de Python para construir agentes. En la versión 2.x las piezas centrales son cuatro.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[scale=0.95, transform shape,
+  bloque/.style={rectangle, rounded corners=4pt, draw=#1, fill=#1!8, line width=0.9pt,
+                 font=\sffamily\small, align=center, minimum height=0.9cm},
+  flecha/.style={-{Stealth[length=2.6mm]}, line width=0.8pt, draw=pizarra}]
+  \node[bloque=pizarra, minimum width=2.4cm] (usr) at (0,0) {Usuario\\\scriptsize\texttt{Content}};
+  \node[bloque=anahuac, minimum width=3.0cm, minimum height=1.3cm] (run) at (4,0) {\textbf{Runner}\\\scriptsize bucle ReAct};
+  \node[bloque=azuldef, minimum width=3.6cm, minimum height=2.6cm, anchor=west] (ag) at (7,0) {};
+  \node[font=\sffamily\small\bfseries, text=azuldef] at ([yshift=-0.35cm]ag.north) {LlmAgent};
+  \node[font=\scriptsize\ttfamily, align=left] at ([yshift=-0.2cm]ag.center) {model\\instruction\\tools\\callbacks};
+  \node[bloque=verdeej, minimum width=3.0cm] (ses) at (4,-2.6) {\textbf{SessionService}\\\scriptsize eventos $E$ y estado $\sigma$};
+  \node[bloque=moradoint, minimum width=2.6cm] (lite) at (8.6,-2.9) {LiteLlm\\\scriptsize\texttt{ollama\_chat/qwen3:4b}};
+  \node[bloque=pizarra, minimum width=2.6cm] (oll) at (12.9,-2.9) {Ollama\\\scriptsize GPU del servidor};
+  \node[bloque=verdeej, minimum width=2.4cm] (fun) at (12.9,0) {Funciones\\\scriptsize Python};
+  \draw[flecha] (usr) -- node[above, font=\scriptsize]{mensaje} (run);
+  \draw[flecha] (run) -- (ag);
+  \draw[flecha] ([xshift=-3mm]run.south) -- node[left, font=\scriptsize]{lee} ([xshift=-3mm]ses.north);
+  \draw[flecha] ([xshift=3mm]ses.north) -- node[right, font=\scriptsize]{eventos} ([xshift=3mm]run.south);
+  \draw[flecha] ([xshift=6mm]ag.south) -- ([xshift=-2mm]lite.north);
+  \draw[flecha] (lite) -- node[above, font=\scriptsize]{HTTP} (oll);
+  \draw[flecha] (ag) -- node[above, font=\scriptsize]{llamar} (fun);
+  \draw[flecha, dashed] (run.north) to[bend right=25] node[above, font=\scriptsize]{flujo de \texttt{Event}} (usr.north);
+\end{tikzpicture}
+\caption{Arquitectura del asistente. El \texttt{Runner} orquesta; el \texttt{LlmAgent} declara qué modelo, instrucción y herramientas usar; el \texttt{SessionService} guarda eventos y estado; LiteLLM traduce las peticiones al formato de Ollama.}
+\label{fig:arquitectura}
+\end{figure}
+
+\begin{description}[style=nextline, leftmargin=1.2em]\raggedright
+  \item[\texttt{LlmAgent}] Declaración del agente: \texttt{name}, \texttt{model}, \texttt{instruction}, \texttt{tools}, \texttt{description} y \emph{callbacks} opcionales (antes y después del modelo o de cada herramienta).
+  \item[\texttt{Runner}] Recibe el mensaje del usuario, carga la sesión, ejecuta el bucle ReAct y emite eventos. Su método \texttt{run\_async} es un generador asíncrono.
+  \item[\texttt{SessionService}] Guarda las sesiones. \texttt{InMemorySessionService} en memoria; \texttt{DatabaseSessionService} en una base de datos.
+  \item[\texttt{Event}] Unidad de la traza: \texttt{author}, \texttt{content} con partes (texto, pensamiento, \texttt{function\_call}, \texttt{function\_response}), \texttt{actions.state\_delta}, \texttt{usage\_metadata} con tokens y \texttt{timestamp}.
+\end{description}
+
+\lstinputlisting[language=Python, firstline=188, lastline=199, caption={Construcción del agente. \texttt{root\_agent} es el nombre que buscan \texttt{adk run} y \texttt{adk web}.}]{\codigoagente}
+
+\begin{lstlisting}[language=Python, caption={Ejecutar el agente con \texttt{Runner} (simplificado de \texttt{scripts/grabar\_traza\_agente.py}).}]
+from google.adk.runners import Runner
+from google.adk.sessions import InMemorySessionService
+from google.genai import types
+
+servicio = InMemorySessionService()
+runner = Runner(agent=root_agent, app_name="asistente_teresa", session_service=servicio)
+sesion = await servicio.create_session(app_name="asistente_teresa", user_id="estudiante")
+
+mensaje = types.Content(role="user", parts=[types.Part(text="¿Quién interpreta a Teresa?")])
+async for ev in runner.run_async(user_id="estudiante", session_id=sesion.id, new_message=mensaje):
+    for p in ev.content.parts:
+        if p.function_call:
+            print("LLAMADA", p.function_call.name, p.function_call.args)
+        elif p.function_response:
+            print("OBSERVACIÓN", p.function_response.response)
+        elif p.text and not p.thought:
+            print("TEXTO", p.text)
+\end{lstlisting}
+
+\subsection{La traza como secuencia de eventos}
+
+Un turno con dos herramientas produce cinco eventos. Este es el fragmento real del turno encadenado, con los pensamientos recortados:
+
+\begin{lstlisting}[language=json, caption={Fragmento de \texttt{data/processed/traza\_agente.json}, turno encadenado.}]
+{"autor": "asistente_teresa", "t": 50.455, "partes": [
+  {"tipo": "pensamiento", "texto": "Okay, let's see. The user is asking how many days..."},
+  {"tipo": "function_call", "id": "call_7wuc9oek", "nombre": "consultar_sesion", "args": {"numero": 8}}]}
+{"autor": "asistente_teresa", "t": 50.456, "partes": [
+  {"tipo": "function_response", "id": "call_7wuc9oek", "nombre": "consultar_sesion",
+   "respuesta": {"status": "ok", "numero": 8, "fecha": "2026-11-21",
+                 "tema": "Creación de un agente simple con Google ADK",
+                 "hoy": "2026-11-14", "dias_restantes": 7}}],
+ "estado_delta": {"ultima_sesion_consultada": 8}}
+{"autor": "asistente_teresa", "t": 59.046, "partes": [
+  {"tipo": "pensamiento", "texto": "Okay, let me break this down..."},
+  {"tipo": "function_call", "id": "call_4dw0d07z", "nombre": "calcular", "args": {"expresion": "7 * 24"}}]}
+{"autor": "asistente_teresa", "t": 59.048, "partes": [
+  {"tipo": "function_response", "id": "call_4dw0d07z", "nombre": "calcular",
+   "respuesta": {"status": "ok", "expresion": "7 * 24", "resultado": 168}}]}
+{"autor": "asistente_teresa", "t": 70.111, "partes": [
+  {"tipo": "texto", "texto": "Para la sesión 8 del curso, faltan 7 días, lo que equivale a 168 horas."}]}
+\end{lstlisting}
+
+Observa los tiempos: las herramientas tardan milisegundos (de 50.455 a 50.456 segundos) y casi todo el tiempo se va en el modelo. La latencia de un turno se aproxima por
+\begin{equation}
+\text{latencia} \;\approx\; \sum_{t=1}^{L}\left(\frac{n_{\text{in}}(t)}{v_{\text{lectura}}} + \frac{n_{\text{out}}(t)}{v_{\text{generación}}}\right) \;+\; \sum_{t} \text{tiempo}(f_{k_t}),
+\end{equation}
+donde $v_{\text{lectura}}$ y $v_{\text{generación}}$ son tokens por segundo al procesar la entrada y al generar la salida. En una GPU local $v_{\text{generación}}$ es mucho menor que $v_{\text{lectura}}$, y por eso los 916 tokens de pensamiento de la primera vuelta dominan.
+
+\subsection{\texttt{adk run} y \texttt{adk web}}
+
+ADK reconoce como agente cualquier paquete con un \texttt{\_\_init\_\_.py} que importe \texttt{agent} y un \texttt{agent.py} que defina \texttt{root\_agent}. Desde la raíz del repositorio:
+
+\begin{lstlisting}[language=bash]
+ssh -N -L 11434:localhost:11434 $GPU_HOST &     # túnel a Ollama
+uv run adk run agentes/asistente_teresa       # conversación en la terminal
+uv run adk web agentes                        # interfaz en http://localhost:8000
+\end{lstlisting}
+
+La interfaz web muestra la conversación, cada evento con su \texttt{function\_call} y \texttt{function\_response}, el estado de la sesión y un grafo del agente con sus herramientas.
+
+\begin{ejercicio}
+Agrega un \texttt{before\_tool\_callback} que imprima el nombre y los argumentos de cada herramienta antes de ejecutarla. ¿En qué evento de la traza aparecería su efecto?
+\end{ejercicio}
+
+\begin{ejercicio}
+Con la tabla del turno encadenado y la fórmula de latencia, estima $v_{\text{generación}}$ suponiendo que la lectura de la entrada es despreciable. Compáralo con lo que reporta Ollama en \texttt{/api/ps} o en sus registros.
+\end{ejercicio}
+
+% =====================================================================
+\section{Modelos locales con LiteLLM y Ollama}
+% =====================================================================
+
+ADK está pensado para Gemini, pero acepta cualquier modelo a través de \texttt{LiteLlm}, un adaptador que habla el formato de OpenAI con más de cien proveedores. Para Ollama basta el prefijo \texttt{ollama\_chat/} y la variable \texttt{OLLAMA\_API\_BASE}:
+
+\begin{lstlisting}[language=Python]
+import os
+from google.adk.models.lite_llm import LiteLlm
+os.environ.setdefault("OLLAMA_API_BASE", "http://localhost:11434")
+modelo = LiteLlm(model="ollama_chat/qwen3:4b")
+\end{lstlisting}
+
+El prefijo \texttt{ollama\_chat} usa el punto \texttt{/api/chat}, que acepta herramientas; el prefijo \texttt{ollama} usa \texttt{/api/generate} y no las soporta bien. El modelo tiene que haber sido entrenado para llamar herramientas: la plantilla de chat de Ollama le indica cómo escribirlas.
+
+\subsection{Elegir el modelo}
+
+La GPU del servidor tiene 8~GB compartidos con otros trabajos. Probamos dos modelos con las mismas cinco preguntas:
+
+\begin{center}\small
+\begin{tabularx}{\textwidth}{@{}lccX@{}}
+\toprule
+Modelo & Tamaño & Encadenó dos herramientas & Observación \\
+\midrule
+\texttt{qwen2.5:7b} & 4.7 GB & No & Llamó a \texttt{consultar\_sesion} y escribió $7\times 24$ en el texto \\
+\texttt{qwen3:4b}   & 2.4 GB & Sí & Piensa antes de actuar; más lento por los tokens de pensamiento \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Elegimos \texttt{qwen3:4b}: es más pequeño y siguió la regla de usar \texttt{calcular}. El costo es la latencia, de 20 a 70 segundos por turno con la GPU compartida.
+
+\begin{nota}[Reproducibilidad]
+Un modelo local hace reproducible la práctica: no hay costo por token, los datos no salen del laboratorio y la versión del modelo no cambia sin aviso. A cambio, el modelo es más pequeño que uno comercial y su $q$ en~\eqref{eq:exito} es menor.
+\end{nota}
+
+\begin{ejercicio}
+Corre \texttt{scripts/grabar\_traza\_agente.py --modelo ollama\_chat/llama3.1:8b} y compara la traza con la de \texttt{qwen3:4b}. ¿Qué preguntas resuelve cada modelo?
+\end{ejercicio}
+
+% =====================================================================
+\section{Panorama: agentes compuestos y MCP}
+% =====================================================================
+
+Un solo \texttt{LlmAgent} con pocas herramientas resuelve muchos casos. Cuando la tarea crece, ADK permite componer agentes:
+
+\begin{itemize}
+  \item \texttt{SequentialAgent}: ejecuta subagentes en orden; cada uno deja su resultado en el estado (\texttt{output\_key}) para el siguiente. Sirve para flujos fijos, como extraer, resumir y revisar.
+  \item \texttt{ParallelAgent}: ejecuta subagentes a la vez y junta sus resultados; útil cuando las subtareas son independientes.
+  \item \texttt{LoopAgent}: repite un subagente hasta una condición de parada o un máximo de iteraciones, por ejemplo corregir código hasta que pasen las pruebas.
+  \item Delegación: un \texttt{LlmAgent} con \texttt{sub\_agents} puede transferir la conversación a otro agente según su \texttt{description}.
+\end{itemize}
+
+\textbf{MCP} (Model Context Protocol) es un protocolo abierto para exponer herramientas desde un servidor aparte. En ADK, \texttt{McpToolset} se conecta a un servidor MCP y convierte sus herramientas en herramientas del agente, con el mismo esquema JSON que vimos. \textbf{A2A} (Agent to Agent) es un protocolo para que un agente consulte a otro agente remoto. Ambos quedan fuera del alcance de esta sesión; el principio es el mismo de la sección~3: el modelo ve esquemas y pide llamadas, el programa las ejecuta.
+
+\begin{ejercicio}
+Diseña con \texttt{SequentialAgent} un flujo de dos agentes: el primero busca un personaje y guarda el resultado en el estado; el segundo escribe una sinopsis breve usando ese resultado. ¿Qué clave de estado conecta a los dos?
+\end{ejercicio}
+
+\begin{ejercicio}
+Compara un agente con veinte herramientas contra dos agentes de diez herramientas coordinados por un agente raíz. Usa~\eqref{eq:tokens} y~\eqref{eq:exito} para argumentar ventajas y desventajas.
+\end{ejercicio}
+
+\end{document}

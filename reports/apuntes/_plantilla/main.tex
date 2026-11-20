@@ -1,0 +1,24 @@
+%!TEX program = tectonic
+\documentclass[11pt,letterpaper,oneside]{report}
+\usepackage{../anahuac}
+\materia{Inteligencia Artificial Aplicada}
+\sesion{0}{Plantilla de apunte}
+\subtitulo{Ejemplo mínimo del estilo común}
+\begin{document}
+\portada
+\tableofcontents
+\setcounter{chapter}{-1}
+\chapter{Plantilla}
+\section{Cajas}
+\begin{definicion}[Atención]
+$\operatorname{Att}(Q,K,V)=\softmax\!\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$.
+\end{definicion}
+\begin{intuicion}Cada token pregunta, los demás responden.\end{intuicion}
+\begin{ejemplo}Un ejemplo.\end{ejemplo}
+\begin{nota}Una nota.\end{nota}
+\begin{ejercicio}¿Cuánto vale $\sqrt{d_k}$ si $d_k=64$?\end{ejercicio}
+\begin{lstlisting}[language=Python]
+# Comentario con acentos: atención
+x = 1
+\end{lstlisting}
+\end{document}
