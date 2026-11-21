@@ -31,4 +31,4 @@ Con `pre-commit install` el gancho de gitleaks revisa cada commit antes de crear
 
 ## Datos que nunca se versionan
 
-Credenciales (`.env`, `.envrc`, `*.pem`, `*.key`, `credentials*.json`), textos con derechos de terceros (corpus de *Teresa*, traducciones de la Biblia y el Corán), comentarios descargados de YouTube y checkpoints de modelos. Las reglas están en `.gitignore`.
+Credenciales (`.env`, `.envrc`, `*.pem`, `*.key`, `credentials*.json`), textos con derechos de terceros (corpus de *Teresa*, traducciones de la Biblia y el Corán), comentarios descargados de YouTube, la foto de entrada de la sesión 09 (`data/raw/hotot/`), el zip de caras de anime de la sesión 12 (`data/animefaces/`) y checkpoints de modelos. Las reglas están en `.gitignore`.

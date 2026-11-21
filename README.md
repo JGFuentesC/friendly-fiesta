@@ -17,6 +17,10 @@ notebooks/
   06_minigpt_teresa.ipynb         mini GPT entrenado con diálogos de Teresa
   07_difusion.ipynb               modelos de difusión (DDPM)
   08_agente_adk.ipynb             agente simple con Google ADK y Ollama
+  09_ruido_hotot.ipynb            ruido gaussiano sobre una foto, paso a paso
+  10_difusion_simple.ipynb        difusión 2D: entrenar e inferir con un MLP
+  11_difusion_video.ipynb         hola mundo de difusión de video
+  12_unet_animefaces.ipynb        U-Net condicional con caras de anime (GPU)
 reports/apuntes/            apuntes en LaTeX con estilo Anáhuac (anahuac.sty)
 spa/                        páginas interactivas autocontenidas
 scripts/                    generadores, entrenamientos y verificadores
@@ -183,6 +187,28 @@ uv run adk run agentes/asistente_teresa         # o: uv run adk web agentes
 uv run python scripts/grabar_traza_agente.py
 uv run python scripts/build_spa_agente.py
 uv run python scripts/build_agente_notebook.py
+```
+
+## Sesiones 09 a 12: difusión sin prisa
+
+Cuatro cuadernos cortos que acompañan a la sesión 07. Los cuatro salen de un generador en `scripts/` con la verificación de redacción incluida.
+
+- `09_ruido_hotot.ipynb` suma ruido a una foto en 500 pasos y anima la imagen, el histograma del tensor y un parche de 6×6 con sus valores. La foto va en `data/raw/hotot/hotot.jpg` y no se versiona, así que el cuaderno se publica sin salidas; sirve cualquier JPG.
+- `10_difusion_simple.ipynb` entrena e infiere con 2000 puntos en forma de corazón y un `MLPRegressor` de scikit-learn. Corre en local en segundos.
+- `11_difusion_video.ipynb` trata cada video (8 cuadros de 10×10 con una pelota en movimiento) como un solo tensor. La red predice el video limpio. Corre en local en menos de un minuto.
+- `12_unet_animefaces.ipynb` entrena la U-Net condicional de `scripts/train_ddpm.py` con 12 000 caras de [`huggan/anime-faces`](https://huggingface.co/datasets/huggan/anime-faces) (CC0 según su ficha, 32×32) y etiquetas automáticas por color de cabello. Necesita GPU; tarda unos 5 minutos. El zip se descarga a `data/animefaces/`, que no se versiona.
+
+```bash
+uv run python scripts/build_ruido_notebook.py
+uv run python scripts/build_difusion_simple_notebook.py
+uv run python scripts/build_difusion_video_notebook.py
+uv run jupyter nbconvert --to notebook --execute --inplace notebooks/10_difusion_simple.ipynb notebooks/11_difusion_video.ipynb
+
+uv run python scripts/build_unet_anime_notebook.py
+scp scripts/train_ddpm.py $GPU_HOST:$RUTA_REMOTA/scripts/
+scp notebooks/12_unet_animefaces.ipynb $GPU_HOST:$RUTA_REMOTA/notebooks/
+ssh $GPU_HOST 'docker exec -w /workspace/friendly-fiesta lab-pytorch jupyter nbconvert --to notebook --execute --inplace notebooks/12_unet_animefaces.ipynb'
+scp $GPU_HOST:$RUTA_REMOTA/notebooks/12_unet_animefaces.ipynb notebooks/
 ```
 
 ## Textos de la Biblia y el Corán

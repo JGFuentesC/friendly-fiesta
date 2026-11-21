@@ -56,3 +56,9 @@ data/agente_pruebas/
 *.synctex.gz
 *.bbl
 *.blg
+
+# Sesión 09: foto de entrada (licencia no verificada)
+data/raw/hotot/
+
+# Sesión 12: caras de anime descargadas de Hugging Face
+data/animefaces/
